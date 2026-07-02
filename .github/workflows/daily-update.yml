@@ -1,0 +1,38 @@
+name: Daily NOIZ Update
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # 09:00 KST, GitHub cron runs in UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-noiz:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Update NOIZ data
+        run: |
+          python scripts/update_noiz.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "noiz-bot"
+          git config user.email "noiz-bot@users.noreply.github.com"
+          git add data/noiz-data.json
+          git commit -m "Daily NOIZ update" || echo "No changes to commit"
+          git push

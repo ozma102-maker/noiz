@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Popga Magazine",
+    "url": "https://popga.co.kr/content/magazine",
+    "type": "popup",
+    "weight": 25
+  },
+  {
+    "name": "Popga Popup",
+    "url": "https://popga.co.kr/popup",
+    "type": "popup",
+    "weight": 25
+  },
+  {
+    "name": "Popply",
+    "url": "https://popply.co.kr/",
+    "type": "popup",
+    "weight": 22
+  },
+  {
+    "name": "Ddoing Exhibition Schedule",
+    "url": "https://ddoing.co.kr/ddoing_exhibition_schedule",
+    "type": "exhibition",
+    "weight": 20
+  },
+  {
+    "name": "GroundSeesaw",
+    "url": "https://groundseesaw.co.kr/",
+    "type": "exhibition",
+    "weight": 18
+  },
+  {
+    "name": "SeMA Exhibitions",
+    "url": "https://sema.seoul.go.kr/kr/whatson/exhibition",
+    "type": "exhibition",
+    "weight": 18
+  },
+  {
+    "name": "MMCA Exhibitions",
+    "url": "https://www.mmca.go.kr/exhibitions/progressList.do",
+    "type": "exhibition",
+    "weight": 18
+  },
+  {
+    "name": "ARTMAP",
+    "url": "https://art-map.co.kr/",
+    "type": "exhibition",
+    "weight": 18
+  }
+]
