@@ -84,6 +84,92 @@ POPUP_ONLY_WORDS = ["팝업스토어", "브랜드 팝업", "굿즈 팝업"]
 
 KNOWN_AREAS = ["삼청", "한남", "청담", "성수", "을지로", "서촌", "종로", "중구", "강남", "용산", "송파", "여의도", "서초", "인천", "경기", "수원", "파주"]
 
+VENUE_KO = {
+    "MMCA Seoul": "국립현대미술관 서울",
+    "National Museum of Modern and Contemporary Art, Seoul": "국립현대미술관 서울",
+    "Seoul Museum of Art, Seosomun": "서울시립미술관 서소문본관",
+    "Seoul Museum of Art, Buk-Seoul": "서울시립 북서울미술관",
+    "Seoul Museum of Art": "서울시립미술관",
+    "Leeum Museum of Art": "리움미술관",
+    "Amorepacific Museum of Art": "아모레퍼시픽미술관",
+    "Art Sonje Center": "아트선재센터",
+    "SONGEUN Art and Cultural Foundation": "송은",
+    "SOMA Museum of Art": "소마미술관",
+    "The Hyundai Seoul ALT.1": "더현대 서울 ALT.1",
+    "Centre Pompidou Hanwha": "퐁피두센터 한화 서울",
+    "Suwon Museum of Art": "수원시립미술관",
+    "Kukje Gallery": "국제갤러리",
+    "Kukje Gallery K1/K2": "국제갤러리 K1/K2",
+    "Kukje Gallery Seoul Hanok": "국제갤러리 서울 한옥",
+    "Gallery Hyundai": "갤러리현대",
+    "PKM Gallery": "PKM 갤러리",
+    "Arario Gallery Seoul": "아라리오갤러리 서울",
+    "Gallery Baton": "갤러리바톤",
+    "The Page Gallery": "더페이지갤러리",
+    "CAPTION Seoul": "캡션 서울",
+    "G Gallery": "G갤러리",
+    "WWNN": "WWNN",
+    "OMG SEOUL": "OMG 서울",
+    "Space ISU": "스페이스 이수",
+}
+
+AREA_KO = {
+    "Samcheong": "삼청",
+    "Samcheong/Jongno": "삼청/종로",
+    "Jongno": "종로",
+    "Jongno-gu": "종로",
+    "Jung-gu": "중구",
+    "Nowon": "노원",
+    "Nowon-gu": "노원",
+    "Seoul": "서울",
+    "Hannam": "한남",
+    "Yongsan": "용산",
+    "Cheongdam": "청담",
+    "Seochon": "서촌",
+    "Seongsu": "성수",
+    "Gangnam": "강남",
+    "Songpa": "송파",
+    "Yeouido": "여의도",
+    "Seocho": "서초",
+    "Gwanghwamun": "광화문",
+    "Pyeongchang": "평창동",
+    "Eunpyeong": "은평",
+    "Apgujeong": "압구정",
+    "Daehak-ro": "대학로",
+    "Anguk": "안국",
+    "Nanji": "난지",
+    "Dobong": "도봉",
+    "Gwanak": "관악",
+    "Itaewon": "이태원",
+    "Seongbuk": "성북",
+    "Sinsa": "신사",
+    "Gyeonggi": "경기",
+    "Suwon": "수원",
+    "Gwacheon": "과천",
+    "Yongin": "용인",
+    "Ansan": "안산",
+    "Paju": "파주",
+    "Incheon": "인천",
+    "Yeongjong": "영종",
+    "서울/수도권": "서울/수도권",
+}
+
+CITY_KO = {
+    "Seoul": "서울",
+    "Gyeonggi": "경기",
+    "Incheon": "인천",
+}
+
+def ko_venue(value: str) -> str:
+    return VENUE_KO.get(value, value)
+
+def ko_area(value: str) -> str:
+    return AREA_KO.get(value, value)
+
+def ko_city(value: str) -> str:
+    return CITY_KO.get(value, value)
+
+
 def clean_text(text: str) -> str:
     text = html.unescape(text or "")
     text = re.sub(r"<[^>]+>", " ", text)
@@ -217,16 +303,19 @@ def merge_seed_candidates(candidates: list[dict[str, Any]]) -> list[dict[str, An
 
 def make_noiz_item(raw: dict[str, Any]) -> dict[str, Any]:
     source_count = len(raw.get("sourceKeys") or [raw.get("sourceKey", "unknown")])
+    venue_ko = ko_venue(raw.get("venue") or "")
+    area_ko = ko_area(raw.get("area") or raw.get("district") or "서울/수도권")
+    region_ko = ko_city(raw.get("city") or "서울")
     noiz, favor, signals, info_volume, reaction_count, confidence_label = score_item(raw, source_count)
     return {
         "rank": 0,
         "brand": raw.get("artist") or "Group exhibition",
         "title": raw.get("title") or "Untitled",
-        "owner": f"{raw.get('venue','')} · {', '.join(raw.get('sourceNames') or [raw.get('sourceName','')])}",
-        "venue": raw.get("venue") or "",
-        "area": raw.get("area") or raw.get("district") or "서울/수도권",
-        "region": raw.get("city") or "Seoul",
-        "mapQuery": f"{raw.get('title','')} {raw.get('venue','')} {raw.get('area','')}",
+        "owner": f"{venue_ko} · {', '.join(raw.get('sourceNames') or [raw.get('sourceName','')])}",
+        "venue": venue_ko,
+        "area": area_ko,
+        "region": region_ko,
+        "mapQuery": f"{raw.get('title','')} {venue_ko} {area_ko}",
         "sourceUrl": raw.get("url") or "#",
         "sourceLabel": "정보 출처",
         "noiz": noiz,
@@ -275,11 +364,11 @@ def scan_venue_page(venue: list[Any]) -> list[dict[str, Any]]:
             "id": candidate_key(title, name),
             "title": title[:90],
             "artist": "TBC",
-            "venue": name,
+            "venue": ko_venue(name),
             "venueType": vtype,
-            "city": city,
-            "district": district,
-            "area": district,
+            "city": ko_city(city),
+            "district": ko_area(district),
+            "area": ko_area(district),
             "start": datetime.now(KST).date().isoformat(),
             "end": (datetime.now(KST).date() + timedelta(days=45)).isoformat(),
             "tags": ["official-scan"],

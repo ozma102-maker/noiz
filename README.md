@@ -148,3 +148,8 @@ data/art-week-seed.json
 ## 메인 NOIZ 표시 오류 수정
 
 메인 `index.html`은 이제 `reactionCount`가 없는 기존 정적 데이터까지 모두 숨기지 않습니다. 명시적으로 `후기 축적 전`, `후기 부족`, `오픈 예정`, `반응 없음`, `infoVolume: "low"`인 항목만 제외합니다.
+
+
+## ART 모드 한국어 표기
+
+ART NOIZ의 `venue`, `area`, `region`, `mapQuery`, 주간 요약문은 한국어 표기를 우선 사용합니다. 예: `Samcheong` → `삼청`, `Jung-gu` → `중구`, `Seoul Museum of Art, Seosomun` → `서울시립미술관 서소문본관`.
