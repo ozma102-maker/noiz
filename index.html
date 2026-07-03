@@ -428,12 +428,74 @@ function setupHiddenArtMode() {
   });
 }
 
+
+function topEntries(obj, limit = 3) {
+  return Object.entries(obj || {}).sort((a, b) => b[1] - a[1]).slice(0, limit).map(([k]) => k);
+}
+
+function countBy(items, fn) {
+  return items.reduce((acc, item) => {
+    const key = fn(item);
+    if (key) acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+}
+
+function includesAny(text, words) {
+  const lower = String(text || "").toLowerCase();
+  return words.some(w => lower.includes(String(w).toLowerCase()));
+}
+
+function classifyMainItem(item) {
+  const text = [item.title, item.brand, item.owner, item.venue, item.area, item.description, ...(item.signals || [])].join(" ");
+  if (includesAny(text, ["팝업", "POP UP", "popup", "스토어", "브랜드", "굿즈", "IP", "팬덤", "더현대", "성수", "체험"])) return "팝업/브랜드 경험";
+  if (includesAny(text, ["전시", "미술", "미술관", "개인전", "기획전", "그라운드시소", "서울시립", "유영국", "렘브란트", "고야"])) return "전시/문화 경험";
+  return "공간 경험";
+}
+
+function buildNoizWeeklyAnalysis(items, data = {}) {
+  const list = (items || []).filter(Boolean);
+  if (!list.length) return data.weekly_read || "이번 주 공개 신호가 충분한 후보를 찾지 못했다.";
+
+  const areas = countBy(list, item => item.area || item.region || "서울/수도권");
+  const types = countBy(list, classifyMainItem);
+  const topAreas = topEntries(areas, 3).join("·");
+  const top = list[0];
+
+  const popupCount = types["팝업/브랜드 경험"] || 0;
+  const artCount = types["전시/문화 경험"] || 0;
+
+  const signalText = list.map(item => [...(item.signals || []), item.description || "", item.title || "", item.brand || ""].join(" ")).join(" ");
+  const hasGoods = includesAny(signalText, ["굿즈", "한정", "팬덤", "IP", "캐릭터"]);
+  const hasWait = includesAny(signalText, ["웨이팅", "혼잡", "줄", "대기", "더현대"]);
+  const hasFree = includesAny(signalText, ["무료", "체험", "이벤트"]);
+  const hasBigShows = includesAny(signalText, ["미술관", "명작", "거장", "기관", "도슨트", "기획전"]);
+
+  let why = "관심의 중심은 단순 정보 탐색보다 바로 방문할 수 있는 목적지와 짧은 기간 안에 소비되는 경험에 가깝다.";
+  if (popupCount > artCount && (hasGoods || hasFree)) {
+    why = "관심이 모이는 이유는 굿즈, 한정성, 무료 체험처럼 즉각적인 방문 동기를 만드는 요소가 강하기 때문이다.";
+  } else if (artCount >= popupCount && hasBigShows) {
+    why = "관심이 모이는 이유는 검증된 작가명, 기관 전시, 명확한 관람 목적처럼 실패 가능성이 낮은 문화 경험이 강하기 때문이다.";
+  }
+
+  let environment = "전체적으로는 상권형 팝업과 전시형 문화 경험이 같은 주말 시간을 두고 경쟁하는 환경이다.";
+  if (popupCount >= 5) {
+    environment = "전체 환경은 성수·더현대식 팝업 경쟁이 강하고, 관객은 오래 머무는 전시보다 짧고 인증 가능한 방문 경험에 빠르게 반응하는 흐름이다.";
+  } else if (artCount >= 5) {
+    environment = "전체 환경은 대형 전시와 미술관 동선의 비중이 높고, 관객은 검증된 콘텐츠를 중심으로 주말 일정을 구성하는 흐름이다.";
+  }
+
+  const congestion = hasWait ? "다만 웨이팅·혼잡 신호도 함께 보여, 화제성은 높지만 방문 피로도까지 같이 고려해야 한다." : "혼잡 신호는 상대적으로 약해, 이번 주는 화제성 대비 접근성이 나쁘지 않은 편으로 읽힌다.";
+
+  return `이번 주 NOIZ는 ${topAreas || "서울/수도권"} 중심으로 잡힌다. Top 10은 팝업/브랜드 경험 ${popupCount}개, 전시/문화 경험 ${artCount}개가 섞여 있고, 가장 강한 신호는 ${top.title || "상위 후보"}다. ${why} ${environment} ${congestion}`;
+}
+
 async function loadData() {
   try {
     const res = await fetch(`${DATA_URL}?t=${Date.now()}`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    document.getElementById("weeklyRead").textContent = data.weekly_read || "이번 주 요약 없음";
+    // weeklyRead is generated after Top 10 ranking.
     document.getElementById("weekLabel").textContent = formatWeekLabel(data.updated_at);
     document.getElementById("creator").textContent = data.creator || "이원준 시니어매니저";
     const items = (data.items || [])
@@ -441,6 +503,7 @@ async function loadData() {
       .sort((a, b) => Number(b.noiz || 0) - Number(a.noiz || 0))
       .slice(0, 10)
       .map((item, i) => ({ ...item, rank: i + 1 }));
+    document.getElementById("weeklyRead").textContent = buildNoizWeeklyAnalysis(items, data);
     document.getElementById("rankList").innerHTML = items.map(renderItem).join("");
   } catch (err) {
     document.getElementById("weekLabel").textContent = formatWeekLabel();
