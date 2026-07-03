@@ -211,12 +211,20 @@ KNOWN_DESCRIPTIONS = {
     "The Cubists: Inventing Modern Vision": "입체주의를 중심으로 근대적 시각이 어떻게 분해되고 재구성되었는지 보여주는 전시. 피카소와 브라크 이후의 시각 언어를 따라가기 좋다.",
 }
 
+
+def scrub_personal_framing(text: str) -> str:
+    if not isinstance(text, str):
+        return text
+    text = re.sub(r"\uC0AC\uC6A9\uC790\uC758[^.。]*[.。]?", "", text)
+    text = re.sub(r"\uCEEC\uB809\uC158 \uAD00\uC2EC\uC0AC\uC640\uB3C4 \uC9C1\uC811 \uC5F0\uACB0\uB418\uB294[^.。]*[.。]?", "", text)
+    return re.sub(r"\s+", " ", text).strip()
+
 def make_exhibition_description(raw: dict[str, Any]) -> str:
     title = raw.get("title", "이 전시")
-    if raw.get("editorialDescription"):
-        return raw["editorialDescription"]
     if title in KNOWN_DESCRIPTIONS:
         return KNOWN_DESCRIPTIONS[title]
+    if raw.get("editorialDescription"):
+        return raw["editorialDescription"]
 
     artist = raw.get("artist") or raw.get("brand") or ""
     tags = raw.get("tags", []) or []
@@ -399,7 +407,7 @@ def make_noiz_item(raw: dict[str, Any]) -> dict[str, Any]:
         "sourceLabel": "정보 출처",
         "noiz": noiz,
         "favorability": favor,
-        "description": make_exhibition_description(raw),
+        "description": scrub_personal_framing(make_exhibition_description(raw)),
         "signals": signals,
         "infoVolume": info_volume,
         "evidenceCount": max(1, source_count),

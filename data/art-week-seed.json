@@ -310,11 +310,12 @@
       "recommended": true,
       "needsReview": false,
       "confidence": 88,
-      "note": "PKM의 이근민 개인전. 사용자의 컬렉션 관심사와도 직접 연결되는 주요 전시.",
+      "note": "PKM 갤러리의 이근민 개인전. 회화가 장면으로 고정되기 전의 불안정한 형상과 심리적 긴장을 중심으로 볼 수 있는 전시.",
       "url": "https://www.pkmgallery.com/",
       "sourceKey": "official",
       "sourceName": "PKM official / Ocula cross-check",
-      "editorialDescription": "이근민의 회화가 장면으로 고정되기 직전의 불안정한 형상과 감각을 보여주는 개인전. 인물, 환각, 심리적 압력이 뒤엉키는 지점이 핵심이다."
+      "editorialDescription": "이근민의 회화가 장면으로 고정되기 직전의 불안정한 형상과 감각을 보여주는 개인전. 인물, 환각, 심리적 압력이 뒤엉키는 지점이 핵심이다.",
+      "description": "이근민의 회화가 장면으로 고정되기 직전의 불안정한 형상과 감각을 보여주는 개인전. 인물, 환각, 심리적 압력이 뒤엉키는 지점이 핵심이다."
     },
     {
       "id": "ocula-arario-jihyun-2026",

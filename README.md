@@ -153,3 +153,8 @@ data/art-week-seed.json
 ## ART 모드 한국어 표기
 
 ART NOIZ의 `venue`, `area`, `region`, `mapQuery`, 주간 요약문은 한국어 표기를 우선 사용합니다. 예: `Samcheong` → `삼청`, `Jung-gu` → `중구`, `Seoul Museum of Art, Seosomun` → `서울시립미술관 서소문본관`.
+
+
+## ART 모드 객관성 정리
+
+ART NOIZ 데이터에서 개인 취향·사용자 컬렉션 관련 문구를 제거했습니다. 전시 설명은 개인 관심사 기준이 아니라 작가, 매체, 전시 형식, 기관/갤러리 맥락 중심으로 작성됩니다.
