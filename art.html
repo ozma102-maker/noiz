@@ -392,11 +392,16 @@ function moodIconSvg(icon) {
   return `<svg ${common}><circle cx="12" cy="12" r="9"></circle><path d="M8.5 14h7"></path><path d="M9 9.5h.01"></path><path d="M15 9.5h.01"></path></svg>`;
 }
 
+
+function venueMapQuery(item) {
+  return [item.venue || "", item.area || item.region || ""].filter(Boolean).join(" ").trim();
+}
+
 function renderItem(item, index) {
   const rank = item.rank || index + 1;
   const mood = moodInfo(item.favorability, item);
   const sourceUrl = item.sourceUrl || "#";
-  const mapQuery = `${item.venue || ""} ${item.area || item.region || ""}`;
+  const mapQuery = venueMapQuery(item);
   const signals = (item.signals || []).map(s => `<span class="sig">${escapeHtml(s)}</span>`).join("");
   return `
     <article class="card">
@@ -407,7 +412,7 @@ function renderItem(item, index) {
             <div class="meta">${escapeHtml(item.brand || item.ownerName || "")}</div>
             <h2 class="title"><a class="title-link" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(item.title || "Untitled")}</a></h2>
             <div class="owner art-overview">${escapeHtml(artOverview(item))}</div>
-            <div class="art-location"><a class="place-link" href="${mapUrl(mapQuery)}" target="_blank" rel="noopener">${escapeHtml(item.venue || "")} · ${escapeHtml(item.area || item.region || "")}</a></div>
+            <div class="art-location"><a class="place-link" href="${mapUrl(venueMapQuery(item))}" target="_blank" rel="noopener">${escapeHtml(item.venue || "")} · ${escapeHtml(item.area || item.region || "")}</a></div>
           </div>
           <div class="scorebox">
             <div class="score">${escapeHtml(item.noiz ?? "")}</div>
