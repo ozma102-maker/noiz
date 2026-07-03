@@ -66,9 +66,13 @@
   .score-mood svg{fill:none!important;stroke:currentColor!important}
   .score-mood svg *{fill:none!important;stroke:currentColor!important}
 
-  /* v33 mobile score block above meter */
+  /* v34 mobile: score block in content flow above meter */
   @media (max-width:720px){
     .card{
+      display:grid!important;
+      grid-template-columns:1fr!important;
+      gap:13px!important;
+      padding:18px!important;
       position:relative!important;
     }
 
@@ -80,73 +84,85 @@
       font-size:25px!important;
       line-height:1!important;
       align-self:start!important;
+      justify-self:start!important;
     }
 
     .head{
-      display:grid!important;
-      grid-template-columns:minmax(0,1fr) 82px!important;
-      column-gap:12px!important;
-      align-items:end!important;
+      display:block!important;
       min-height:0!important;
       padding-right:0!important;
     }
 
     .head > div:first-child{
       min-width:0!important;
-      padding-top:0!important;
     }
 
     .scorebox{
       position:static!important;
-      grid-column:2!important;
-      grid-row:1!important;
-      width:82px!important;
-      min-width:82px!important;
-      display:flex!important;
-      flex-direction:column!important;
-      align-items:flex-end!important;
-      justify-content:flex-end!important;
-      text-align:right!important;
-      margin-top:0!important;
-      margin-bottom:4px!important;
+      width:auto!important;
+      min-width:0!important;
+      display:grid!important;
+      grid-template-columns:auto auto!important;
+      grid-template-rows:auto auto!important;
+      column-gap:9px!important;
+      row-gap:0!important;
+      align-items:end!important;
+      justify-content:start!important;
+      text-align:left!important;
+      margin:22px 0 0 0!important;
       transform:none!important;
-      align-self:end!important;
     }
 
     .score{
-      font-size:40px!important;
-      line-height:.84!important;
-      letter-spacing:-.07em!important;
+      grid-column:1!important;
+      grid-row:1!important;
+      font-size:42px!important;
+      line-height:.78!important;
+      letter-spacing:-.075em!important;
       font-weight:900!important;
     }
 
     .score-label{
-      margin-top:4px!important;
-      font-size:8px!important;
-      line-height:1.02!important;
+      grid-column:2!important;
+      grid-row:1!important;
+      margin:0 0 6px 0!important;
+      font-size:7.5px!important;
+      line-height:1!important;
       letter-spacing:.055em!important;
       white-space:nowrap!important;
-      text-align:right!important;
-      font-weight:820!important;
+      text-align:left!important;
+      font-weight:850!important;
     }
 
     .score-mood{
-      margin-top:8px!important;
+      grid-column:1 / -1!important;
+      grid-row:2!important;
+      margin-top:9px!important;
       display:flex!important;
       align-items:center!important;
-      justify-content:flex-end!important;
-      gap:4px!important;
-      font-size:11px!important;
-      line-height:1.02!important;
-      letter-spacing:-.015em!important;
+      justify-content:flex-start!important;
+      gap:5px!important;
+      font-size:12px!important;
+      line-height:1!important;
+      letter-spacing:-.02em!important;
       white-space:nowrap!important;
-      font-weight:820!important;
+      font-weight:850!important;
+      color:var(--ink)!important;
     }
 
     .score-mood svg{
-      width:13px!important;
-      height:13px!important;
+      width:14px!important;
+      height:14px!important;
+      display:block!important;
+      flex:0 0 auto!important;
+      fill:none!important;
+      stroke:currentColor!important;
       stroke-width:2.05!important;
+    }
+
+    .score-mood svg *{
+      fill:none!important;
+      stroke:currentColor!important;
     }
 
     .meta{
@@ -154,14 +170,13 @@
       font-size:14px!important;
       line-height:1.28!important;
       max-width:100%!important;
-      padding-right:0!important;
     }
 
     .title{
       max-width:100%!important;
       margin-top:8px!important;
       padding-right:0!important;
-      font-size:clamp(28px,8.2vw,38px)!important;
+      font-size:clamp(28px,8.4vw,38px)!important;
       line-height:1.03!important;
       letter-spacing:-.065em!important;
     }
@@ -176,15 +191,15 @@
     }
 
     .place{
-      margin-top:7px!important;
+      margin-top:8px!important;
       font-size:15px!important;
       line-height:1.28!important;
       max-width:100%!important;
-      margin-bottom:0!important;
     }
 
     .meter{
-      margin-top:12px!important;
+      margin-top:10px!important;
+      margin-bottom:14px!important;
     }
 
     .meter-track{
@@ -201,35 +216,30 @@
       font-size:23px!important;
     }
 
-    .head{
-      grid-template-columns:minmax(0,1fr) 76px!important;
-      column-gap:10px!important;
-    }
-
     .scorebox{
-      width:76px!important;
-      min-width:76px!important;
-      margin-bottom:3px!important;
+      margin-top:21px!important;
+      column-gap:8px!important;
     }
 
     .score{
-      font-size:36px!important;
+      font-size:39px!important;
     }
 
     .score-label{
       font-size:7px!important;
       letter-spacing:.05em!important;
+      margin-bottom:5px!important;
     }
 
     .score-mood{
-      font-size:10px!important;
-      gap:3px!important;
-      margin-top:7px!important;
+      font-size:11px!important;
+      gap:4px!important;
+      margin-top:8px!important;
     }
 
     .score-mood svg{
-      width:12px!important;
-      height:12px!important;
+      width:13px!important;
+      height:13px!important;
     }
   }
 </style>
