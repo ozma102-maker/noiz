@@ -7,13 +7,13 @@
 <title>NOIZ. Art — Hidden Exhibition Radar</title>
 <style>
   :root{
-    --bg:#000000;
-    --ink:#f7f7f2;
-    --muted:#c8c8c2;
-    --line:rgba(255,255,255,.24);
-    --soft:rgba(255,255,255,.06);
-    --card:rgba(255,255,255,.035);
-    --pill:rgba(255,255,255,.08);
+    --bg:#ffffff;
+    --ink:#111111;
+    --muted:#5f5f5f;
+    --line:rgba(0,0,0,.16);
+    --soft:rgba(0,0,0,.04);
+    --card:rgba(0,0,0,.025);
+    --pill:rgba(0,0,0,.045);
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Noto Sans KR",Segoe UI,sans-serif;letter-spacing:-.04em}
@@ -256,13 +256,26 @@
     .art-location{margin-top:8px!important;font-size:15px!important;line-height:1.3!important}
   }
 
-  /* v47 ART black & white mode */
-  .panel,.card{background:var(--card)!important;border-color:var(--line)!important}
-  .chip,.badge{background:var(--pill)!important;border-color:var(--line)!important;color:var(--ink)!important}
-  .meter-track{background:rgba(255,255,255,.12)!important;border-color:rgba(255,255,255,.18)!important}
-  .meter-fill{background:var(--ink)!important}
-  .place-link,.art-location .place-link{color:var(--ink)!important}
-  .week-arrow{color:var(--ink)!important}
+  /* v48 ART white & black mode */
+  body{background:#ffffff!important;color:#111111!important;font-weight:520!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .logo{color:#111111!important;font-weight:780!important;letter-spacing:-.085em!important}
+  .tag{color:#5f5f5f!important;font-weight:680!important}
+  header{border-bottom-color:rgba(0,0,0,.16)!important}
+  .panel,.card{background:rgba(0,0,0,.025)!important;border-color:rgba(0,0,0,.16)!important}
+  .panel h2{color:#111111!important;font-weight:780!important;letter-spacing:-.055em!important}
+  .panel p{color:#222222!important;font-weight:560!important}
+  .rank{background:#111111!important;color:#ffffff!important;border-color:#111111!important;font-weight:760!important}
+  .title{color:#111111!important;font-weight:780!important;letter-spacing:-.06em!important}
+  .owner,.art-overview,.desc,.place,.art-location{color:#202020!important;font-weight:560!important}
+  .meta,.source,.method{color:#666666!important;font-weight:540!important}
+  .score{color:#111111!important;font-weight:800!important}
+  .score-label,.score-mood{color:#111111!important;font-weight:640!important}
+  .chip,.badge{background:rgba(0,0,0,.045)!important;border-color:rgba(0,0,0,.16)!important;color:#111111!important;font-weight:620!important}
+  .meter-track{background:rgba(0,0,0,.10)!important;border-color:rgba(0,0,0,.13)!important}
+  .meter-fill{background:#111111!important}
+  .place-link,.art-location .place-link{color:#111111!important;text-decoration-color:rgba(0,0,0,.45)!important}
+  .week-arrow{color:#111111!important}
+  .week-arrow:disabled{opacity:.18!important}
 </style>
 </head>
 <body>

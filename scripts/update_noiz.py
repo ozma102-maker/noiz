@@ -45,7 +45,8 @@ HEADERS = {
 }
 
 COLOR_SCHEMES: list[dict[str, str]] = [{'id': 'hippie-green-lemon', 'name': 'Hippie Green & Lemon', 'bg': '#5f914f', 'ink': '#ffde00', 'muted': '#ffe84c', 'line': 'rgba(255,222,0,.32)', 'paper': 'rgba(255,255,255,.10)', 'white': '#fffbe6'}, {'id': 'coffee-broom', 'name': 'Coffee & Broom', 'bg': '#7b705d', 'ink': '#f5ff00', 'muted': '#fbff61', 'line': 'rgba(245,255,0,.30)', 'paper': 'rgba(255,255,255,.09)', 'white': '#fffde8'}, {'id': 'carnation-fiord', 'name': 'Carnation & Fiord', 'bg': '#f57365', 'ink': '#395b80', 'muted': '#466c95', 'line': 'rgba(57,91,128,.26)', 'paper': 'rgba(255,255,255,.12)', 'white': '#fff4ef'}, {'id': 'sisal-cerise', 'name': 'Sisal & Cerise', 'bg': '#d3d0c1', 'ink': '#ef2ea6', 'muted': '#d72896', 'line': 'rgba(239,46,166,.24)', 'paper': 'rgba(255,255,255,.16)', 'white': '#fff7fb'}, {'id': 'san-juan-salmon', 'name': 'San Juan & Salmon', 'bg': '#2c5b7b', 'ink': '#ff8174', 'muted': '#ff9b91', 'line': 'rgba(255,129,116,.30)', 'paper': 'rgba(255,255,255,.09)', 'white': '#fff3f1'}, {'id': 'dodger-blue-ebb', 'name': 'Dodger Blue & Ebb', 'bg': '#3987ee', 'ink': '#efe5e2', 'muted': '#f7efed', 'line': 'rgba(239,229,226,.34)', 'paper': 'rgba(255,255,255,.12)', 'white': '#fff8f6'}, {'id': 'ripe-lemon-royal-blue', 'name': 'Ripe Lemon & Royal Blue', 'bg': '#f2ec00', 'ink': '#387ee8', 'muted': '#4c8cef', 'line': 'rgba(56,126,232,.27)', 'paper': 'rgba(255,255,255,.16)', 'white': '#f7fbff'}, {'id': 'screamin-green-martinique', 'name': "Screamin' Green & Martinique", 'bg': '#67f86f', 'ink': '#4b4070', 'muted': '#5d5280', 'line': 'rgba(75,64,112,.25)', 'paper': 'rgba(255,255,255,.14)', 'white': '#fbf7ff'}, {'id': 'bossanova-chartreuse', 'name': 'Bossanova & Chartreuse Yellow', 'bg': '#5c3e73', 'ink': '#d8ff00', 'muted': '#e4ff45', 'line': 'rgba(216,255,0,.30)', 'paper': 'rgba(255,255,255,.08)', 'white': '#fbffe8'}, {'id': 'cerise-pear', 'name': 'Cerise & Pear', 'bg': '#d7359c', 'ink': '#bfff32', 'muted': '#ceff67', 'line': 'rgba(191,255,50,.30)', 'paper': 'rgba(255,255,255,.10)', 'white': '#fbffe8'}, {'id': 'chathams-blue-screamin-green', 'name': "Chathams Blue & Screamin' Green", 'bg': '#126a7a', 'ink': '#62f777', 'muted': '#86ff96', 'line': 'rgba(98,247,119,.30)', 'paper': 'rgba(255,255,255,.08)', 'white': '#f0fff3'}, {'id': 'sunset-orange-starship', 'name': 'Sunset Orange & Starship', 'bg': '#fb4f43', 'ink': '#fffb2a', 'muted': '#fff766', 'line': 'rgba(255,251,42,.30)', 'paper': 'rgba(255,255,255,.10)', 'white': '#fffde8'}, {'id': 'mulled-wine-screamin-green', 'name': "Mulled Wine & Screamin' Green", 'bg': '#584966', 'ink': '#62fa84', 'muted': '#85ffa0', 'line': 'rgba(98,250,132,.30)', 'paper': 'rgba(255,255,255,.08)', 'white': '#f0fff5'}, {'id': 'geyser-mandy', 'name': 'Geyser & Mandy', 'bg': '#d9e0e0', 'ink': '#ef4d54', 'muted': '#d94249', 'line': 'rgba(239,77,84,.24)', 'paper': 'rgba(255,255,255,.18)', 'white': '#fff6f6'}, {'id': 'deco-royal-blue', 'name': 'Deco & Royal Blue', 'bg': '#dcd996', 'ink': '#367ee8', 'muted': '#4b8df0', 'line': 'rgba(54,126,232,.25)', 'paper': 'rgba(255,255,255,.16)', 'white': '#f7fbff'}]
-DEFAULT_THEME_ID = 'ripe-lemon-royal-blue'
+DEFAULT_THEME_ID = 'legacy-lime-blue'
+LEGACY_THEME: dict[str, str] = {'id': 'legacy-lime-blue', 'name': 'Legacy Lime & Blue', 'bg': '#c6ff00', 'paper': 'rgba(255,255,255,.18)', 'ink': '#3f5d7f', 'muted': '#58779a', 'line': 'rgba(63,93,127,.24)', 'white': '#f4ffd8'}
 
 # 무료 공개 검색 쿼리. 후보군을 넓히는 용도.
 SEARCH_QUERIES = [
@@ -678,13 +679,12 @@ def make_weekly_read(items: list[dict[str, Any]]) -> str:
 
 
 def get_theme_by_id(theme_id: str | None) -> dict[str, str]:
+    if theme_id == LEGACY_THEME.get("id"):
+        return dict(LEGACY_THEME)
     for theme in COLOR_SCHEMES:
         if theme.get("id") == theme_id:
             return dict(theme)
-    for theme in COLOR_SCHEMES:
-        if theme.get("id") == DEFAULT_THEME_ID:
-            return dict(theme)
-    return dict(COLOR_SCHEMES[0])
+    return dict(LEGACY_THEME)
 
 
 def load_theme_history() -> dict[str, Any]:
@@ -701,8 +701,10 @@ def pick_weekly_theme(existing_theme: dict[str, Any] | None = None) -> dict[str,
     current_dt = datetime.now(KST)
     existing_id = (existing_theme or {}).get("id")
 
-    # Not Monday: keep the current theme stable.
+    # Not Monday: keep the current theme stable. This lets the legacy color stay this week.
     if current_dt.weekday() != 0:
+        if existing_theme and all(existing_theme.get(key) for key in ["bg", "ink", "muted", "line"]):
+            return dict(existing_theme)
         return get_theme_by_id(existing_id)
 
     monday_key = current_dt.strftime("%Y-%m-%d")

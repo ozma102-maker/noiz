@@ -217,13 +217,13 @@
   "creator": "이원준 시니어매니저",
   "method_note": "무료 공개 소스, 검색 결과, 뉴스 RSS, 블로그/후기성 스니펫을 바탕으로 본 주간 신호 레이더야. 객관적 평점이라기보다는 지금 어디가 시끄러운지 읽는 용도야!",
   "theme": {
-    "id": "ripe-lemon-royal-blue",
-    "name": "Ripe Lemon & Royal Blue",
-    "bg": "#f2ec00",
-    "ink": "#387ee8",
-    "muted": "#4c8cef",
-    "line": "rgba(56,126,232,.27)",
-    "paper": "rgba(255,255,255,.16)",
-    "white": "#f7fbff"
+    "id": "legacy-lime-blue",
+    "name": "Legacy Lime & Blue",
+    "bg": "#c6ff00",
+    "paper": "rgba(255,255,255,.18)",
+    "ink": "#3f5d7f",
+    "muted": "#58779a",
+    "line": "rgba(63,93,127,.24)",
+    "white": "#f4ffd8"
   }
 }
