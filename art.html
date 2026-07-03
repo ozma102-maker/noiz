@@ -71,27 +71,27 @@
   .score-mood svg{fill:none!important;stroke:currentColor!important}
   .score-mood svg *{fill:none!important;stroke:currentColor!important}
 
-  /* v32 refined mobile card header */
+  /* v33 mobile score block above meter */
   @media (max-width:720px){
     .card{
       position:relative!important;
     }
 
     .rank{
-      width:64px!important;
-      height:64px!important;
-      min-width:64px!important;
-      border-radius:20px!important;
-      font-size:26px!important;
+      width:62px!important;
+      height:62px!important;
+      min-width:62px!important;
+      border-radius:19px!important;
+      font-size:25px!important;
       line-height:1!important;
       align-self:start!important;
     }
 
     .head{
       display:grid!important;
-      grid-template-columns:minmax(0,1fr) 62px!important;
-      column-gap:14px!important;
-      align-items:start!important;
+      grid-template-columns:minmax(0,1fr) 82px!important;
+      column-gap:12px!important;
+      align-items:end!important;
       min-height:0!important;
       padding-right:0!important;
     }
@@ -105,51 +105,53 @@
       position:static!important;
       grid-column:2!important;
       grid-row:1!important;
-      width:62px!important;
-      min-width:62px!important;
+      width:82px!important;
+      min-width:82px!important;
       display:flex!important;
       flex-direction:column!important;
       align-items:flex-end!important;
-      justify-content:flex-start!important;
+      justify-content:flex-end!important;
       text-align:right!important;
       margin-top:0!important;
+      margin-bottom:4px!important;
       transform:none!important;
+      align-self:end!important;
     }
 
     .score{
-      font-size:38px!important;
-      line-height:.78!important;
-      letter-spacing:-.075em!important;
+      font-size:40px!important;
+      line-height:.84!important;
+      letter-spacing:-.07em!important;
       font-weight:900!important;
     }
 
     .score-label{
-      margin-top:7px!important;
-      font-size:7px!important;
-      line-height:1!important;
-      letter-spacing:.075em!important;
+      margin-top:4px!important;
+      font-size:8px!important;
+      line-height:1.02!important;
+      letter-spacing:.055em!important;
       white-space:nowrap!important;
       text-align:right!important;
-      font-weight:850!important;
+      font-weight:820!important;
     }
 
     .score-mood{
-      margin-top:10px!important;
+      margin-top:8px!important;
       display:flex!important;
       align-items:center!important;
       justify-content:flex-end!important;
       gap:4px!important;
-      font-size:10px!important;
-      line-height:1!important;
-      letter-spacing:-.02em!important;
+      font-size:11px!important;
+      line-height:1.02!important;
+      letter-spacing:-.015em!important;
       white-space:nowrap!important;
-      font-weight:850!important;
+      font-weight:820!important;
     }
 
     .score-mood svg{
       width:13px!important;
       height:13px!important;
-      stroke-width:2.1!important;
+      stroke-width:2.05!important;
     }
 
     .meta{
@@ -165,7 +167,7 @@
       margin-top:8px!important;
       padding-right:0!important;
       font-size:clamp(28px,8.2vw,38px)!important;
-      line-height:1.02!important;
+      line-height:1.03!important;
       letter-spacing:-.065em!important;
     }
 
@@ -173,59 +175,61 @@
     .art-overview{
       margin-top:10px!important;
       font-size:18px!important;
-      line-height:1.35!important;
+      line-height:1.34!important;
       max-width:100%!important;
       padding-right:0!important;
     }
 
     .place{
-      margin-top:8px!important;
-      font-size:16px!important;
-      line-height:1.35!important;
+      margin-top:7px!important;
+      font-size:15px!important;
+      line-height:1.28!important;
       max-width:100%!important;
+      margin-bottom:0!important;
     }
 
     .meter{
-      margin-top:24px!important;
+      margin-top:12px!important;
     }
 
     .meter-track{
-      height:18px!important;
+      height:16px!important;
     }
   }
 
   @media (max-width:420px){
     .rank{
-      width:60px!important;
-      height:60px!important;
-      min-width:60px!important;
+      width:58px!important;
+      height:58px!important;
+      min-width:58px!important;
       border-radius:18px!important;
-      font-size:24px!important;
+      font-size:23px!important;
     }
 
     .head{
-      grid-template-columns:minmax(0,1fr) 58px!important;
-      column-gap:12px!important;
+      grid-template-columns:minmax(0,1fr) 76px!important;
+      column-gap:10px!important;
     }
 
     .scorebox{
-      width:58px!important;
-      min-width:58px!important;
+      width:76px!important;
+      min-width:76px!important;
+      margin-bottom:3px!important;
     }
 
     .score{
-      font-size:35px!important;
+      font-size:36px!important;
     }
 
     .score-label{
-      font-size:6.5px!important;
-      letter-spacing:.06em!important;
+      font-size:7px!important;
+      letter-spacing:.05em!important;
     }
 
     .score-mood{
-      font-size:9.5px!important;
+      font-size:10px!important;
       gap:3px!important;
-      margin-top:9px!important;
+      margin-top:7px!important;
     }
 
     .score-mood svg{
