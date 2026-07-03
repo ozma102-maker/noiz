@@ -298,10 +298,10 @@ function moodInfo(favorability, item = {}) {
   if (hasLowInfo(item)) return { icon: "neutral", label: "후기 축적 중" };
 
   const score = Number(favorability ?? 60);
-  if (score >= 80) return { icon: "sunglasses", label: "극호" };
-  if (score >= 70) return { icon: "smile", label: "호감" };
-  if (score >= 50) return { icon: "neutral", label: "중립" };
-  return { icon: "frown", label: "불호" };
+  if (score >= 80) return { icon: "sunglasses", label: "매우 긍정적" };
+  if (score >= 70) return { icon: "smile", label: "긍정적" };
+  if (score >= 50) return { icon: "neutral", label: "복합적" };
+  return { icon: "frown", label: "대체로 부정적" };
 }
 
 function isRankable(item) {
