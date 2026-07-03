@@ -61,7 +61,8 @@
       "url": "https://www.mmca.go.kr/eng/exhibitions/progressList.do",
       "sourceKey": "official",
       "sourceName": "MMCA official",
-      "editorialDescription": "개념미술을 둘러싼 언어, 제도, 기록의 방식을 살피는 기획전. 작품이 물성보다 아이디어와 맥락으로 작동하는 순간을 보여준다."
+      "editorialDescription": "개념미술을 둘러싼 언어, 제도, 기록의 방식을 살피는 기획전. 작품이 물성보다 아이디어와 맥락으로 작동하는 순간을 보여준다.",
+      "overview": "개념미술의 언어와 제도적 맥락을 살피는 기획전."
     },
     {
       "id": "sema-yoo-2026-official",
@@ -87,7 +88,8 @@
       "url": "https://sema.seoul.go.kr/kr/whatson/exhibition/detail?exNo=1529410",
       "sourceKey": "official",
       "sourceName": "SeMA official",
-      "editorialDescription": "산과 자연을 추상 회화의 구조로 밀어붙인 유영국의 대규모 전시. 색면, 리듬, 형태가 어떻게 한국 근현대 추상의 핵심 언어가 되는지 보기 좋다."
+      "editorialDescription": "산과 자연을 추상 회화의 구조로 밀어붙인 유영국의 대규모 전시. 색면, 리듬, 형태가 어떻게 한국 근현대 추상의 핵심 언어가 되는지 보기 좋다.",
+      "overview": "산과 자연을 추상 회화의 구조로 밀어붙인 유영국 회고적 전시."
     },
     {
       "id": "sema-kwon-2026-official",
@@ -113,7 +115,8 @@
       "url": "https://sema.seoul.go.kr/kr/whatson/exhibition/detail?exNo=1538201",
       "sourceKey": "official",
       "sourceName": "SeMA official",
-      "editorialDescription": "소리, 기계, 신체 감각이 결합된 미디어아트 전시. 보는 전시라기보다 듣고 움직이며 체감하는 경험에 가깝다."
+      "editorialDescription": "소리, 기계, 신체 감각이 결합된 미디어아트 전시. 보는 전시라기보다 듣고 움직이며 체감하는 경험에 가깝다.",
+      "overview": "소리와 신체 감각이 결합된 체험형 미디어아트 전시."
     },
     {
       "id": "sema-heosuin-2026-official",
@@ -138,7 +141,8 @@
       "url": "https://sema.seoul.go.kr/kr/whatson/landing",
       "sourceKey": "official",
       "sourceName": "SeMA listing",
-      "editorialDescription": "허수인의 작업을 중심으로 젊은 작가·project·미술관 전시의 흐름을 보여주는 전시. 미술관 규모의 맥락 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
+      "editorialDescription": "허수인의 작업을 중심으로 젊은 작가·project·미술관 전시의 흐름을 보여주는 전시. 미술관 규모의 맥락 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다.",
+      "overview": "허수인의 작업 세계를 중심으로 구성된 미술 전시."
     },
     {
       "id": "kukje-objects-2026-official",
@@ -163,7 +167,8 @@
       "url": "https://www.kukjegallery.com/exhibitions",
       "sourceKey": "official",
       "sourceName": "Kukje official",
-      "editorialDescription": "사진과 사물이 서로의 경계를 흔드는 그룹전. 이미지가 단순한 재현을 넘어 물성, 표면, 시간의 감각으로 확장되는 지점을 다룬다."
+      "editorialDescription": "사진과 사물이 서로의 경계를 흔드는 그룹전. 이미지가 단순한 재현을 넘어 물성, 표면, 시간의 감각으로 확장되는 지점을 다룬다.",
+      "overview": "사진과 사물의 경계를 흔드는 사진 중심 그룹전."
     },
     {
       "id": "kukje-mapplethorpe-2026-official",
@@ -188,7 +193,8 @@
       "url": "https://www.kukjegallery.com/exhibitions",
       "sourceKey": "official",
       "sourceName": "Kukje official",
-      "editorialDescription": "로버트 메이플소프의 사진이 가진 조형성과 균형감을 중심으로 보는 전시. 인물, 신체, 사물의 형태가 고전적인 긴장감으로 정리된다."
+      "editorialDescription": "로버트 메이플소프의 사진이 가진 조형성과 균형감을 중심으로 보는 전시. 인물, 신체, 사물의 형태가 고전적인 긴장감으로 정리된다.",
+      "overview": "로버트 메이플소프 사진의 조형성과 균형감을 보는 전시."
     },
     {
       "id": "hyundai-bradford-2026-official",
@@ -213,7 +219,8 @@
       "url": "https://www.galleryhyundai.com/exhibition/onview",
       "sourceKey": "official",
       "sourceName": "Gallery Hyundai official",
-      "editorialDescription": "몽환적인 색면과 느슨한 인물 형상이 중심이 되는 회화 전시. 꿈, 밤, 물, 몸의 감각이 섞인 장면을 통해 일상적인 풍경을 비현실적인 분위기로 밀어붙인다."
+      "editorialDescription": "몽환적인 색면과 느슨한 인물 형상이 중심이 되는 회화 전시. 꿈, 밤, 물, 몸의 감각이 섞인 장면을 통해 일상적인 풍경을 비현실적인 분위기로 밀어붙인다.",
+      "overview": "몽환적 색면과 느슨한 인물 형상이 중심이 되는 회화 전시."
     },
     {
       "id": "hyundai-bradford-2026-frieze",
@@ -238,7 +245,8 @@
       "url": "https://www.frieze.com/gallery/gallery-hyundai",
       "sourceKey": "ocula",
       "sourceName": "Frieze gallery profile",
-      "editorialDescription": "몽환적인 색면과 느슨한 인물 형상이 중심이 되는 회화 전시. 꿈, 밤, 물, 몸의 감각이 섞인 장면을 통해 일상적인 풍경을 비현실적인 분위기로 밀어붙인다."
+      "editorialDescription": "몽환적인 색면과 느슨한 인물 형상이 중심이 되는 회화 전시. 꿈, 밤, 물, 몸의 감각이 섞인 장면을 통해 일상적인 풍경을 비현실적인 분위기로 밀어붙인다.",
+      "overview": "몽환적 색면과 느슨한 인물 형상이 중심이 되는 회화 전시."
     },
     {
       "id": "hyundai-sauve-2026-official",
@@ -263,7 +271,8 @@
       "url": "https://www.galleryhyundai.com/exhibition/onview",
       "sourceKey": "official",
       "sourceName": "Gallery Hyundai official",
-      "editorialDescription": "여러 작가의 작업을 통해 불안정한 시대의 감각과 생존의 태도를 묶어보는 그룹전. 하나의 주제보다 서로 다른 시각적 긴장이 만들어내는 분위기가 중요하다."
+      "editorialDescription": "여러 작가의 작업을 통해 불안정한 시대의 감각과 생존의 태도를 묶어보는 그룹전. 하나의 주제보다 서로 다른 시각적 긴장이 만들어내는 분위기가 중요하다.",
+      "overview": "불안정한 시대의 감각과 생존의 태도를 묶어보는 그룹전."
     },
     {
       "id": "hyundai-sauve-2026-frieze",
@@ -288,7 +297,8 @@
       "url": "https://www.frieze.com/gallery/gallery-hyundai",
       "sourceKey": "ocula",
       "sourceName": "Frieze / market listing",
-      "editorialDescription": "여러 작가의 작업을 통해 불안정한 시대의 감각과 생존의 태도를 묶어보는 그룹전. 하나의 주제보다 서로 다른 시각적 긴장이 만들어내는 분위기가 중요하다."
+      "editorialDescription": "여러 작가의 작업을 통해 불안정한 시대의 감각과 생존의 태도를 묶어보는 그룹전. 하나의 주제보다 서로 다른 시각적 긴장이 만들어내는 분위기가 중요하다.",
+      "overview": "불안정한 시대의 감각과 생존의 태도를 묶어보는 그룹전."
     },
     {
       "id": "pkm-keunmin-2026-ocula",
@@ -315,7 +325,8 @@
       "sourceKey": "official",
       "sourceName": "PKM official / Ocula cross-check",
       "editorialDescription": "이근민의 회화가 장면으로 고정되기 직전의 불안정한 형상과 감각을 보여주는 개인전. 인물, 환각, 심리적 압력이 뒤엉키는 지점이 핵심이다.",
-      "description": "이근민의 회화가 장면으로 고정되기 직전의 불안정한 형상과 감각을 보여주는 개인전. 인물, 환각, 심리적 압력이 뒤엉키는 지점이 핵심이다."
+      "description": "이근민의 회화가 장면으로 고정되기 직전의 불안정한 형상과 감각을 보여주는 개인전. 인물, 환각, 심리적 압력이 뒤엉키는 지점이 핵심이다.",
+      "overview": "이근민 회화의 불안정한 형상과 심리적 긴장을 다루는 개인전."
     },
     {
       "id": "ocula-arario-jihyun-2026",
@@ -340,7 +351,8 @@
       "url": "https://ocula.com/cities/south-korea/seoul-art-galleries/exhibitions/",
       "sourceKey": "ocula",
       "sourceName": "Ocula Seoul exhibitions",
-      "editorialDescription": "Jihyun Lee의 작업을 중심으로 개인전·갤러리 전시·동시대미술의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
+      "editorialDescription": "Jihyun Lee의 작업을 중심으로 개인전·갤러리 전시·동시대미술의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다.",
+      "overview": "Jihyun Lee의 작업 세계를 중심으로 구성된 미술 전시."
     },
     {
       "id": "ocula-baton-bae-2026",
@@ -365,7 +377,8 @@
       "url": "https://ocula.com/cities/south-korea/seoul-art-galleries/exhibitions/",
       "sourceKey": "ocula",
       "sourceName": "Ocula Seoul exhibitions",
-      "editorialDescription": "Bae Yoon Hwan의 작업을 중심으로 개인전·회화·갤러리 전시의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
+      "editorialDescription": "Bae Yoon Hwan의 작업을 중심으로 개인전·회화·갤러리 전시의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다.",
+      "overview": "Bae Yoon Hwan의 작업 세계를 중심으로 구성된 미술 전시."
     },
     {
       "id": "ocula-page-kuho-2026",
@@ -390,7 +403,8 @@
       "url": "https://ocula.com/cities/south-korea/seoul-art-galleries/exhibitions/",
       "sourceKey": "ocula",
       "sourceName": "Ocula Seoul exhibitions",
-      "editorialDescription": "Kuho Jung의 작업을 중심으로 개인전·디자인·갤러리 전시의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
+      "editorialDescription": "Kuho Jung의 작업을 중심으로 개인전·디자인·갤러리 전시의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다.",
+      "overview": "Kuho Jung의 작업 세계를 중심으로 구성된 미술 전시."
     },
     {
       "id": "ocula-caption-vanilla-2026",
@@ -415,7 +429,8 @@
       "url": "https://ocula.com/cities/south-korea/seoul-art-galleries/exhibitions/",
       "sourceKey": "ocula",
       "sourceName": "Ocula Seoul exhibitions",
-      "editorialDescription": "여러 작가의 작업을 묶어 그룹전·갤러리 전시·젊은 작가의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
+      "editorialDescription": "여러 작가의 작업을 묶어 그룹전·갤러리 전시·젊은 작가의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다.",
+      "overview": "동시대미술의 형식과 분위기를 살펴볼 수 있는 전시."
     },
     {
       "id": "ocula-songeun-jun-2026",
@@ -440,7 +455,8 @@
       "url": "https://ocula.com/cities/south-korea/seoul-art-galleries/exhibitions/",
       "sourceKey": "ocula",
       "sourceName": "Ocula Seoul exhibitions",
-      "editorialDescription": "송은에서 진행되는 동시대미술 전시. 내면을 들여다보는 듯한 제목처럼 시선, 구조, 감각의 안쪽을 탐색하는 흐름으로 읽힌다."
+      "editorialDescription": "송은에서 진행되는 동시대미술 전시. 내면을 들여다보는 듯한 제목처럼 시선, 구조, 감각의 안쪽을 탐색하는 흐름으로 읽힌다.",
+      "overview": "시선과 감각의 안쪽을 탐색하는 동시대미술 전시."
     },
     {
       "id": "ggallery-faisandage-2026-official",
@@ -466,7 +482,8 @@
       "url": "https://www.ggallery.kr/exhibitions",
       "sourceKey": "official",
       "sourceName": "G Gallery official / Seoul Art Friend cross-check",
-      "editorialDescription": "여러 작가의 작업을 묶어 그룹전·갤러리 전시·젊은 작가의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
+      "editorialDescription": "여러 작가의 작업을 묶어 그룹전·갤러리 전시·젊은 작가의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다.",
+      "overview": "Woo Hannah, Choi Sujin, Shuyi Cao의 작업 세계를 중심으로 구성된 미술 전시."
     },
     {
       "id": "wwnn-july-1-2026-instagram-candidate",
@@ -491,7 +508,8 @@
       "url": "https://wwnn.kr/",
       "sourceKey": "instagram",
       "sourceName": "Seoul Art Friend reference / WWNN official check needed",
-      "editorialDescription": "동시대 작가들의 작업을 중심으로 nonprofit·젊은 작가·needs verification의 흐름을 보여주는 전시. 대안공간 특유의 실험성 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
+      "editorialDescription": "동시대 작가들의 작업을 중심으로 nonprofit·젊은 작가·needs verification의 흐름을 보여주는 전시. 대안공간 특유의 실험성 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다.",
+      "overview": "동시대미술의 형식과 분위기를 살펴볼 수 있는 전시."
     },
     {
       "id": "artmap-toledo-2026",
@@ -516,7 +534,8 @@
       "url": "https://art-map.co.kr/",
       "sourceKey": "artmap",
       "sourceName": "ARTMAP",
-      "editorialDescription": "렘브란트, 고야 등 서양미술사의 주요 작가들을 통해 고전 회화의 밀도와 시대적 변화를 확인하는 명작전."
+      "editorialDescription": "렘브란트, 고야 등 서양미술사의 주요 작가들을 통해 고전 회화의 밀도와 시대적 변화를 확인하는 명작전.",
+      "overview": "서양 고전 회화의 밀도와 시대적 변화를 보는 명작전."
     },
     {
       "id": "artmap-picturebook-2026",
@@ -541,7 +560,8 @@
       "url": "https://art-map.co.kr/",
       "sourceKey": "artmap",
       "sourceName": "ARTMAP",
-      "editorialDescription": "동시대 작가들의 작업을 중심으로 미술관 전시·일러스트레이션·가족 관람의 흐름을 보여주는 전시. 미술관 규모의 맥락 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
+      "editorialDescription": "동시대 작가들의 작업을 중심으로 미술관 전시·일러스트레이션·가족 관람의 흐름을 보여주는 전시. 미술관 규모의 맥락 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다.",
+      "overview": "동시대미술의 형식과 분위기를 살펴볼 수 있는 전시."
     },
     {
       "id": "artmap-omg-jeong-2026",
@@ -566,7 +586,8 @@
       "url": "https://art-map.co.kr/",
       "sourceKey": "artmap",
       "sourceName": "ARTMAP",
-      "editorialDescription": "정보경의 작업을 중심으로 개인전·갤러리 전시·회화의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
+      "editorialDescription": "정보경의 작업을 중심으로 개인전·갤러리 전시·회화의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다.",
+      "overview": "정보경의 작업 세계를 중심으로 구성된 미술 전시."
     },
     {
       "id": "artmap-suwon-panorama-2026",
@@ -591,7 +612,8 @@
       "url": "https://art-map.co.kr/",
       "sourceKey": "artmap",
       "sourceName": "ARTMAP",
-      "editorialDescription": "Collection exhibition의 작업을 중심으로 소장품·미술관 전시·gyeonggi의 흐름을 보여주는 전시. 미술관 규모의 맥락 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
+      "editorialDescription": "Collection exhibition의 작업을 중심으로 소장품·미술관 전시·gyeonggi의 흐름을 보여주는 전시. 미술관 규모의 맥락 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다.",
+      "overview": "Collection exhibition의 작업 세계를 중심으로 구성된 미술 전시."
     },
     {
       "id": "artmap-soma-seungtaek-2026",
@@ -616,7 +638,8 @@
       "url": "https://art-map.co.kr/",
       "sourceKey": "artmap",
       "sourceName": "ARTMAP",
-      "editorialDescription": "이승택의 조각적 실험을 통해 조각이 물질, 행위, 공간으로 확장되는 방식을 보여주는 전시. 전통적인 조각 개념의 바깥을 확인할 수 있다."
+      "editorialDescription": "이승택의 조각적 실험을 통해 조각이 물질, 행위, 공간으로 확장되는 방식을 보여주는 전시. 전통적인 조각 개념의 바깥을 확인할 수 있다.",
+      "overview": "이승택의 조각적 실험과 확장된 조각 개념을 보는 전시."
     },
     {
       "id": "artmap-staging-2026",
@@ -641,7 +664,8 @@
       "url": "https://art-map.co.kr/",
       "sourceKey": "artmap",
       "sourceName": "ARTMAP",
-      "editorialDescription": "김태동, 이요나의 작업을 중심으로 사진·영상·갤러리 전시의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
+      "editorialDescription": "김태동, 이요나의 작업을 중심으로 사진·영상·갤러리 전시의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다.",
+      "overview": "김태동, 이요나의 작업 세계를 중심으로 구성된 미술 전시."
     },
     {
       "id": "pompidou-hanwha-cubists-2026-news",
@@ -667,7 +691,8 @@
       "url": "https://www.lemonde.fr/en/culture/article/2026/06/05/seoul-s-centre-pompidou-hanwha-aims-to-build-a-cultural-bridge-between-france-and-south-korea_6754154_30.html",
       "sourceKey": "official",
       "sourceName": "News / official check needed",
-      "editorialDescription": "입체주의를 중심으로 근대적 시각이 어떻게 분해되고 재구성되었는지 보여주는 전시. 피카소와 브라크 이후의 시각 언어를 따라가기 좋다."
+      "editorialDescription": "입체주의를 중심으로 근대적 시각이 어떻게 분해되고 재구성되었는지 보여주는 전시. 피카소와 브라크 이후의 시각 언어를 따라가기 좋다.",
+      "overview": "입체주의를 통해 근대적 시각의 분해와 재구성을 보는 전시."
     }
   ],
   "venues": [

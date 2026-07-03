@@ -7,7 +7,7 @@
       "rank": 1,
       "brand": "Katherine Bradford",
       "title": "Katherine Bradford: Living a Dream",
-      "owner": "갤러리현대 · Gallery Hyundai official, Frieze gallery profile",
+      "owner": "갤러리현대 전시",
       "venue": "갤러리현대",
       "area": "삼청",
       "region": "서울",
@@ -35,13 +35,14 @@
       "sourceKeys": [
         "official",
         "ocula"
-      ]
+      ],
+      "overview": "몽환적 색면과 느슨한 인물 형상이 중심이 되는 회화 전시."
     },
     {
       "rank": 2,
       "brand": "유영국",
       "title": "유영국: A Mountain Within Me",
-      "owner": "서울시립미술관 서소문본관 · SeMA official",
+      "owner": "서울시립미술관 서소문본관 전시",
       "venue": "서울시립미술관 서소문본관",
       "area": "중구",
       "region": "서울",
@@ -68,13 +69,14 @@
       "venueType": "museum",
       "sourceKeys": [
         "official"
-      ]
+      ],
+      "overview": "산과 자연을 추상 회화의 구조로 밀어붙인 유영국 회고적 전시."
     },
     {
       "rank": 3,
       "brand": "Group exhibition",
       "title": "This is (Not) Conceptual Art",
-      "owner": "국립현대미술관 서울 · MMCA official",
+      "owner": "국립현대미술관 서울 전시",
       "venue": "국립현대미술관 서울",
       "area": "삼청",
       "region": "서울",
@@ -101,13 +103,14 @@
       "venueType": "museum",
       "sourceKeys": [
         "official"
-      ]
+      ],
+      "overview": "개념미술의 언어와 제도적 맥락을 살피는 기획전."
     },
     {
       "rank": 4,
       "brand": "Chung Heeseung, Jo Seongyeon, Jung Junho, Kim Kyoungtae, Kim Sookang, Koo Bohnchang 외",
       "title": "Objects in Oscillation / 진동하는 사물들",
-      "owner": "국제갤러리 K1/K2 · Kukje official",
+      "owner": "국제갤러리 K1/K2 전시",
       "venue": "국제갤러리 K1/K2",
       "area": "삼청",
       "region": "서울",
@@ -134,13 +137,14 @@
       "venueType": "gallery",
       "sourceKeys": [
         "official"
-      ]
+      ],
+      "overview": "사진과 사물의 경계를 흔드는 사진 중심 그룹전."
     },
     {
       "rank": 5,
       "brand": "Robert Mapplethorpe",
       "title": "The Poetics of Form / 형태의 시학",
-      "owner": "국제갤러리 서울 한옥 · Kukje official",
+      "owner": "국제갤러리 서울 한옥 전시",
       "venue": "국제갤러리 서울 한옥",
       "area": "삼청",
       "region": "서울",
@@ -167,13 +171,14 @@
       "venueType": "gallery",
       "sourceKeys": [
         "official"
-      ]
+      ],
+      "overview": "로버트 메이플소프 사진의 조형성과 균형감을 보는 전시."
     },
     {
       "rank": 6,
       "brand": "Keunmin Lee",
       "title": "Before It Becomes a Scene",
-      "owner": "PKM 갤러리 · PKM official / Ocula cross-check",
+      "owner": "PKM 갤러리 전시",
       "venue": "PKM 갤러리",
       "area": "삼청",
       "region": "서울",
@@ -202,13 +207,14 @@
         "official"
       ],
       "note": "PKM 갤러리의 이근민 개인전. 회화가 장면으로 고정되기 전의 불안정한 형상과 심리적 긴장을 중심으로 볼 수 있는 전시.",
-      "editorialDescription": "이근민의 회화가 장면으로 고정되기 직전의 불안정한 형상과 감각을 보여주는 개인전. 인물, 환각, 심리적 압력이 뒤엉키는 지점이 핵심이다."
+      "editorialDescription": "이근민의 회화가 장면으로 고정되기 직전의 불안정한 형상과 감각을 보여주는 개인전. 인물, 환각, 심리적 압력이 뒤엉키는 지점이 핵심이다.",
+      "overview": "이근민 회화의 불안정한 형상과 심리적 긴장을 다루는 개인전."
     },
     {
       "rank": 7,
       "brand": "Group exhibition",
       "title": "SAUVE QUI PEUT",
-      "owner": "갤러리현대 · Gallery Hyundai official, Frieze / market listing",
+      "owner": "갤러리현대 전시",
       "venue": "갤러리현대",
       "area": "삼청",
       "region": "서울",
@@ -236,13 +242,14 @@
       "sourceKeys": [
         "official",
         "ocula"
-      ]
+      ],
+      "overview": "불안정한 시대의 감각과 생존의 태도를 묶어보는 그룹전."
     },
     {
       "rank": 8,
       "brand": "이승택",
       "title": "조각의 바깥에서 At the Edge of Sculpture",
-      "owner": "소마미술관 · ARTMAP",
+      "owner": "소마미술관 전시",
       "venue": "소마미술관",
       "area": "송파",
       "region": "서울",
@@ -269,13 +276,14 @@
       "venueType": "museum",
       "sourceKeys": [
         "artmap"
-      ]
+      ],
+      "overview": "이승택의 조각적 실험과 확장된 조각 개념을 보는 전시."
     },
     {
       "rank": 9,
       "brand": "권병준",
       "title": "권병준: 내 마음속에 너는",
-      "owner": "서울시립 북서울미술관 · SeMA official",
+      "owner": "서울시립 북서울미술관 전시",
       "venue": "서울시립 북서울미술관",
       "area": "노원",
       "region": "서울",
@@ -302,13 +310,14 @@
       "venueType": "museum",
       "sourceKeys": [
         "official"
-      ]
+      ],
+      "overview": "소리와 신체 감각이 결합된 체험형 미디어아트 전시."
     },
     {
       "rank": 10,
       "brand": "Jun Hyejoo",
       "title": "Endoskopeia",
-      "owner": "송은 · Ocula Seoul exhibitions",
+      "owner": "송은 전시",
       "venue": "송은",
       "area": "청담",
       "region": "서울",
@@ -335,7 +344,8 @@
       "venueType": "museum",
       "sourceKeys": [
         "ocula"
-      ]
+      ],
+      "overview": "시선과 감각의 안쪽을 탐색하는 동시대미술 전시."
     }
   ],
   "creator": "이원준 시니어매니저",

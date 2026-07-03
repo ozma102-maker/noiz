@@ -388,6 +388,30 @@ def merge_seed_candidates(candidates: list[dict[str, Any]]) -> list[dict[str, An
                 grouped[key] = new_base
     return list(grouped.values())
 
+
+def make_exhibition_overview(raw: dict[str, Any]) -> str:
+    title = raw.get("title", "")
+    known = {
+        "Katherine Bradford: Living a Dream": "몽환적 색면과 느슨한 인물 형상이 중심이 되는 회화 전시.",
+        "유영국: A Mountain Within Me": "산과 자연을 추상 회화의 구조로 밀어붙인 유영국 회고적 전시.",
+        "This is (Not) Conceptual Art": "개념미술의 언어와 제도적 맥락을 살피는 기획전.",
+        "Objects in Oscillation / 진동하는 사물들": "사진과 사물의 경계를 흔드는 사진 중심 그룹전.",
+        "The Poetics of Form / 형태의 시학": "로버트 메이플소프 사진의 조형성과 균형감을 보는 전시.",
+        "Before It Becomes a Scene": "이근민 회화의 불안정한 형상과 심리적 긴장을 다루는 개인전.",
+        "SAUVE QUI PEUT": "불안정한 시대의 감각과 생존의 태도를 묶어보는 그룹전.",
+        "조각의 바깥에서 At the Edge of Sculpture": "이승택의 조각적 실험과 확장된 조각 개념을 보는 전시.",
+        "권병준: 내 마음속에 너는": "소리와 신체 감각이 결합된 체험형 미디어아트 전시.",
+        "Endoskopeia": "시선과 감각의 안쪽을 탐색하는 동시대미술 전시.",
+        "렘브란트에서 고야까지 : 톨레도 미술관 명작展": "서양 고전 회화의 밀도와 시대적 변화를 보는 명작전.",
+        "The Cubists: Inventing Modern Vision": "입체주의를 통해 근대적 시각의 분해와 재구성을 보는 전시.",
+    }
+    if title in known:
+        return known[title]
+    if raw.get("overview"):
+        return raw["overview"]
+    desc = make_exhibition_description(raw)
+    return re.split(r"(?<=다\.)\s|(?<=[.!?。])\s", desc)[0][:90]
+
 def make_noiz_item(raw: dict[str, Any]) -> dict[str, Any]:
     source_count = len(raw.get("sourceKeys") or [raw.get("sourceKey", "unknown")])
     venue_ko = ko_venue(raw.get("venue") or "")
@@ -398,13 +422,14 @@ def make_noiz_item(raw: dict[str, Any]) -> dict[str, Any]:
         "rank": 0,
         "brand": raw.get("artist") or "Group exhibition",
         "title": raw.get("title") or "Untitled",
-        "owner": f"{venue_ko} · {', '.join(raw.get('sourceNames') or [raw.get('sourceName','')])}",
+        "owner": f"{venue_ko} 전시",
         "venue": venue_ko,
         "area": area_ko,
         "region": region_ko,
         "mapQuery": f"{raw.get('title','')} {venue_ko} {area_ko}",
         "sourceUrl": raw.get("url") or "#",
         "sourceLabel": "정보 출처",
+        "overview": make_exhibition_overview(raw),
         "noiz": noiz,
         "favorability": favor,
         "description": scrub_personal_framing(make_exhibition_description(raw)),
