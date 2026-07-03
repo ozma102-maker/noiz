@@ -71,106 +71,166 @@
   .score-mood svg{fill:none!important;stroke:currentColor!important}
   .score-mood svg *{fill:none!important;stroke:currentColor!important}
 
-  /* v31 mobile top-right score badge */
+  /* v32 refined mobile card header */
   @media (max-width:720px){
     .card{
       position:relative!important;
-      padding-top:0!important;
     }
-    .head{
-      display:block!important;
-      padding-right:112px!important;
-      min-height:112px!important;
-    }
-    .rank{
-      width:68px!important;
-      height:68px!important;
-      min-width:68px!important;
-      border-radius:20px!important;
-      font-size:28px!important;
-      line-height:1!important;
-    }
-    .scorebox{
-      position:absolute!important;
-      top:34px!important;
-      right:28px!important;
-      width:74px!important;
-      min-width:74px!important;
-      height:auto!important;
-      display:flex!important;
-      flex-direction:column!important;
-      align-items:center!important;
-      justify-content:flex-start!important;
-      text-align:center!important;
-      z-index:3!important;
-    }
-    .score{
-      font-size:46px!important;
-      line-height:.78!important;
-      letter-spacing:-.08em!important;
-    }
-    .score-label{
-      margin-top:9px!important;
-      font-size:9px!important;
-      line-height:1.1!important;
-      letter-spacing:.11em!important;
-      white-space:nowrap!important;
-      text-align:center!important;
-    }
-    .score-mood{
-      margin-top:14px!important;
-      justify-content:center!important;
-      font-size:12px!important;
-      line-height:1!important;
-      white-space:nowrap!important;
-      gap:5px!important;
-    }
-    .score-mood svg{
-      width:15px!important;
-      height:15px!important;
-    }
-    .meta{
-      margin-top:30px!important;
-      max-width:100%!important;
-    }
-    .title{
-      max-width:100%!important;
-      padding-right:0!important;
-      margin-top:10px!important;
-    }
-    .owner,
-    .art-overview,
-    .place{
-      max-width:100%!important;
-    }
-  }
 
-  @media (max-width:420px){
-    .head{
-      padding-right:102px!important;
-      min-height:104px!important;
-    }
     .rank{
       width:64px!important;
       height:64px!important;
       min-width:64px!important;
+      border-radius:20px!important;
       font-size:26px!important;
+      line-height:1!important;
+      align-self:start!important;
     }
+
+    .head{
+      display:grid!important;
+      grid-template-columns:minmax(0,1fr) 62px!important;
+      column-gap:14px!important;
+      align-items:start!important;
+      min-height:0!important;
+      padding-right:0!important;
+    }
+
+    .head > div:first-child{
+      min-width:0!important;
+      padding-top:0!important;
+    }
+
     .scorebox{
-      top:32px!important;
-      right:24px!important;
-      width:68px!important;
-      min-width:68px!important;
+      position:static!important;
+      grid-column:2!important;
+      grid-row:1!important;
+      width:62px!important;
+      min-width:62px!important;
+      display:flex!important;
+      flex-direction:column!important;
+      align-items:flex-end!important;
+      justify-content:flex-start!important;
+      text-align:right!important;
+      margin-top:0!important;
+      transform:none!important;
     }
+
     .score{
-      font-size:42px!important;
+      font-size:38px!important;
+      line-height:.78!important;
+      letter-spacing:-.075em!important;
+      font-weight:900!important;
     }
+
     .score-label{
-      font-size:8px!important;
+      margin-top:7px!important;
+      font-size:7px!important;
+      line-height:1!important;
+      letter-spacing:.075em!important;
+      white-space:nowrap!important;
+      text-align:right!important;
+      font-weight:850!important;
     }
+
     .score-mood{
-      font-size:11px!important;
-      margin-top:12px!important;
+      margin-top:10px!important;
+      display:flex!important;
+      align-items:center!important;
+      justify-content:flex-end!important;
+      gap:4px!important;
+      font-size:10px!important;
+      line-height:1!important;
+      letter-spacing:-.02em!important;
+      white-space:nowrap!important;
+      font-weight:850!important;
+    }
+
+    .score-mood svg{
+      width:13px!important;
+      height:13px!important;
+      stroke-width:2.1!important;
+    }
+
+    .meta{
+      margin-top:0!important;
+      font-size:14px!important;
+      line-height:1.28!important;
+      max-width:100%!important;
+      padding-right:0!important;
+    }
+
+    .title{
+      max-width:100%!important;
+      margin-top:8px!important;
+      padding-right:0!important;
+      font-size:clamp(28px,8.2vw,38px)!important;
+      line-height:1.02!important;
+      letter-spacing:-.065em!important;
+    }
+
+    .owner,
+    .art-overview{
+      margin-top:10px!important;
+      font-size:18px!important;
+      line-height:1.35!important;
+      max-width:100%!important;
+      padding-right:0!important;
+    }
+
+    .place{
+      margin-top:8px!important;
+      font-size:16px!important;
+      line-height:1.35!important;
+      max-width:100%!important;
+    }
+
+    .meter{
+      margin-top:24px!important;
+    }
+
+    .meter-track{
+      height:18px!important;
+    }
+  }
+
+  @media (max-width:420px){
+    .rank{
+      width:60px!important;
+      height:60px!important;
+      min-width:60px!important;
+      border-radius:18px!important;
+      font-size:24px!important;
+    }
+
+    .head{
+      grid-template-columns:minmax(0,1fr) 58px!important;
+      column-gap:12px!important;
+    }
+
+    .scorebox{
+      width:58px!important;
+      min-width:58px!important;
+    }
+
+    .score{
+      font-size:35px!important;
+    }
+
+    .score-label{
+      font-size:6.5px!important;
+      letter-spacing:.06em!important;
+    }
+
+    .score-mood{
+      font-size:9.5px!important;
+      gap:3px!important;
+      margin-top:9px!important;
+    }
+
+    .score-mood svg{
+      width:12px!important;
+      height:12px!important;
     }
   }
 </style>
