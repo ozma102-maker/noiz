@@ -426,7 +426,7 @@ def make_noiz_item(raw: dict[str, Any]) -> dict[str, Any]:
         "venue": venue_ko,
         "area": area_ko,
         "region": region_ko,
-        "mapQuery": f"{raw.get('title','')} {venue_ko} {area_ko}",
+        "mapQuery": venue_ko,
         "sourceUrl": raw.get("url") or "#",
         "sourceLabel": "정보 출처",
         "overview": make_exhibition_overview(raw),
@@ -568,16 +568,75 @@ def build_items() -> list[dict[str, Any]]:
     return top
 
 def make_weekly_read(items: list[dict[str, Any]]) -> str:
-    if not items:
-        return "이번 주 공개 검색과 Art Week Korea watchlist에서 충분히 확인된 미술 전시 후보를 찾지 못했다."
-    areas = {}
-    for item in items:
-        areas[item.get("area", "서울/수도권")] = areas.get(item.get("area", "서울/수도권"), 0) + 1
+    ranked = sorted(items, key=lambda x: int(x.get("noiz", 0)), reverse=True)[:10]
+    if not ranked:
+        return "이번 주는 아직 뚜렷하게 잡히는 전시 신호가 많지 않아. 조금 더 쌓이면 바로 읽어볼게!"
+
+    areas: dict[str, int] = {}
+    venue_types: dict[str, int] = {"미술관": 0, "갤러리": 0, "전시공간": 0}
+    mediums: dict[str, int] = {}
+
+    def medium(item: dict[str, Any]) -> str:
+        text = " ".join([
+            item.get("title", ""),
+            item.get("description", ""),
+            item.get("overview", ""),
+            " ".join(item.get("signals", [])),
+            " ".join(item.get("tags", [])),
+        ]).lower()
+        if any(x in text for x in ["회화", "painting", "색면", "추상"]):
+            return "회화"
+        if any(x in text for x in ["사진", "photography", "메이플소프"]):
+            return "사진"
+        if any(x in text for x in ["조각", "sculpture"]):
+            return "조각"
+        if any(x in text for x in ["미디어", "영상", "sound", "사운드"]):
+            return "미디어"
+        if any(x in text for x in ["명작", "고야", "렘브란트", "입체주의", "cubist", "modern"]):
+            return "미술사/명작"
+        return "동시대미술"
+
+    for item in ranked:
+        area = item.get("area") or item.get("region") or "서울/수도권"
+        areas[area] = areas.get(area, 0) + 1
+        vt = item.get("venueType", "")
+        sig = " ".join(item.get("signals", []))
+        if vt == "museum" or "미술관" in sig:
+            venue_types["미술관"] += 1
+        elif vt == "gallery" or "갤러리" in sig:
+            venue_types["갤러리"] += 1
+        else:
+            venue_types["전시공간"] += 1
+        m = medium(item)
+        mediums[m] = mediums.get(m, 0) + 1
+
     area_line = "·".join(sorted(areas, key=areas.get, reverse=True)[:3])
-    return (
-        f"이번 주 ART NOIZ는 {area_line}의 미술관·갤러리 전시를 중심으로 잡힌다. "
-        "Art Week Korea의 전시 후보와 서울·수도권 watchlist를 기반으로 공식 확인·교차 확인 신호가 있는 항목을 우선 노출한다."
-    )
+    medium_line = "·".join(sorted(mediums, key=mediums.get, reverse=True)[:2])
+    museum_count = venue_types.get("미술관", 0)
+    gallery_count = venue_types.get("갤러리", 0)
+    painting_count = mediums.get("회화", 0)
+    photo_count = mediums.get("사진", 0)
+    history_count = mediums.get("미술사/명작", 0)
+
+    interest = "관객 관심은 특정 작가 한 명보다, 주말 동선 안에서 여러 전시를 묶어보는 쪽으로 움직이고 있어."
+    if painting_count >= 4:
+        interest = "관객 관심은 회화와 색채, 화면 자체의 몰입감처럼 설명보다 먼저 체감되는 전시에 모이는 중이야."
+    elif history_count >= 2:
+        interest = "관객 관심은 검증된 이름과 미술사적 맥락이 분명한 전시에 모이는 중이야."
+    elif photo_count >= 2:
+        interest = "관객 관심은 사진과 이미지 기반 전시처럼 직관적으로 읽히면서도 공간감이 있는 전시에 모이는 중이야."
+
+    market = "시장적으로는 블록버스터 전시와 상업 갤러리 전시가 동시에 관객의 시간을 나눠 갖는 상황이야."
+    if gallery_count > museum_count:
+        market = "상위권에서 갤러리 비중이 높아서, 기관 전시보다 삼청·한남·청담 동선의 갤러리 방문성이 더 강하게 보여."
+    elif museum_count > gallery_count:
+        market = "상위권에서 미술관 비중이 높아서, 단발성 발견보다 검증된 기관 전시와 큰 규모의 관람 경험이 더 안정적인 선택지로 보여."
+
+    reason = "이 흐름은 여름 시즌의 이동 피로 속에서, 관객이 실패 확률 낮고 한 번에 이해되는 전시를 선호하는 상황과도 맞닿아 있어."
+    if gallery_count >= 5 and "삼청" in area_line:
+        reason = "특히 삼청권 갤러리들이 상위권에 모이면서, 하나의 전시만 보기보다 짧은 반경 안에서 여러 전시를 이어보는 동선형 관심이 강해져."
+
+    return f"이번 주 ART NOIZ는 {area_line or '서울/수도권'} 중심으로 잡혀. Top 10의 핵심 매체는 {medium_line or '동시대미술'}이고, 구성은 미술관 {museum_count}개, 갤러리 {gallery_count}개에 가까워. {interest} 가장 강한 신호는 {ranked[0].get('title', '상위 전시')}지만, 단독 목적지라기보다 주변 전시들과 묶어 볼 때 더 설득력 있어 보여. {market} {reason}"
 
 def main() -> None:
     items = build_items()
@@ -587,7 +646,7 @@ def main() -> None:
         "weekly_read": make_weekly_read(items),
         "items": items,
         "creator": "이원준 시니어매니저",
-        "method_note": "Art Week Korea expanded prototype의 candidates/venues 데이터, 미술관·갤러리 공식 페이지, 아트 플랫폼, 전시 리뷰 검색 신호 기반 ART NOIZ 데이터.",
+        "method_note": "미술관·갤러리 공식 페이지, 아트 플랫폼, 전시 리뷰 검색 신호를 함께 본 ART NOIZ 데이터야. 전시를 평점 매기기보다, 이번 주 관객 관심이 어디로 움직이는지 읽는 용도야!",
     }
     DATA_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[OK] wrote {DATA_PATH} with {len(items)} ART NOIZ items")

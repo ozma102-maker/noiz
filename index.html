@@ -455,7 +455,7 @@ function classifyMainItem(item) {
 
 function buildNoizWeeklyAnalysis(items, data = {}) {
   const list = (items || []).filter(Boolean);
-  if (!list.length) return data.weekly_read || "이번 주 공개 신호가 충분한 후보를 찾지 못했다.";
+  if (!list.length) return data.weekly_read || "이번 주는 아직 잡히는 신호가 많지 않아. 조금 더 쌓이면 바로 읽어볼게!";
 
   const areas = countBy(list, item => item.area || item.region || "서울/수도권");
   const types = countBy(list, classifyMainItem);
@@ -471,23 +471,23 @@ function buildNoizWeeklyAnalysis(items, data = {}) {
   const hasFree = includesAny(signalText, ["무료", "체험", "이벤트"]);
   const hasBigShows = includesAny(signalText, ["미술관", "명작", "거장", "기관", "도슨트", "기획전"]);
 
-  let why = "관심의 중심은 단순 정보 탐색보다 바로 방문할 수 있는 목적지와 짧은 기간 안에 소비되는 경험에 가깝다.";
+  let why = "관심은 단순 정보 탐색보다, 바로 가볼 수 있고 짧게 즐길 수 있는 경험 쪽으로 모이는 분위기야.";
   if (popupCount > artCount && (hasGoods || hasFree)) {
-    why = "관심이 모이는 이유는 굿즈, 한정성, 무료 체험처럼 즉각적인 방문 동기를 만드는 요소가 강하기 때문이다.";
+    why = "관심이 모이는 이유는 굿즈, 한정성, 무료 체험처럼 바로 움직이게 만드는 요소가 강하기 때문이야.";
   } else if (artCount >= popupCount && hasBigShows) {
-    why = "관심이 모이는 이유는 검증된 작가명, 기관 전시, 명확한 관람 목적처럼 실패 가능성이 낮은 문화 경험이 강하기 때문이다.";
+    why = "관심이 모이는 이유는 검증된 작가명, 기관 전시, 명확한 관람 목적처럼 실패 확률이 낮은 문화 경험이 강하기 때문이야.";
   }
 
-  let environment = "전체적으로는 상권형 팝업과 전시형 문화 경험이 같은 주말 시간을 두고 경쟁하는 환경이다.";
+  let environment = "전체적으로는 상권형 팝업과 전시형 문화 경험이 같은 주말 시간을 두고 경쟁하는 분위기야.";
   if (popupCount >= 5) {
-    environment = "전체 환경은 성수·더현대식 팝업 경쟁이 강하고, 관객은 오래 머무는 전시보다 짧고 인증 가능한 방문 경험에 빠르게 반응하는 흐름이다.";
+    environment = "전체 환경은 성수·더현대식 팝업 경쟁이 강하고, 관객은 오래 머무는 전시보다 짧고 인증하기 좋은 방문 경험에 빠르게 반응하는 흐름이야.";
   } else if (artCount >= 5) {
-    environment = "전체 환경은 대형 전시와 미술관 동선의 비중이 높고, 관객은 검증된 콘텐츠를 중심으로 주말 일정을 구성하는 흐름이다.";
+    environment = "전체 환경은 대형 전시와 미술관 동선의 비중이 높고, 관객은 검증된 콘텐츠를 중심으로 주말 일정을 짜는 흐름이야.";
   }
 
-  const congestion = hasWait ? "다만 웨이팅·혼잡 신호도 함께 보여, 화제성은 높지만 방문 피로도까지 같이 고려해야 한다." : "혼잡 신호는 상대적으로 약해, 이번 주는 화제성 대비 접근성이 나쁘지 않은 편으로 읽힌다.";
+  const congestion = hasWait ? "다만 웨이팅·혼잡 신호도 같이 보여. 화제성은 높지만 방문 피로도는 꼭 같이 봐야 해!" : "혼잡 신호는 상대적으로 약해. 이번 주는 화제성 대비 접근성이 꽤 괜찮아 보여!";
 
-  return `이번 주 NOIZ는 ${topAreas || "서울/수도권"} 중심으로 잡힌다. Top 10은 팝업/브랜드 경험 ${popupCount}개, 전시/문화 경험 ${artCount}개가 섞여 있고, 가장 강한 신호는 ${top.title || "상위 후보"}다. ${why} ${environment} ${congestion}`;
+  return `이번 주 NOIZ는 ${topAreas || "서울/수도권"} 중심으로 잡혀. Top 10은 팝업/브랜드 경험 ${popupCount}개, 전시/문화 경험 ${artCount}개가 섞여 있고, 가장 강한 신호는 ${top.title || "상위 후보"}야. ${why} ${environment} ${congestion}`;
 }
 
 async function loadData() {
@@ -509,7 +509,7 @@ async function loadData() {
     document.getElementById("weekLabel").textContent = formatWeekLabel();
     console.warn(`데이터 로드 실패: ${err.message}`);
     document.getElementById("rankList").innerHTML = `
-      <article class="card"><div class="rank">!</div><div><h2 class="title">noiz-data.json을 불러오지 못했어</h2><p class="desc">로컬 파일로 직접 열면 브라우저 보안 때문에 JSON fetch가 막힐 수 있어. GitHub Pages에 배포하면 정상 작동해.</p></div></article>
+      <article class="card"><div class="rank">!</div><div><h2 class="title">앗, 데이터를 아직 못 불러왔어</h2><p class="desc">로컬 파일로 바로 열면 브라우저 보안 때문에 데이터가 막힐 수 있어. GitHub Pages에 올려서 보면 정상 작동해!</p></div></article>
     `;
   }
 }
