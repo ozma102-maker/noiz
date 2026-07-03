@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>NOIZ.</title>
+<title>NOIZ. — Weekly Space Radar</title>
 <style>
   :root{
     --bg:#c6ff00;
@@ -20,7 +20,7 @@
   .wrap{max-width:1180px;margin:0 auto;padding:30px 22px 72px}
   header{display:grid;grid-template-columns:1fr;gap:20px;align-items:end;padding:4px 0 24px;border-bottom:1px solid var(--line)}
   .logo{font-size:78px;font-weight:850;letter-spacing:-.09em;line-height:.88;margin:0;color:var(--ink)}
-  .logo .dot {display: inline-block;margin-left: 0.04em;}
+  .logo .dot{display:inline-block;margin-left:.04em}
   .tag{font-size:20px;font-weight:850;color:var(--ink);line-height:1.2;margin:18px 0 0;max-width:760px;letter-spacing:-.055em}
   .stamp{text-align:right;font-size:12px;color:var(--muted);line-height:1.45}.stamp b{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
   .hero{display:grid;grid-template-columns:1fr;gap:14px;margin:22px 0 18px}
@@ -34,6 +34,12 @@
   .title{font-size:25px;font-weight:850;letter-spacing:-.07em;margin:0 0 5px;color:var(--ink)}
   .owner{font-size:15px;color:var(--ink);line-height:1.48;font-weight:760}
   .place{font-size:13px;color:var(--muted);margin-top:5px;font-weight:700}
+
+  .title-link{display:inline;text-decoration:none;color:var(--ink)}
+  .title-link:hover{text-decoration:underline;text-underline-offset:.13em}
+  .place-link{display:inline;color:var(--muted);text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px;font-weight:760}
+  .place-link:hover{color:var(--ink)}
+
   .scorebox{text-align:right;min-width:92px}
   .score{font-size:42px;font-weight:880;line-height:.88;letter-spacing:-.08em;color:var(--ink)}
   .score-label{font-size:10px;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);margin-top:7px;font-weight:760}
@@ -68,13 +74,11 @@
 <div>
 <h1 class="logo">NOIZ<span class="dot">.</span></h1>
 <p class="tag week-label" id="weekLabel">2026 July week 1</p>
-
 </div>
-
 </header>
 <section class="hero">
 <div class="panel read-panel">
-<h2>What's NOIZy this week?</h2>
+<h2>What's up this week?</h2>
 <p id="weeklyRead">업데이트 데이터를 불러오고 있어.</p>
 </div>
 </section>
@@ -150,9 +154,9 @@ function renderItem(item, index) {
         <div class="head">
           <div>
             <div class="meta">${escapeHtml(item.brand || item.ownerName || "")}</div>
-            <h2 class="title">${escapeHtml(item.title || "Untitled")}</h2>
+            <h2 class="title"><a class="title-link" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(item.title || "Untitled")}</a></h2>
             <div class="owner">${escapeHtml(item.owner || "")}</div>
-            <div class="place">${escapeHtml(item.venue || "")} · ${escapeHtml(item.area || item.region || "")}</div>
+            <div class="place"><a class="place-link" href="${mapUrl(mapQuery)}" target="_blank" rel="noopener">${escapeHtml(item.venue || "")} · ${escapeHtml(item.area || item.region || "")}</a></div>
           </div>
           <div class="scorebox">
             <div class="score">${escapeHtml(item.noiz ?? "")}</div>
@@ -168,14 +172,13 @@ function renderItem(item, index) {
         </div>
         <p class="desc">${escapeHtml(item.description || "")}</p>
         <div class="signals">${signals}</div>
-        <div class="actions">
-          <a class="btn primary" href="${mapUrl(mapQuery)}" target="_blank" rel="noopener">지도</a>
-          <a class="btn" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(item.sourceLabel || "정보 출처")}</a>
-        </div>
+
       </div>
     </article>
   `;
 }
+
+
 
 async function loadData() {
   try {
