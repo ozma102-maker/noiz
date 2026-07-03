@@ -242,6 +242,19 @@
       height:13px!important;
     }
   }
+
+  /* v44 archive date navigation */
+  .week-nav{display:flex;align-items:center;gap:9px;margin-top:18px}
+  .week-nav .tag{margin:0}
+  .week-arrow{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.18);color:var(--ink);width:30px;height:30px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-size:21px;font-weight:900;line-height:1;cursor:pointer;transition:transform .12s ease, opacity .12s ease, background .12s ease}
+  .week-arrow:hover:not(:disabled){transform:translateY(-1px);background:rgba(255,255,255,.28)}
+  .week-arrow:disabled{opacity:.28;cursor:default}
+  .archive-state{margin:7px 0 0;font-size:12px;font-weight:780;color:var(--muted);letter-spacing:-.035em}
+  @media (max-width:720px){
+    .week-nav{gap:7px;margin-top:16px}
+    .week-arrow{width:28px;height:28px;font-size:20px}
+    .archive-state{font-size:11px;margin-top:6px}
+  }
 </style>
 </head>
 <body>
@@ -262,7 +275,12 @@
 <header>
 <div>
 <h1 class="logo">NOIZ<span class="dot">.</span></h1>
+<div aria-label="NOIZ archive navigation" class="week-nav">
+<button aria-label="이전 업데이트" class="week-arrow" id="archivePrev" type="button">‹</button>
 <p class="tag week-label" id="weekLabel">2026 July week 1</p>
+<button aria-label="다음 업데이트" class="week-arrow" id="archiveNext" type="button">›</button>
+</div>
+<p class="archive-state" id="archiveState">Latest update</p>
 </div>
 </header>
 <section class="hero">
@@ -278,6 +296,9 @@
 </div>
 <script>
 const DATA_URL = "./data/noiz-data.json";
+const ARCHIVE_INDEX_URL = "./data/noiz-archive-index.json";
+let archiveEntries = [];
+let activeArchiveDate = null;
 
 function escapeHtml(str = "") {
   return String(str).replace(/[&<>"']/g, ch => ({
@@ -509,14 +530,98 @@ function buildNoizWeeklyAnalysis(items, data = {}) {
   const congestion = hasWait ? "다만 웨이팅·혼잡 신호도 같이 보여. 화제성은 높지만 방문 피로도는 꼭 같이 봐야 해!" : "혼잡 신호는 상대적으로 약해. 이번 주는 화제성 대비 접근성이 꽤 괜찮아 보여!";
 
   const listName = list.length >= 10 ? "Top 10" : "상위 후보";
-  return `이번 주 NOIZ는 ${topAreas || "서울/수도권"} 중심으로 잡혀. ${listName}는 팝업/브랜드 경험 ${popupCount}개, 전시/문화 경험 ${artCount}개가 섞여 있고, 가장 강한 신호는 ${top.title || "상위 후보"}야. ${why} ${environment} ${congestion}`;
+  return `이번 주 NOIZ는 ${topAreas || "서울/수도권"} 중심으로 잡혀. ${listName}는 팝업/브랜드 경험 ${popupCount}개, 전시/문화 경험 ${artCount}개가 섞여 있고, 가장 강한 신호는 ${top.title || "상위 후보"} 쪽이야. ${why} ${environment} ${congestion}`;
 }
 
-async function loadData() {
+
+function dateKeyFromIso(iso = "") {
+  return String(iso || "").slice(0, 10);
+}
+
+function archiveUrl(dateKey) {
+  const entry = archiveEntries.find(item => item.date === dateKey);
+  return entry?.file || `./data/archive/noiz-week-${encodeURIComponent(dateKey)}.json`;
+}
+
+function currentRequestedArchiveDate() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("date") || params.get("archive") || null;
+}
+
+function setArchiveUrl(dateKey) {
+  const url = new URL(window.location.href);
+  if (dateKey) {
+    url.searchParams.set("date", dateKey);
+  } else {
+    url.searchParams.delete("date");
+    url.searchParams.delete("archive");
+  }
+  window.location.href = url.toString();
+}
+
+async function loadArchiveIndex() {
   try {
-    const res = await fetch(`${DATA_URL}?t=${Date.now()}`, { cache: "no-store" });
+    const res = await fetch(`${ARCHIVE_INDEX_URL}?t=${Date.now()}`, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const archive = await res.json();
+    archiveEntries = (archive.entries || [])
+      .filter(entry => entry && entry.date)
+      .sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  } catch (err) {
+    archiveEntries = [];
+    console.warn(`아카이브 인덱스 로드 실패: ${err.message}`);
+  }
+}
+
+function updateArchiveNav(currentDate) {
+  const prevBtn = document.getElementById("archivePrev");
+  const nextBtn = document.getElementById("archiveNext");
+  const state = document.getElementById("archiveState");
+  if (!prevBtn || !nextBtn) return;
+
+  const dates = archiveEntries.map(entry => entry.date);
+  if (!dates.length) {
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+    if (state) state.textContent = "Latest update";
+    return;
+  }
+
+  let dateKey = currentDate || activeArchiveDate || dates[dates.length - 1] || null;
+
+  if (dateKey && !dates.includes(dateKey)) {
+    dates.push(dateKey);
+    dates.sort();
+  }
+
+  const index = dateKey ? dates.indexOf(dateKey) : dates.length - 1;
+  const latestIndex = dates.length - 1;
+
+  prevBtn.disabled = index <= 0;
+  nextBtn.disabled = index < 0 || index >= latestIndex;
+
+  prevBtn.onclick = () => {
+    if (index > 0) setArchiveUrl(dates[index - 1]);
+  };
+  nextBtn.onclick = () => {
+    if (index >= 0 && index < latestIndex) setArchiveUrl(dates[index + 1]);
+  };
+
+  if (state) {
+    state.textContent = index >= 0 && index < latestIndex ? "Weekly archive" : "Latest update";
+  }
+}
+
+async function loadData(targetDate = null) {
+  activeArchiveDate = targetDate;
+  const url = targetDate ? archiveUrl(targetDate) : DATA_URL;
+
+  try {
+    const res = await fetch(`${url}?t=${Date.now()}`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
+    const dataDate = dateKeyFromIso(data.updated_at) || targetDate;
+
     // weeklyRead is generated after Top 10 ranking.
     document.getElementById("weekLabel").textContent = formatWeekLabel(data.updated_at);
     document.getElementById("creator").textContent = data.creator || "이원준 시니어매니저";
@@ -527,8 +632,10 @@ async function loadData() {
       .map((item, i) => ({ ...item, rank: i + 1 }));
     document.getElementById("weeklyRead").textContent = buildNoizWeeklyAnalysis(items, data);
     document.getElementById("rankList").innerHTML = items.map(renderItem).join("");
+    updateArchiveNav(dataDate);
   } catch (err) {
     document.getElementById("weekLabel").textContent = formatWeekLabel();
+    updateArchiveNav(targetDate);
     console.warn(`데이터 로드 실패: ${err.message}`);
     document.getElementById("rankList").innerHTML = `
       <article class="card"><div class="rank">!</div><div><h2 class="title">앗, 데이터를 아직 못 불러왔어</h2><p class="desc">로컬 파일로 바로 열면 브라우저 보안 때문에 데이터가 막힐 수 있어. GitHub Pages에 올려서 보면 정상 작동해!</p></div></article>
@@ -536,8 +643,13 @@ async function loadData() {
   }
 }
 
+async function initNoizPage() {
+  await loadArchiveIndex();
+  await loadData(currentRequestedArchiveDate());
+}
+
 setupHiddenArtMode();
-loadData();
+initNoizPage();
 </script>
 </body>
 </html>

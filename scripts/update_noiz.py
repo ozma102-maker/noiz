@@ -33,6 +33,8 @@ from bs4 import BeautifulSoup
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "data" / "noiz-data.json"
+ARCHIVE_DIR = ROOT / "data" / "archive"
+ARCHIVE_INDEX_PATH = ROOT / "data" / "noiz-archive-index.json"
 SOURCES_PATH = ROOT / "scripts" / "sources.json"
 KST = timezone(timedelta(hours=9))
 
@@ -667,8 +669,56 @@ def make_weekly_read(items: list[dict[str, Any]]) -> str:
 
     congestion = "다만 웨이팅·혼잡 신호도 같이 보여. 화제성은 높지만 방문 피로도는 꼭 같이 봐야 해!" if any(x in blob for x in ["웨이팅", "혼잡", "줄", "대기", "더현대"]) else "혼잡 신호는 상대적으로 약해. 이번 주는 화제성 대비 접근성이 꽤 괜찮아 보여!"
     list_name = "Top 10" if len(rankable) >= 10 else "상위 후보"
-    return f"이번 주 NOIZ는 {area_line or '서울/수도권'} 중심으로 잡혀. {list_name}는 팝업/브랜드 경험 {popup_count}개, 전시/문화 경험 {art_count}개가 섞여 있고, 가장 강한 신호는 {rankable[0].get('title', '상위 후보')}야. {why} {environment} {congestion}"
+    return f"이번 주 NOIZ는 {area_line or '서울/수도권'} 중심으로 잡혀. {list_name}는 팝업/브랜드 경험 {popup_count}개, 전시/문화 경험 {art_count}개가 섞여 있고, 가장 강한 신호는 {rankable[0].get('title', '상위 후보')} 쪽이야. {why} {environment} {congestion}"
 
+
+def archive_payload(payload: dict[str, Any]) -> None:
+    """Save one weekly NOIZ snapshot on Mondays only."""
+    updated_at = str(payload.get("updated_at", ""))
+    try:
+        current_dt = datetime.fromisoformat(updated_at)
+    except Exception:
+        current_dt = datetime.now(KST)
+
+    # Monday = 0. Other days update the live page only, not the archive.
+    if current_dt.weekday() != 0:
+        print(f"[INFO] weekly archive skipped: {current_dt.date()} is not Monday")
+        return
+
+    ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
+
+    monday_key = current_dt.strftime("%Y-%m-%d")
+    archive_file = ARCHIVE_DIR / f"noiz-week-{monday_key}.json"
+    archive_file.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    if ARCHIVE_INDEX_PATH.exists():
+        try:
+            archive_index = json.loads(ARCHIVE_INDEX_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            archive_index = {"site": "NOIZ Weekly Archive", "entries": []}
+    else:
+        archive_index = {"site": "NOIZ Weekly Archive", "entries": []}
+
+    entries_by_date = {
+        str(entry.get("date")): entry
+        for entry in archive_index.get("entries", [])
+        if entry.get("date")
+    }
+    entries_by_date[monday_key] = {
+        "date": monday_key,
+        "updated_at": payload.get("updated_at"),
+        "file": f"./data/archive/noiz-week-{monday_key}.json",
+        "label": f"{current_dt.isocalendar().year} W{current_dt.isocalendar().week:02d}",
+    }
+
+    entries = sorted(entries_by_date.values(), key=lambda entry: str(entry.get("date", "")))
+    archive_index = {
+        "site": "NOIZ Weekly Archive",
+        "updated_at": payload.get("updated_at"),
+        "entries": entries[-52:],
+    }
+    ARCHIVE_INDEX_PATH.write_text(json.dumps(archive_index, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"[OK] archived weekly NOIZ snapshot: {archive_file}")
 def main() -> None:
     existing = load_existing()
     sources = json.loads(SOURCES_PATH.read_text(encoding="utf-8"))
@@ -695,6 +745,7 @@ def main() -> None:
     }
 
     DATA_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    archive_payload(payload)
     print(f"[OK] wrote {DATA_PATH} with {len(items)} rankable items")
 
 
