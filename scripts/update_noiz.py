@@ -804,7 +804,7 @@ def main() -> None:
 
     merged_new = merge_candidates(candidates)
     items = merge_with_existing(merged_new, existing.get("items", []))
-    theme = pick_weekly_theme(existing.get("theme"))
+    theme = existing.get("theme") or LEGACY_THEME
 
     payload = {
         "site": "NOIZ",
