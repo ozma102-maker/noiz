@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 
 <html lang="ko">
-<head>
+<head><meta content="#c6ff00" name="theme-color"/><meta content="default" name="apple-mobile-web-app-status-bar-style"/>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>NOIZ! — Weekly Space Radar</title>
+<title>NOIZ. — Weekly Space Radar</title>
 <style>
   :root{
     --bg:#c6ff00;
@@ -272,8 +272,10 @@
     .week-arrow{width:20px;height:24px;font-size:21px}
   }
 
-  /* v50 top-right color shuffle icon */
+  /* v55 transparent rolling dice icon */
   header{position:relative}
+  html{background:var(--bg)}
+  body{background:var(--bg)}
   .theme-shuffle{
     position:absolute;
     top:6px;
@@ -281,24 +283,89 @@
     width:38px;
     height:34px;
     padding:0;
-    border:0;
-    background:transparent;
+    border:0!important;
+    outline:0;
+    box-shadow:none!important;
+    background:transparent!important;
     color:var(--ink);
-    opacity:.72;
+    opacity:.74;
     cursor:pointer;
     display:flex;
     align-items:center;
     justify-content:center;
     transition:opacity .12s ease, transform .12s ease;
+    -webkit-tap-highlight-color:transparent;
   }
   .theme-shuffle:hover{opacity:1;transform:translateY(-1px)}
   .theme-shuffle:active{transform:translateY(0) scale(.96)}
-  .theme-shuffle svg{width:31px;height:26px;display:block;overflow:visible}
-  .theme-shuffle circle{fill:none;stroke:currentColor;stroke-width:4.2;mix-blend-mode:multiply}
+  .theme-shuffle svg{
+    width:31px;
+    height:31px;
+    display:block;
+    overflow:visible;
+    transform-origin:50% 50%;
+  }
+  .theme-shuffle rect{fill:transparent!important;stroke:currentColor!important;stroke-width:2.8!important}
+  .theme-shuffle .pip{
+    fill:currentColor;
+    stroke:none;
+    transform-origin:center;
+  }
+  .theme-shuffle.is-rolling svg{
+    animation:noizDiceRoll .56s cubic-bezier(.18,.86,.2,1);
+  }
+  .theme-shuffle.is-rolling .pip{
+    animation:noizPipPop .18s ease-in-out infinite alternate;
+  }
+  @keyframes noizDiceRoll{
+    0%{transform:translateX(0) rotate(0deg) scale(1)}
+    18%{transform:translateX(2px) rotate(82deg) scale(.9)}
+    40%{transform:translateX(-2px) rotate(174deg) scale(1.08)}
+    65%{transform:translateX(1px) rotate(276deg) scale(.95)}
+    100%{transform:translateX(0) rotate(360deg) scale(1)}
+  }
+  @keyframes noizPipPop{
+    0%{opacity:.35;transform:scale(.72)}
+    100%{opacity:1;transform:scale(1)}
+  }
   @media (max-width:720px){
-    .theme-shuffle{top:4px;right:0;width:34px;height:31px}
-    .theme-shuffle svg{width:28px;height:24px}
-    .theme-shuffle circle{stroke-width:4}
+    .theme-shuffle{
+      top:4px;
+      right:0;
+      width:34px;
+      height:31px;
+    }
+    .theme-shuffle svg{
+      width:28px;
+      height:28px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .theme-shuffle.is-rolling svg,
+    .theme-shuffle.is-rolling .pip{animation:none!important}
+  }
+
+  /* v56 visible borderless dice pips */
+  .theme-shuffle svg{width:33px!important;height:33px!important}
+  .theme-shuffle .pip{
+    fill:currentColor!important;
+    stroke:none!important;
+    opacity:1!important;
+  }
+  @media (max-width:720px){
+    .theme-shuffle svg{width:31px!important;height:31px!important}
+  }
+
+  /* v57 visible dice outline */
+  .theme-shuffle .dice-outline{
+    fill:transparent!important;
+    stroke:currentColor!important;
+    stroke-width:2.8!important;
+  }
+  .theme-shuffle .pip{
+    fill:currentColor!important;
+    stroke:none!important;
+    opacity:1!important;
   }
 </style>
 </head>
@@ -319,24 +386,30 @@
 <div class="wrap">
 <header>
 <div>
-<h1 class="logo">NOIZ<span class="dot">!</span></h1>
+<h1 class="logo">NOIZ<span class="dot">.</span></h1>
 <div aria-label="NOIZ archive navigation" class="week-nav">
 <button aria-label="이전 업데이트" class="week-arrow" id="archivePrev" type="button">‹</button>
 <p class="tag week-label" id="weekLabel">2026 July week 1</p>
 <button aria-label="다음 업데이트" class="week-arrow" id="archiveNext" type="button">›</button>
 </div>
 </div>
-<button aria-label="컬러 바꾸기" class="theme-shuffle" id="themeShuffle" title="컬러 바꾸기" type="button">
+<button aria-label="랜덤 컬러" class="theme-shuffle" id="themeShuffle" title="랜덤 컬러" type="button">
 <svg aria-hidden="true" viewbox="0 0 64 52">
-<circle cx="32" cy="18" r="17"></circle>
-<circle cx="24" cy="32" r="17"></circle>
-<circle cx="40" cy="32" r="17"></circle>
+<rect class="dice-outline" height="30" rx="7" ry="7" width="30" x="9" y="9"></rect>
+<g aria-hidden="true" class="dice-pips" id="dicePips">
+<circle class="pip" cx="17" cy="15" r="3.4"></circle>
+<circle class="pip" cx="31" cy="15" r="3.4"></circle>
+<circle class="pip" cx="17" cy="24" r="3.4"></circle>
+<circle class="pip" cx="31" cy="24" r="3.4"></circle>
+<circle class="pip" cx="17" cy="33" r="3.4"></circle>
+<circle class="pip" cx="31" cy="33" r="3.4"></circle>
+</g>
 </svg>
 </button>
 </header>
 <section class="hero">
 <div class="panel read-panel">
-<h2>What's NOIZi this week?</h2>
+<h2>What's NOIZy this week?</h2>
 <p id="weeklyRead">업데이트 데이터를 불러오고 있어.</p>
 </div>
 </section>
@@ -367,13 +440,58 @@ function randomTheme(excludeId = null) {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
+const DICE_PATTERNS = {
+  1: [[24, 24]],
+  2: [[18, 18], [30, 30]],
+  3: [[18, 18], [24, 24], [30, 30]],
+  4: [[18, 18], [30, 18], [18, 30], [30, 30]],
+  5: [[18, 18], [30, 18], [24, 24], [18, 30], [30, 30]],
+  6: [[18, 17], [30, 17], [18, 24], [30, 24], [18, 31], [30, 31]]
+};
+
+function randomInt(max) {
+  if (window.crypto && crypto.getRandomValues) {
+    const arr = new Uint32Array(1);
+    crypto.getRandomValues(arr);
+    return arr[0] % max;
+  }
+  return Math.floor(Math.random() * max);
+}
+
+function setDiceFace(face = 1) {
+  const group = document.getElementById("dicePips");
+  if (!group) return;
+  const points = DICE_PATTERNS[face] || DICE_PATTERNS[1];
+  group.innerHTML = points.map(([cx, cy]) => `<circle class="pip" cx="${cx}" cy="${cy}" r="3.4"></circle>`).join("");
+}
+
+function rollDiceFace() {
+  const face = randomInt(6) + 1;
+  setDiceFace(face);
+  return face;
+}
+
+
 function applyColorTheme(theme = DEFAULT_THEME) {
   const selected = { ...DEFAULT_THEME, ...(theme || {}) };
   currentThemeId = selected.id || null;
+  document.body.dataset.theme = currentThemeId || "";
   const root = document.documentElement;
   ["bg", "paper", "ink", "muted", "line", "white"].forEach(key => {
     if (selected[key]) root.style.setProperty(`--${key}`, selected[key]);
   });
+
+  if (selected.bg) {
+    document.documentElement.style.backgroundColor = selected.bg;
+    document.body.style.backgroundColor = selected.bg;
+    let metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (!metaTheme) {
+      metaTheme = document.createElement("meta");
+      metaTheme.setAttribute("name", "theme-color");
+      document.head.appendChild(metaTheme);
+    }
+    metaTheme.setAttribute("content", selected.bg);
+  }
 }
 
 
@@ -491,7 +609,7 @@ function renderItem(item, index) {
           </div>
           <div class="scorebox">
             <div class="score">${escapeHtml(item.noiz ?? "")}</div>
-            <div class="score-label">NOIZ Meter</div>\n            <div class="score-mood">${moodIconSvg(mood.icon)}<span>${mood.label}</span></div>
+            <div class="score-label">DECIBEL</div>\n            <div class="score-mood">${moodIconSvg(mood.icon)}<span>${mood.label}</span></div>
           </div>
         </div>
         <div class="meter">
@@ -709,7 +827,6 @@ async function loadData(targetDate = null) {
     document.getElementById("rankList").innerHTML = items.map(renderItem).join("");
     updateArchiveNav(dataDate);
   } catch (err) {
-    applyColorTheme(DEFAULT_THEME);
     document.getElementById("weekLabel").textContent = formatWeekLabel();
     updateArchiveNav(targetDate);
     console.warn(`데이터 로드 실패: ${err.message}`);
@@ -720,11 +837,33 @@ async function loadData(targetDate = null) {
 }
 
 
+function animateDiceRoll(button) {
+  if (!button) return;
+  button.classList.remove("is-rolling");
+  void button.offsetWidth;
+  button.classList.add("is-rolling");
+
+  let ticks = 0;
+  const interval = window.setInterval(() => {
+    rollDiceFace();
+    ticks += 1;
+    if (ticks >= 10) window.clearInterval(interval);
+  }, 44);
+
+  window.setTimeout(() => {
+    button.classList.remove("is-rolling");
+  }, 580);
+}
 function setupThemeShuffle() {
   const button = document.getElementById("themeShuffle");
   if (!button) return;
+  setDiceFace(6);
   button.addEventListener("click", () => {
-    applyColorTheme(randomTheme(currentThemeId));
+    animateDiceRoll(button);
+    window.setTimeout(() => {
+      rollDiceFace();
+      applyColorTheme(randomTheme(currentThemeId));
+    }, 360);
   });
 }
 
