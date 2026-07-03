@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>NOIZ — Weekly Space Radar</title>
+<title>NOIZ. — Weekly Space Radar</title>
 <style>
   :root{
     --bg:#c6ff00;
@@ -18,8 +18,9 @@
   body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Noto Sans KR",Segoe UI,sans-serif;letter-spacing:-.04em}
   a{color:inherit;text-decoration:none}
   .wrap{max-width:1180px;margin:0 auto;padding:30px 22px 72px}
-  header{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;padding:4px 0 24px;border-bottom:1px solid var(--line)}
+  header{display:grid;grid-template-columns:1fr;gap:20px;align-items:end;padding:4px 0 24px;border-bottom:1px solid var(--line)}
   .logo{font-size:78px;font-weight:850;letter-spacing:-.09em;line-height:.88;margin:0;color:var(--ink)}
+  .logo .dot{display:inline-block;margin-left:.04em}
   .tag{font-size:20px;font-weight:850;color:var(--ink);line-height:1.2;margin:18px 0 0;max-width:760px;letter-spacing:-.055em}
   .stamp{text-align:right;font-size:12px;color:var(--muted);line-height:1.45}.stamp b{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
   .hero{display:grid;grid-template-columns:1fr;gap:14px;margin:22px 0 18px}
@@ -33,6 +34,12 @@
   .title{font-size:25px;font-weight:850;letter-spacing:-.07em;margin:0 0 5px;color:var(--ink)}
   .owner{font-size:15px;color:var(--ink);line-height:1.48;font-weight:760}
   .place{font-size:13px;color:var(--muted);margin-top:5px;font-weight:700}
+
+  .title-link{display:inline;text-decoration:none;color:var(--ink)}
+  .title-link:hover{text-decoration:underline;text-underline-offset:.13em}
+  .place-link{display:inline;color:var(--muted);text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px;font-weight:760}
+  .place-link:hover{color:var(--ink)}
+
   .scorebox{text-align:right;min-width:92px}
   .score{font-size:42px;font-weight:880;line-height:.88;letter-spacing:-.08em;color:var(--ink)}
   .score-label{font-size:10px;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);margin-top:7px;font-weight:760}
@@ -65,13 +72,8 @@
 <div class="wrap">
 <header>
 <div>
-<h1 class="logo">NOIZ</h1>
+<h1 class="logo">NOIZ<span class="dot">.</span></h1>
 <p class="tag week-label" id="weekLabel">2026 July week 1</p>
-<div class="status" id="status">데이터 불러오는 중…</div>
-</div>
-<div class="stamp">
-<b id="updatedDate">Daily Update</b>
-<span>data/noiz-data.json</span>
 </div>
 </header>
 <section class="hero">
@@ -98,11 +100,19 @@ function mapUrl(query) {
   return `https://map.naver.com/p/search/${encodeURIComponent(query || "")}`;
 }
 
-function moodInfo(favorability) {
-  const score = Number(favorability ?? 70);
-  if (score >= 76) return { icon: "smile", label: "호감 우세" };
-  if (score >= 66) return { icon: "neutral", label: "중립 / 혼재" };
-  return { icon: "frown", label: "불호 신호" };
+function hasLowInfo(item) {
+  const signals = (item.signals || []).join(" ");
+  return item.infoVolume === "low" || item.lowInfo === true || signals.includes("후기 축적 전") || signals.includes("후기 부족");
+}
+
+function moodInfo(favorability, item = {}) {
+  if (hasLowInfo(item)) return { icon: "neutral", label: "후기 축적 중" };
+
+  const score = Number(favorability ?? 60);
+  if (score >= 80) return { icon: "smile", label: "극호" };
+  if (score >= 70) return { icon: "smile", label: "호감" };
+  if (score >= 50) return { icon: "neutral", label: "중립" };
+  return { icon: "frown", label: "불호" };
 }
 
 function formatDate(iso) {
@@ -141,7 +151,7 @@ function formatWeekLabel(iso) {
 
 function renderItem(item, index) {
   const rank = item.rank || index + 1;
-  const mood = moodInfo(item.favorability);
+  const mood = moodInfo(item.favorability, item);
   const sourceUrl = item.sourceUrl || "#";
   const mapQuery = item.mapQuery || `${item.venue || ""} ${item.area || ""}`;
   const signals = (item.signals || []).map(s => `<span class="sig">${escapeHtml(s)}</span>`).join("");
@@ -152,9 +162,9 @@ function renderItem(item, index) {
         <div class="head">
           <div>
             <div class="meta">${escapeHtml(item.brand || item.ownerName || "")}</div>
-            <h2 class="title">${escapeHtml(item.title || "Untitled")}</h2>
+            <h2 class="title"><a class="title-link" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(item.title || "Untitled")}</a></h2>
             <div class="owner">${escapeHtml(item.owner || "")}</div>
-            <div class="place">${escapeHtml(item.venue || "")} · ${escapeHtml(item.area || item.region || "")}</div>
+            <div class="place"><a class="place-link" href="${mapUrl(mapQuery)}" target="_blank" rel="noopener">${escapeHtml(item.venue || "")} · ${escapeHtml(item.area || item.region || "")}</a></div>
           </div>
           <div class="scorebox">
             <div class="score">${escapeHtml(item.noiz ?? "")}</div>
@@ -170,30 +180,26 @@ function renderItem(item, index) {
         </div>
         <p class="desc">${escapeHtml(item.description || "")}</p>
         <div class="signals">${signals}</div>
-        <div class="actions">
-          <a class="btn primary" href="${mapUrl(mapQuery)}" target="_blank" rel="noopener">지도</a>
-          <a class="btn" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(item.sourceLabel || "정보 출처")}</a>
-        </div>
+
       </div>
     </article>
   `;
 }
 
+
+
 async function loadData() {
-  const status = document.getElementById("status");
   try {
     const res = await fetch(`${DATA_URL}?t=${Date.now()}`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     document.getElementById("weeklyRead").textContent = data.weekly_read || "이번 주 요약 없음";
     document.getElementById("weekLabel").textContent = formatWeekLabel(data.updated_at);
-    document.getElementById("updatedDate").textContent = formatDate(data.updated_at);
     document.getElementById("creator").textContent = data.creator || "이원준 시니어매니저";
     document.getElementById("rankList").innerHTML = (data.items || []).slice(0, 10).map(renderItem).join("");
-    status.textContent = `Top ${(data.items || []).slice(0, 10).length} loaded`;
   } catch (err) {
     document.getElementById("weekLabel").textContent = formatWeekLabel();
-    status.textContent = `데이터 로드 실패: ${err.message}. GitHub Pages에 올린 뒤 다시 열어봐.`;
+    console.warn(`데이터 로드 실패: ${err.message}`);
     document.getElementById("rankList").innerHTML = `
       <article class="card"><div class="rank">!</div><div><h2 class="title">noiz-data.json을 불러오지 못했어</h2><p class="desc">로컬 파일로 직접 열면 브라우저 보안 때문에 JSON fetch가 막힐 수 있어. GitHub Pages에 배포하면 정상 작동해.</p></div></article>
     `;

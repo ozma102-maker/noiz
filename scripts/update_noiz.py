@@ -40,6 +40,8 @@ POSITIVE_WORDS = [
     "인기", "추천", "핫", "화제", "예약", "사전예약", "매진", "굿즈", "무료",
     "포토존", "체험", "한정", "오픈런", "팝업", "전시", "도슨트", "이벤트"
 ]
+
+
 NEGATIVE_WORDS = [
     "웨이팅", "혼잡", "줄", "품절", "비싸", "아쉽", "실망", "상업적", "마감",
     "종료", "혼선", "예약필수"
@@ -64,6 +66,7 @@ class Candidate:
     favorability: int
     description: str
     signals: list[str]
+    infoVolume: str
 
 def clean_text(text: str) -> str:
     text = html.unescape(text or "")
@@ -77,17 +80,59 @@ def fetch(url: str) -> str:
         res.encoding = "utf-8"
     return res.text
 
-def text_score(text: str, base: int) -> tuple[int, int, list[str]]:
+def text_score(text: str, base: int) -> tuple[int, int, list[str], str]:
+    """
+    Returns:
+      noiz: exposure/noise score
+      favorability: public-tone score
+        80+ = 극호
+        70-79 = 호감
+        50-69 = 중립
+        <=49 = 불호
+      signals: detected qualitative signals
+      info_volume: low / medium / high
+
+    무료 MVP에서는 실제 리뷰 전체를 긁지 않고, 공개 페이지의 문구/링크 텍스트에서
+    긍정·피로 신호를 읽어 임시 여론 점수를 만든다.
+    검색 API/리뷰 API를 붙이면 이 함수의 text에 뉴스·블로그·후기 스니펫을 합쳐 넣으면 된다.
+    """
     t = text.lower()
     pos = sum(1 for w in POSITIVE_WORDS if w.lower() in t)
     neg = sum(1 for w in NEGATIVE_WORDS if w.lower() in t)
     noise = sum(1 for w in NOISE_WORDS if w.lower() in t)
-    score = base + min(45, noise * 6) + min(18, pos * 3) + min(12, neg * 2)
-    score = max(40, min(99, score))
-    favor = 70 + min(18, pos * 3) - min(20, neg * 4)
-    favor = max(45, min(90, favor))
+
+    # 정보량: 현재는 텍스트 길이 + 감지 키워드 수로 추정
+    signal_volume = pos + neg + noise
+    if len(text) < 45 or signal_volume <= 1:
+        info_volume = "low"
+    elif len(text) > 140 or signal_volume >= 5:
+        info_volume = "high"
+    else:
+        info_volume = "medium"
+
+    # NOIZ는 노출량/화제성. 부정 신호도 '시끄러움'이므로 일부 가산.
+    noiz = base + min(45, noise * 6) + min(18, pos * 3) + min(12, neg * 2)
+    noiz = max(40, min(99, noiz))
+
+    # favorability는 여론 톤. 긍정은 올리고, 혼잡/실망/상업성 피로는 낮춤.
+    # 중립 기본값은 60으로 둔다.
+    favor = 60 + min(26, pos * 5) - min(26, neg * 7)
+
+    # 예약/매진/추천은 호감 신호로 보되, 웨이팅/혼잡과 동시 등장하면 중립으로 끌어온다.
+    if ("예약" in text or "매진" in text or "추천" in text) and neg == 0:
+        favor += 5
+    if "웨이팅" in text or "혼잡" in text or "줄" in text:
+        favor -= 6
+
+    # 정보량이 너무 적으면 극단값 방지
+    if info_volume == "low":
+        favor = max(50, min(69, favor))
+
+    favor = max(0, min(100, favor))
 
     signals = []
+    if info_volume == "low":
+        signals.append("후기 축적 전")
     if pos:
         signals.append("긍정 키워드")
     if neg:
@@ -100,7 +145,7 @@ def text_score(text: str, base: int) -> tuple[int, int, list[str]]:
         signals.append("무료/체험")
     if not signals:
         signals.append("공개 노출")
-    return score, favor, signals[:3]
+    return noiz, favor, signals[:3], info_volume
 
 def guess_area(text: str) -> str:
     areas = ["성수", "여의도", "한남", "삼청", "청담", "을지로", "중구", "종로", "서촌", "용산", "강남", "홍대", "잠실"]
@@ -159,7 +204,7 @@ def extract_candidates_from_source(source: dict[str, Any]) -> list[Candidate]:
             continue
         seen.add(key)
 
-        noiz, favor, signals = text_score(text + " " + source["name"], base)
+        noiz, favor, signals, info_volume = text_score(text + " " + source["name"], base)
         out.append(Candidate(
             brand=source["name"],
             title=title[:70],
@@ -174,6 +219,7 @@ def extract_candidates_from_source(source: dict[str, Any]) -> list[Candidate]:
             favorability=favor,
             description=make_description(title[:70], text, source_type),
             signals=signals,
+            infoVolume=info_volume,
         ))
 
     return out
@@ -189,6 +235,7 @@ def merge_and_rank(candidates: list[Candidate], existing_items: list[dict[str, A
 
     # 기존 데이터는 fallback으로 사용하되, 새 후보가 부족할 때만 채움.
     for old in existing_items:
+        old.setdefault("infoVolume", "medium")
         k = candidate_key(old.get("title", ""), old.get("venue", ""))
         if k not in by_key:
             by_key[k] = old
