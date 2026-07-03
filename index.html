@@ -409,7 +409,7 @@
 </header>
 <section class="hero">
 <div class="panel read-panel">
-<h2>What's NOIZy this week?</h2>
+<h2>What's NOIZi this week?</h2>
 <p id="weeklyRead">업데이트 데이터를 불러오고 있어.</p>
 </div>
 </section>
@@ -725,7 +725,7 @@ function buildNoizWeeklyAnalysis(items, data = {}) {
   const congestion = hasWait ? "다만 웨이팅·혼잡 신호도 같이 보여. 화제성은 높지만 방문 피로도는 꼭 같이 봐야 해!" : "혼잡 신호는 상대적으로 약해. 이번 주는 화제성 대비 접근성이 꽤 괜찮아 보여!";
 
   const listName = list.length >= 10 ? "Top 10" : "상위 후보";
-  return `이번 주 NOIZ는 ${topAreas || "서울/수도권"} 중심으로 잡혀. ${listName}는 팝업/브랜드 경험 ${popupCount}개, 전시/문화 경험 ${artCount}개가 섞여 있고, 가장 강한 신호는 ${top.title || "상위 후보"} 쪽이야. ${why} ${environment} ${congestion}`;
+  return `이번 주 노이즈는 ${topAreas || "서울/수도권"} 중심으로 잡혀. ${listName}는 팝업/브랜드 경험 ${popupCount}개, 전시/문화 경험 ${artCount}개가 섞여 있고, 가장 강한 신호는 ${top.title || "상위 후보"} 쪽이야. ${why} ${environment} ${congestion}`;
 }
 
 
