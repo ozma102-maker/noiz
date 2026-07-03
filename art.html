@@ -396,7 +396,7 @@ function renderItem(item, index) {
   const rank = item.rank || index + 1;
   const mood = moodInfo(item.favorability, item);
   const sourceUrl = item.sourceUrl || "#";
-  const mapQuery = item.mapQuery || `${item.venue || ""} ${item.area || ""}`;
+  const mapQuery = `${item.venue || ""} ${item.area || item.region || ""}`;
   const signals = (item.signals || []).map(s => `<span class="sig">${escapeHtml(s)}</span>`).join("");
   return `
     <article class="card">
