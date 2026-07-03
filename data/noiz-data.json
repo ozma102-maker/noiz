@@ -21,11 +21,7 @@
         "언론 기사",
         "예약/팬덤 신호",
         "웨이팅 가능성"
-      ],
-      "infoVolume": "medium",
-      "reactionCount": 1,
-      "evidenceCount": 2,
-      "confidence": "medium"
+      ]
     },
     {
       "rank": 2,
@@ -45,11 +41,7 @@
         "IP 팬덤",
         "더현대 혼잡",
         "일정 확인"
-      ],
-      "infoVolume": "medium",
-      "reactionCount": 1,
-      "evidenceCount": 2,
-      "confidence": "medium"
+      ]
     },
     {
       "rank": 3,
@@ -69,11 +61,7 @@
         "대중 화제성",
         "상업성 피로",
         "팝업 플랫폼"
-      ],
-      "infoVolume": "medium",
-      "reactionCount": 1,
-      "evidenceCount": 2,
-      "confidence": "medium"
+      ]
     },
     {
       "rank": 4,
@@ -93,11 +81,7 @@
         "인생샷/공간감",
         "짧은 운영기간",
         "팝가픽"
-      ],
-      "infoVolume": "medium",
-      "reactionCount": 1,
-      "evidenceCount": 2,
-      "confidence": "medium"
+      ]
     },
     {
       "rank": 5,
@@ -117,11 +101,7 @@
         "무료/굿즈",
         "현장 웨이팅",
         "운영정보 명확"
-      ],
-      "infoVolume": "medium",
-      "reactionCount": 1,
-      "evidenceCount": 2,
-      "confidence": "medium"
+      ]
     },
     {
       "rank": 6,
@@ -141,11 +121,7 @@
         "SNS 친화",
         "가벼움 논쟁",
         "티켓/공식페이지"
-      ],
-      "infoVolume": "medium",
-      "reactionCount": 1,
-      "evidenceCount": 2,
-      "confidence": "medium"
+      ]
     },
     {
       "rank": 7,
@@ -165,11 +141,7 @@
         "대형 명작전",
         "종료 임박 혼잡",
         "티켓/도슨트"
-      ],
-      "infoVolume": "medium",
-      "reactionCount": 1,
-      "evidenceCount": 2,
-      "confidence": "medium"
+      ]
     },
     {
       "rank": 8,
@@ -189,11 +161,7 @@
         "호감 톤 강함",
         "계절감",
         "예매 페이지"
-      ],
-      "infoVolume": "medium",
-      "reactionCount": 1,
-      "evidenceCount": 2,
-      "confidence": "medium"
+      ]
     },
     {
       "rank": 9,
@@ -213,11 +181,7 @@
         "작가 중요도",
         "공식 미술관",
         "장기 관람 가치"
-      ],
-      "infoVolume": "medium",
-      "reactionCount": 1,
-      "evidenceCount": 2,
-      "confidence": "medium"
+      ]
     },
     {
       "rank": 10,
@@ -237,13 +201,9 @@
         "후기 축적 전",
         "성수 감도",
         "팝업 리스트 중복"
-      ],
-      "infoVolume": "low",
-      "reactionCount": 0,
-      "evidenceCount": 1,
-      "confidence": "low"
+      ]
     }
   ],
   "creator": "이원준 시니어매니저",
-  "method_note": "무료 공개 소스, 검색 결과, 뉴스 RSS, 블로그/후기성 스니펫을 바탕으로 산출하는 공개 노출·반응 톤 기반 NOIZ 데이터."
+  "method_note": "공개 검색 결과와 전시/팝업 정보 페이지를 근거로 만든 NOIZ 데이터. 자동 업데이트 스크립트 실행 시 data/noiz-data.json이 갱신된다."
 }

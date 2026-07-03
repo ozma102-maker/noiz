@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 """
-NOIZ updater — free MVP max mode.
+ART NOIZ updater
 
-핵심 방식
-1. 지정 소스 페이지에서 전시/팝업 후보를 넓게 수집한다.
-2. 무료 공개 검색 페이지/RSS에서 후보별·키워드별 후기/노출 신호를 추가 수집한다.
-3. 후기 축적 전, 오픈 예정, 반응 없음 항목은 랭킹에서 제외한다.
-4. 전체 후보군에서 먼저 필터링한 뒤 NOIZ 점수순 Top 10을 만든다.
+이 스크립트는 Art Week Korea expanded HTML에서 추출한
+전시 후보(candidates)와 서울·수도권 공간 watchlist(venues)를 기반으로
+히든 art.html 페이지용 data/art-noiz-data.json을 갱신한다.
 
-주의
-- API key 없는 무료 MVP라서 검색 결과 HTML/RSS 구조 변경에 취약하다.
-- 네이버 플레이스/인스타그램 리뷰 전체 수집은 하지 않는다.
-- 결과는 "객관적 평점"이 아니라 공개 노출·후기성 신호 기반 레이더다.
+적용 원칙
+- 미술관/갤러리/대안공간/아트 플랫폼 중심
+- 브랜드 팝업/굿즈 팝업 단독 후보 제외
+- 공식 홈페이지 우선, ARTMAP/서울아트가이드/네오룩/Ocula/Frieze/리뷰 검색은 교차 확인 레이어
+- 무료 MVP라서 네이버 플레이스 리뷰/인스타 댓글 전체 수집은 하지 않음
 """
 
 from __future__ import annotations
@@ -26,23 +25,22 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import parse_qs, quote_plus, unquote, urljoin, urlparse
+from urllib.parse import quote_plus, urljoin, urlparse, parse_qs, unquote
 
 import requests
 from bs4 import BeautifulSoup
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "data" / "art-noiz-data.json"
-SOURCES_PATH = ROOT / "scripts" / "sources.json"
+SEED_PATH = ROOT / "data" / "art-week-seed.json"
 KST = timezone(timedelta(hours=9))
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; NOIZBot/1.5; weekly-space-radar)",
+    "User-Agent": "Mozilla/5.0 (compatible; NOIZArtBot/1.0; hidden-art-radar)",
     "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.7,en;q=0.6",
 }
 
-# 무료 공개 검색 쿼리. 후보군을 넓히는 용도.
-SEARCH_QUERIES = [
+ART_SEARCH_QUERIES = [
     "서울 미술 전시 후기",
     "서울 미술관 전시 후기",
     "서울 갤러리 전시 후기",
@@ -58,106 +56,33 @@ SEARCH_QUERIES = [
     "서울시립미술관 전시 후기",
     "아트선재 전시 후기",
     "리움미술관 전시 후기",
-    "아모레퍼시픽미술관 전시 후기",
     "송은 전시 후기",
     "국제갤러리 전시 후기",
     "PKM 전시 후기",
-    "페로탕 서울 전시 후기",
-    "아라리오갤러리 전시 후기",
-    "학고재 전시 후기",
-    "바라캇 컨템포러리 전시 후기",
+    "Ocula Seoul exhibitions",
+    "ARTMAP 서울 전시",
+    "네오룩 서울 전시",
+    "서울아트가이드 전시",
 ]
 
-POSITIVE_WORDS = [
-    "좋", "좋았", "만족", "추천", "강추", "재밌", "재미", "예쁘", "멋있",
-    "인기", "핫", "화제", "볼만", "알차", "감각", "퀄리티", "포토존",
-    "굿즈", "무료", "체험", "한정", "오픈런", "매진", "예약", "도슨트",
-    "인생샷", "힐링", "몰입", "새롭", "풍성"
-]
-
-NEGATIVE_WORDS = [
-    "아쉽", "실망", "별로", "비추", "비싸", "혼잡", "웨이팅", "줄", "대기",
-    "품절", "좁", "불편", "상업적", "혼선", "예약필수", "마감", "허무",
-    "부족", "복잡", "시끄럽", "덥", "춥"
-]
-
-NOISE_WORDS = [
+ART_WORDS = [
     "전시", "전시회", "개인전", "기획전", "미술", "미술관", "갤러리",
     "작가", "회화", "조각", "설치", "사진", "영상", "현대미술",
     "관람", "도슨트", "오프닝", "아트", "아트맵", "네오룩", "서울아트가이드",
     "국립현대미술관", "서울시립미술관", "리움", "송은", "국제갤러리",
-    "PKM", "페로탕", "삼청", "한남", "청담", "을지로"
+    "PKM", "페로탕", "삼청", "한남", "청담", "을지로",
+    "exhibition", "artist", "gallery", "museum", "art"
 ]
 
-REACTION_WORDS = [
-    "후기", "리뷰", "방문", "다녀왔", "관람", "웨이팅", "대기", "굿즈", "추천",
-    "별로", "아쉽", "좋았", "만족", "실망"
+POSITIVE_WORDS = [
+    "좋", "좋았", "만족", "추천", "강추", "볼만", "알차", "감각", "퀄리티",
+    "중요", "주요", "거장", "도슨트", "몰입", "새롭", "풍성", "인상적"
 ]
+NEGATIVE_WORDS = ["아쉽", "실망", "별로", "비추", "비싸", "혼잡", "웨이팅", "줄", "대기", "불편", "복잡"]
+BAD_WORDS = ["로그인", "회원가입", "개인정보", "이용약관", "전체보기", "더보기"]
+POPUP_ONLY_WORDS = ["팝업스토어", "브랜드 팝업", "굿즈 팝업"]
 
-UPCOMING_WORDS = [
-    "오픈 예정", "공개 예정", "개최 예정", "coming soon", "pre-open", "preopen"
-]
-
-CLOSED_WORDS = [
-    "종료되었습니다", "종료된 전시", "전시 종료", "팝업 종료", "마감되었습니다",
-    "운영 종료", "지난 전시"
-]
-
-BAD_TITLE_WORDS = [
-    "로그인", "회원가입", "더보기", "바로가기", "전체보기", "메뉴", "검색",
-    "공지사항", "개인정보", "이용약관"
-]
-
-AREA_WORDS = [
-    "성수", "여의도", "한남", "삼청", "청담", "을지로", "중구", "종로",
-    "서촌", "용산", "강남", "홍대", "잠실", "마포", "DDP", "동대문",
-    "압구정", "신사", "가로수길", "광화문", "서울숲"
-]
-
-KNOWN_VENUES = [
-    "더현대 서울", "DDP", "서울시립미술관", "국립현대미술관", "그라운드시소",
-    "문화역서울284", "코엑스", "롯데월드몰", "디뮤지엄", "대림미술관",
-    "아모레퍼시픽미술관", "리움미술관", "국제갤러리", "PKM", "페로탕",
-    "송은", "성수", "한남", "삼청", "을지로"
-]
-
-
-
-ART_SOURCES = [
-    {"name": "ARTMAP", "url": "https://art-map.co.kr/", "type": "art", "weight": 28},
-    {"name": "Seoul Art Guide", "url": "https://www.daljin.com/", "type": "art", "weight": 25},
-    {"name": "NeoLook", "url": "https://neolook.com/", "type": "art", "weight": 23},
-    {"name": "MMCA", "url": "https://www.mmca.go.kr/exhibitions/exhibitionsList.do", "type": "art", "weight": 30},
-    {"name": "SeMA", "url": "https://sema.seoul.go.kr/kr/whatson/exhibition", "type": "art", "weight": 30},
-    {"name": "Leeum", "url": "https://www.leeum.org/exhibition/exhibition.asp", "type": "art", "weight": 28},
-    {"name": "Art Sonje Center", "url": "https://artsonje.org/exhibition/", "type": "art", "weight": 27},
-    {"name": "SongEun", "url": "https://www.songeun.or.kr/programs/exhibitions", "type": "art", "weight": 27},
-    {"name": "Kukje Gallery", "url": "https://www.kukjegallery.com/exhibitions", "type": "art", "weight": 27},
-    {"name": "PKM Gallery", "url": "https://pkmgallery.com/exhibitions", "type": "art", "weight": 26},
-    {"name": "Perrotin Seoul", "url": "https://www.perrotin.com/exhibitions/current", "type": "art", "weight": 25},
-    {"name": "Arario Gallery", "url": "https://www.arariogallery.com/exhibitions/", "type": "art", "weight": 25},
-]
-
-@dataclass
-class Candidate:
-    brand: str
-    title: str
-    owner: str
-    venue: str
-    area: str
-    region: str
-    mapQuery: str
-    sourceUrl: str
-    sourceLabel: str
-    noiz: int
-    favorability: int
-    description: str
-    signals: list[str]
-    infoVolume: str
-    evidenceCount: int = 1
-    reactionCount: int = 0
-    confidence: str = "low"
-
+KNOWN_AREAS = ["삼청", "한남", "청담", "성수", "을지로", "서촌", "종로", "중구", "강남", "용산", "송파", "여의도", "서초", "인천", "경기", "수원", "파주"]
 
 def clean_text(text: str) -> str:
     text = html.unescape(text or "")
@@ -165,508 +90,306 @@ def clean_text(text: str) -> str:
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
-
-def fetch(url: str, timeout: int = 18) -> str:
-    res = requests.get(url, headers=HEADERS, timeout=timeout)
-    res.raise_for_status()
-    if not res.encoding:
-        res.encoding = "utf-8"
-    return res.text
-
-
-def safe_fetch(url: str, timeout: int = 18) -> str:
-    try:
-        time.sleep(random.uniform(0.15, 0.45))
-        return fetch(url, timeout=timeout)
-    except Exception as e:
-        print(f"[WARN] fetch failed: {url}: {e}")
-        return ""
-
-
-def normalize_title(title: str) -> str:
-    title = clean_text(title)
-    title = re.sub(r"\s*[-|:]\s*(네이버 블로그|네이버 포스트|브런치|YouTube|유튜브|뉴스|공식.*)$", "", title, flags=re.I)
-    title = re.sub(r"\[(.*?)\]", r"\1", title)
-    title = re.sub(r"\((.*?)\)", r"\1", title)
-    title = title.strip(" -_|·")
-    return title[:90]
-
+def normalize(text: str) -> str:
+    text = (text or "").lower().normalize("NFKD") if hasattr(str, "normalize") else (text or "").lower()
+    return re.sub(r"exhibition|solo|group|개인전|기획전|展|전시|《|》|〈|〉|<|>|:|：|\.|,|'|\"|\(|\)|\[|\]|\s+|the", "", text)
 
 def candidate_key(title: str, venue: str = "") -> str:
     base = re.sub(r"[^0-9A-Za-z가-힣]+", "", (title + venue).lower())
     return hashlib.md5(base.encode("utf-8")).hexdigest()
 
+def canonical_key(item: dict[str, Any]) -> str:
+    return f"{candidate_key(item.get('title',''), item.get('venue',''))}"
 
 def has_any(text: str, words: list[str]) -> bool:
     low = text.lower()
     return any(w.lower() in low for w in words)
 
-
-def looks_like_candidate(text: str) -> bool:
+def looks_like_art(text: str) -> bool:
+    text = clean_text(text)
     if len(text) < 6 or len(text) > 260:
         return False
-    if any(w in text for w in BAD_TITLE_WORDS):
+    if has_any(text, BAD_WORDS):
         return False
-    # Hidden art mode: 팝업/브랜드 단독 노출은 제외하고 미술 전시성 신호만 통과.
-    art_signal = has_any(text, NOISE_WORDS + ["exhibition", "artist", "gallery", "museum"])
-    not_art_noise = has_any(text, ["팝업", "브랜드", "굿즈"]) and not has_any(text, ["전시", "미술", "갤러리", "작가", "미술관"])
-    return art_signal and not not_art_noise
+    popup_only = has_any(text, POPUP_ONLY_WORDS) and not has_any(text, ["미술", "갤러리", "미술관", "작가", "전시"])
+    return has_any(text, ART_WORDS) and not popup_only
 
-
-
-def is_upcoming_or_closed(text: str) -> bool:
-    low = text.lower()
-    return any(w.lower() in low for w in UPCOMING_WORDS + CLOSED_WORDS)
-
+def safe_fetch(url: str, timeout: int = 14) -> str:
+    try:
+        time.sleep(random.uniform(0.12, 0.32))
+        res = requests.get(url, headers=HEADERS, timeout=timeout)
+        res.raise_for_status()
+        if not res.encoding:
+            res.encoding = "utf-8"
+        return res.text
+    except Exception as e:
+        print(f"[WARN] fetch failed: {url}: {e}")
+        return ""
 
 def guess_area(text: str) -> str:
-    for a in AREA_WORDS:
+    for a in KNOWN_AREAS:
         if a in text:
             return a
     return "서울/수도권"
 
+def score_item(raw: dict[str, Any], source_count: int = 1) -> tuple[int, int, list[str], str, int, str]:
+    text = " ".join([
+        str(raw.get("title","")),
+        str(raw.get("artist","")),
+        str(raw.get("venue","")),
+        str(raw.get("note","")),
+        " ".join(raw.get("tags", []) or []),
+        " ".join(raw.get("sourceNames", []) or [raw.get("sourceName","")]),
+    ])
+    confidence = int(raw.get("confidence", 70) or 70)
+    recommended = bool(raw.get("recommended"))
+    needs_review = bool(raw.get("needsReview"))
+    official = "official" in (raw.get("sourceKeys") or [raw.get("sourceKey", "")])
 
-def guess_venue(text: str, fallback: str = "서울/수도권") -> str:
-    for venue in KNOWN_VENUES:
-        if venue in text:
-            return venue
-    return fallback
+    pos = sum(1 for w in POSITIVE_WORDS if w in text)
+    neg = sum(1 for w in NEGATIVE_WORDS if w in text)
 
+    noiz = 42 + min(28, round(confidence * 0.28))
+    if recommended: noiz += 12
+    if official: noiz += 8
+    if source_count >= 2: noiz += min(12, source_count * 4)
+    if raw.get("venueType") == "museum": noiz += 3
+    noiz += min(8, pos * 2)
+    noiz += min(5, neg)
+    if needs_review: noiz -= 10
+    noiz = max(50, min(99, noiz))
 
-def reaction_count_from_text(text: str, channel: str) -> int:
-    count = sum(1 for w in REACTION_WORDS if w in text)
-    if channel in {"naver_view", "duckduckgo", "google_news"} and count > 0:
-        count += 1
-    return min(5, count)
+    favor = 58 + round(confidence * 0.22) + min(8, pos * 2) - min(10, neg * 3)
+    if recommended: favor += 6
+    if needs_review: favor -= 8
+    favor = max(50, min(92, favor))
 
+    info_volume = "medium" if confidence >= 70 or source_count >= 1 else "low"
+    reaction_count = 1 if confidence >= 45 else 0
+    confidence_label = "high" if confidence >= 88 else "medium" if confidence >= 70 else "low"
 
-def text_score(text: str, base: int, evidence_count: int = 1, reaction_count: int = 0) -> tuple[int, int, list[str], str, str]:
-    pos = sum(1 for w in POSITIVE_WORDS if w.lower() in text.lower())
-    neg = sum(1 for w in NEGATIVE_WORDS if w.lower() in text.lower())
-    noise = sum(1 for w in NOISE_WORDS if w.lower() in text.lower())
-
-    if reaction_count >= 3 or evidence_count >= 5:
-        info_volume = "high"
-        confidence = "high"
-    elif reaction_count >= 1 or evidence_count >= 2:
-        info_volume = "medium"
-        confidence = "medium"
-    else:
-        info_volume = "low"
-        confidence = "low"
-
-    noiz = base
-    noiz += min(30, evidence_count * 5)
-    noiz += min(24, reaction_count * 6)
-    noiz += min(24, noise * 3)
-    noiz += min(10, pos * 2)
-    noiz += min(8, neg * 2)  # 부정도 화제성/노이즈 신호로 일부 반영
-    noiz = max(35, min(99, noiz))
-
-    # favorability: 여론 톤. 기본은 중립 60.
-    favor = 60 + min(30, pos * 4) - min(34, neg * 6)
-    if "웨이팅" in text or "혼잡" in text or "줄" in text or "대기" in text:
-        favor -= 5
-    if "무료" in text or "추천" in text or "좋았" in text or "만족" in text:
-        favor += 4
-
-    # 정보량이 낮으면 극단 판단 금지
-    if info_volume == "low":
-        favor = max(50, min(69, favor))
-
-    favor = max(0, min(100, favor))
-
-    signals: list[str] = []
-    if reaction_count:
-        signals.append("후기 반응")
-    if evidence_count >= 2:
-        signals.append("복수 출처")
-    if pos:
-        signals.append("긍정 신호")
-    if neg:
-        signals.append("혼잡/피로 신호")
-    if "웨이팅" in text or "대기" in text:
-        signals.append("웨이팅 가능성")
-    if "굿즈" in text:
-        signals.append("굿즈 신호")
-    if "무료" in text:
-        signals.append("무료/체험")
-    if info_volume == "low":
-        signals.append("후기 축적 전")
-    if is_upcoming_or_closed(text):
-        signals.append("오픈 예정")
+    signals = []
+    if official: signals.append("공식 확인")
+    if source_count >= 2: signals.append("교차 확인")
+    if recommended: signals.append("추천/중요")
+    if needs_review: signals.append("검토 필요")
+    if raw.get("venueType") == "museum": signals.append("미술관")
+    elif raw.get("venueType") == "gallery": signals.append("갤러리")
+    elif raw.get("venueType") == "nonprofit": signals.append("대안공간")
+    for tag in raw.get("tags", []) or []:
+        if len(signals) >= 4: break
+        if tag not in signals: signals.append(str(tag))
     if not signals:
-        signals.append("공개 노출")
+        signals = ["미술 전시"]
+    return noiz, favor, signals[:4], info_volume, reaction_count, confidence_label
 
-    return noiz, favor, signals[:4], info_volume, confidence
+def merge_seed_candidates(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    grouped: dict[str, dict[str, Any]] = {}
+    for c in candidates:
+        key = canonical_key(c)
+        if key not in grouped:
+            item = dict(c)
+            item["sourceKeys"] = [c.get("sourceKey", "unknown")]
+            item["sourceNames"] = [c.get("sourceName", "unknown")]
+            item["sourceUrls"] = [{"name": c.get("sourceName","unknown"), "key": c.get("sourceKey","unknown"), "url": c.get("url","#")}]
+            item["candidateIds"] = [c.get("id", key)]
+            item["conflicts"] = []
+            grouped[key] = item
+        else:
+            base = grouped[key]
+            if c.get("sourceKey") not in base["sourceKeys"]:
+                base["sourceKeys"].append(c.get("sourceKey","unknown"))
+            if c.get("sourceName") not in base["sourceNames"]:
+                base["sourceNames"].append(c.get("sourceName","unknown"))
+            base["sourceUrls"].append({"name": c.get("sourceName","unknown"), "key": c.get("sourceKey","unknown"), "url": c.get("url","#")})
+            base["candidateIds"].append(c.get("id", key))
+            base["confidence"] = max(int(base.get("confidence",0) or 0), int(c.get("confidence",0) or 0))
+            base["needsReview"] = bool(base.get("needsReview")) or bool(c.get("needsReview")) or c.get("start") != base.get("start") or c.get("end") != base.get("end")
+            if c.get("start") != base.get("start") or c.get("end") != base.get("end"):
+                base.setdefault("conflicts", []).append(f"Date conflict: {c.get('sourceName')} {c.get('start')}~{c.get('end')}")
+            if (c.get("sourceKey") == "official" and base.get("sourceKey") != "official") or int(c.get("confidence",0) or 0) > int(base.get("confidence",0) or 0):
+                keep = {k: base[k] for k in ["sourceKeys", "sourceNames", "sourceUrls", "candidateIds", "conflicts"]}
+                keep["needsReview"] = base["needsReview"]
+                new_base = dict(c)
+                new_base.update(keep)
+                grouped[key] = new_base
+    return list(grouped.values())
 
+def make_noiz_item(raw: dict[str, Any]) -> dict[str, Any]:
+    source_count = len(raw.get("sourceKeys") or [raw.get("sourceKey", "unknown")])
+    noiz, favor, signals, info_volume, reaction_count, confidence_label = score_item(raw, source_count)
+    return {
+        "rank": 0,
+        "brand": raw.get("artist") or "Group exhibition",
+        "title": raw.get("title") or "Untitled",
+        "owner": f"{raw.get('venue','')} · {', '.join(raw.get('sourceNames') or [raw.get('sourceName','')])}",
+        "venue": raw.get("venue") or "",
+        "area": raw.get("area") or raw.get("district") or "서울/수도권",
+        "region": raw.get("city") or "Seoul",
+        "mapQuery": f"{raw.get('title','')} {raw.get('venue','')} {raw.get('area','')}",
+        "sourceUrl": raw.get("url") or "#",
+        "sourceLabel": "정보 출처",
+        "noiz": noiz,
+        "favorability": favor,
+        "description": raw.get("note") or "미술관·갤러리·아트 플랫폼 기반 전시 후보입니다.",
+        "signals": signals,
+        "infoVolume": info_volume,
+        "evidenceCount": max(1, source_count),
+        "reactionCount": reaction_count,
+        "confidence": confidence_label,
+        "category": "art",
+        "artist": raw.get("artist") or "",
+        "start": raw.get("start") or "",
+        "end": raw.get("end") or "",
+        "venueType": raw.get("venueType") or "",
+        "sourceKeys": raw.get("sourceKeys") or [raw.get("sourceKey", "unknown")],
+    }
 
-def make_description(title: str, evidence_count: int, reaction_count: int, area: str) -> str:
-    return (
-        f"{area}권에서 공개 노출 {evidence_count}건, 후기성 신호 {reaction_count}건을 기준으로 포착된 후보. "
-        "ART NOIZ는 평점이 아니라 이번 주 미술 전시의 노출량과 관람 반응 톤을 읽는 레이더다."
-    )
+def active_or_currentish(raw: dict[str, Any], today: datetime) -> bool:
+    try:
+        start = datetime.fromisoformat(raw.get("start")).date()
+        end = datetime.fromisoformat(raw.get("end")).date()
+        d = today.date()
+        return start <= d <= end
+    except Exception:
+        return True
 
-
-def make_candidate(
-    *,
-    title: str,
-    text: str,
-    url: str,
-    source_name: str,
-    channel: str,
-    source_type: str = "event",
-    base: int = 18,
-) -> Candidate | None:
-    text = clean_text(f"{title} {text}")
-    title = normalize_title(title)
-    if not looks_like_candidate(text) or not title:
-        return None
-
-    area = guess_area(text)
-    venue = guess_venue(text, fallback=area)
-    reaction_count = reaction_count_from_text(text, channel)
-    evidence_count = 1
-    noiz, favor, signals, info_volume, confidence = text_score(
-        text,
-        base=base,
-        evidence_count=evidence_count,
-        reaction_count=reaction_count,
-    )
-
-    return Candidate(
-        brand=source_name,
-        title=title,
-        owner=f"{source_name}에서 확인된 미술 전시 후보",
-        venue=venue,
-        area=area,
-        region=area,
-        mapQuery=f"{title} {venue} {area}",
-        sourceUrl=url,
-        sourceLabel="정보 출처",
-        noiz=noiz,
-        favorability=favor,
-        description=make_description(title, evidence_count, reaction_count, area),
-        signals=signals,
-        infoVolume=info_volume,
-        evidenceCount=evidence_count,
-        reactionCount=reaction_count,
-        confidence=confidence,
-    )
-
-
-def extract_candidates_from_source(source: dict[str, Any]) -> list[Candidate]:
-    url = source["url"]
-    source_type = source.get("type", "event")
-    base = int(source.get("weight", 18))
-    raw = safe_fetch(url)
+def scan_venue_page(venue: list[Any]) -> list[dict[str, Any]]:
+    name, vtype, city, district, website, instagram = venue
+    if not website or website == "#":
+        return []
+    raw = safe_fetch(website)
     if not raw:
         return []
-
     soup = BeautifulSoup(raw, "lxml")
     for tag in soup(["script", "style", "noscript"]):
         tag.decompose()
-
-    out: list[Candidate] = []
-    seen: set[str] = set()
-    for a in soup.find_all("a", href=True)[:220]:
+    out = []
+    for a in soup.find_all("a", href=True)[:120]:
         title = clean_text(a.get_text(" ", strip=True))
-        if not title or not looks_like_candidate(title):
+        parent = clean_text(a.find_parent().get_text(" ", strip=True) if a.find_parent() else title)
+        text = f"{title} {parent} {name}"
+        if not looks_like_art(text):
             continue
-
-        parent_text = clean_text(a.find_parent().get_text(" ", strip=True) if a.find_parent() else title)
-        link = urljoin(url, a.get("href") or "")
-        key = candidate_key(title, source["name"])
-        if key in seen:
-            continue
-        seen.add(key)
-
-        cand = make_candidate(
-            title=title,
-            text=parent_text,
-            url=link,
-            source_name=source["name"],
-            channel="official",
-            source_type=source_type,
-            base=base,
-        )
-        if cand:
-            out.append(cand)
-
-    print(f"[INFO] source {source['name']}: {len(out)} candidates")
+        out.append({
+            "id": candidate_key(title, name),
+            "title": title[:90],
+            "artist": "TBC",
+            "venue": name,
+            "venueType": vtype,
+            "city": city,
+            "district": district,
+            "area": district,
+            "start": datetime.now(KST).date().isoformat(),
+            "end": (datetime.now(KST).date() + timedelta(days=45)).isoformat(),
+            "tags": ["official-scan"],
+            "recommended": False,
+            "needsReview": True,
+            "confidence": 55,
+            "note": "공식 공간 페이지에서 자동 포착된 전시 후보. 날짜/작가명은 검토 필요.",
+            "url": urljoin(website, a.get("href") or ""),
+            "sourceKey": "official",
+            "sourceName": f"{name} official scan",
+        })
+        if len(out) >= 4:
+            break
     return out
 
-
 def decode_ddg_link(href: str) -> str:
-    if not href:
-        return ""
     parsed = urlparse(href)
     qs = parse_qs(parsed.query)
     if "uddg" in qs:
         return unquote(qs["uddg"][0])
     return href
 
-
-def search_duckduckgo(query: str, max_results: int = 8) -> list[Candidate]:
+def search_duckduckgo(query: str, max_results: int = 5) -> list[dict[str, Any]]:
     url = f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"
     raw = safe_fetch(url)
     if not raw:
         return []
-
     soup = BeautifulSoup(raw, "lxml")
-    out: list[Candidate] = []
+    out = []
     for block in soup.select(".result")[:max_results]:
         a = block.select_one(".result__a")
         if not a:
             continue
         title = clean_text(a.get_text(" ", strip=True))
-        href = decode_ddg_link(a.get("href") or "")
         snippet_el = block.select_one(".result__snippet")
         snippet = clean_text(snippet_el.get_text(" ", strip=True) if snippet_el else block.get_text(" ", strip=True))
-        cand = make_candidate(
-            title=title,
-            text=f"{query} {snippet}",
-            url=href,
-            source_name="Web Search",
-            channel="duckduckgo",
-            source_type="event",
-            base=22,
-        )
-        if cand:
-            out.append(cand)
-
-    print(f"[INFO] duckduckgo '{query}': {len(out)} candidates")
-    return out
-
-
-def search_naver_view(query: str, max_results: int = 10) -> list[Candidate]:
-    url = f"https://search.naver.com/search.naver?where=view&query={quote_plus(query)}"
-    raw = safe_fetch(url)
-    if not raw:
-        return []
-
-    soup = BeautifulSoup(raw, "lxml")
-    out: list[Candidate] = []
-    seen: set[str] = set()
-
-    # 네이버 검색 결과 구조는 자주 바뀌므로 generic하게 링크를 읽는다.
-    for a in soup.find_all("a", href=True):
-        if len(out) >= max_results:
-            break
-        href = a.get("href") or ""
-        title = clean_text(a.get_text(" ", strip=True))
-        if not title or href in seen:
+        if not looks_like_art(f"{title} {snippet}"):
             continue
-        if "blog.naver.com" not in href and "post.naver.com" not in href and "cafe.naver.com" not in href:
-            continue
-        parent = a.find_parent()
-        snippet = clean_text(parent.get_text(" ", strip=True) if parent else title)
-        cand = make_candidate(
-            title=title,
-            text=f"{query} {snippet}",
-            url=href,
-            source_name="Naver View",
-            channel="naver_view",
-            source_type="event",
-            base=24,
-        )
-        if cand:
-            out.append(cand)
-            seen.add(href)
-
-    print(f"[INFO] naver view '{query}': {len(out)} candidates")
+        out.append({
+            "id": candidate_key(title, "web"),
+            "title": title[:90],
+            "artist": "TBC",
+            "venue": "서울/수도권",
+            "venueType": "gallery",
+            "city": "Seoul",
+            "district": guess_area(snippet),
+            "area": guess_area(snippet),
+            "start": datetime.now(KST).date().isoformat(),
+            "end": (datetime.now(KST).date() + timedelta(days=30)).isoformat(),
+            "tags": ["search-signal"],
+            "recommended": False,
+            "needsReview": True,
+            "confidence": 52,
+            "note": f"무료 공개 검색에서 포착된 전시 후보: {snippet[:120]}",
+            "url": decode_ddg_link(a.get("href") or ""),
+            "sourceKey": "search",
+            "sourceName": "Web search",
+        })
     return out
 
+def build_items() -> list[dict[str, Any]]:
+    seed = json.loads(SEED_PATH.read_text(encoding="utf-8"))
+    candidates = list(seed.get("candidates", []))
 
-def search_google_news(query: str, max_results: int = 8) -> list[Candidate]:
-    url = f"https://news.google.com/rss/search?q={quote_plus(query)}&hl=ko&gl=KR&ceid=KR:ko"
-    raw = safe_fetch(url)
-    if not raw:
-        return []
+    # 기존 프로토타입의 venues watchlist를 공식 페이지 수집 대상으로 사용.
+    # 너무 많이 돌면 GitHub Actions가 느려지므로 우선순위 공간만 앞에서 일부만 스캔.
+    venues = seed.get("venues", [])
+    priority = [v for v in venues if v[1] in ("museum", "gallery", "nonprofit") and v[4] and v[4] != "#"][:45]
+    for venue in priority:
+        candidates.extend(scan_venue_page(venue))
 
-    soup = BeautifulSoup(raw, "xml")
-    out: list[Candidate] = []
-    for item in soup.find_all("item")[:max_results]:
-        title = clean_text(item.title.get_text(" ", strip=True) if item.title else "")
-        link = clean_text(item.link.get_text(" ", strip=True) if item.link else "")
-        desc = clean_text(item.description.get_text(" ", strip=True) if item.description else "")
-        cand = make_candidate(
-            title=title,
-            text=f"{query} {desc}",
-            url=link,
-            source_name="Google News",
-            channel="google_news",
-            source_type="event",
-            base=20,
-        )
-        if cand:
-            out.append(cand)
+    # 무료 검색 신호 보강.
+    for q in ART_SEARCH_QUERIES:
+        candidates.extend(search_duckduckgo(q, max_results=4))
 
-    print(f"[INFO] google news '{query}': {len(out)} candidates")
-    return out
-
-
-def discover_search_candidates() -> list[Candidate]:
-    candidates: list[Candidate] = []
-    for query in SEARCH_QUERIES:
-        candidates.extend(search_naver_view(query, max_results=8))
-        candidates.extend(search_duckduckgo(query, max_results=6))
-        candidates.extend(search_google_news(query, max_results=5))
-    return candidates
-
-
-def merge_candidates(candidates: list[Candidate]) -> list[dict[str, Any]]:
-    grouped: dict[str, list[Candidate]] = {}
-    for c in candidates:
-        # 검색 결과 제목이 블로그식으로 길 수 있어 venue보다 title 중심으로 묶는다.
-        key = candidate_key(c.title)
-        grouped.setdefault(key, []).append(c)
-
-    merged: list[dict[str, Any]] = []
-    for group in grouped.values():
-        group = sorted(group, key=lambda c: c.noiz, reverse=True)
-        best = asdict(group[0])
-
-        evidence_count = sum(max(1, g.evidenceCount) for g in group)
-        reaction_count = sum(max(0, g.reactionCount) for g in group)
-        text_blob = " ".join(
-            [g.title, g.description, " ".join(g.signals), g.brand, g.area]
-            for g in group
-        )
-        base = max(g.noiz for g in group) - 10
-        noiz, favor, signals, info_volume, confidence = text_score(
-            text_blob,
-            base=max(35, min(85, base)),
-            evidence_count=evidence_count,
-            reaction_count=reaction_count,
-        )
-
-        source_labels = []
-        for g in group:
-            if g.brand not in source_labels:
-                source_labels.append(g.brand)
-
-        best["noiz"] = noiz
-        best["favorability"] = favor
-        best["signals"] = signals[:4]
-        best["infoVolume"] = info_volume
-        best["evidenceCount"] = evidence_count
-        best["reactionCount"] = reaction_count
-        best["confidence"] = confidence
-        best["brand"] = " / ".join(source_labels[:2])
-        best["owner"] = f"공개 노출 {evidence_count}건 · 후기성 신호 {reaction_count}건"
-        best["description"] = make_description(best["title"], evidence_count, reaction_count, best.get("area", "서울/수도권"))
-
-        merged.append(best)
-
-    return merged
-
-
-def is_rankable_item(item: dict[str, Any]) -> bool:
-    signals = " ".join(item.get("signals", []))
-    status = str(item.get("status", item.get("openStatus", ""))).lower()
-    text = " ".join([
-        item.get("title", ""),
-        item.get("description", ""),
-        signals,
-        status,
-    ])
-
-    if item.get("infoVolume") == "low" or item.get("lowInfo") is True:
-        return False
-    if int(item.get("reactionCount", 0) or 0) <= 0:
-        return False
-    if any(x in signals for x in ["후기 축적 전", "후기 부족", "오픈 예정", "반응 없음"]):
-        return False
-    if any(x in status for x in ["upcoming", "preopen", "pre-open"]):
-        return False
-    if is_upcoming_or_closed(text):
-        return False
-    return True
-
-
-def load_existing() -> dict[str, Any]:
-    if DATA_PATH.exists():
-        return json.loads(DATA_PATH.read_text(encoding="utf-8"))
-    return {"items": []}
-
-
-def merge_with_existing(new_items: list[dict[str, Any]], existing_items: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    by_key: dict[str, dict[str, Any]] = {}
-
-    # 새 후보 우선
-    for item in new_items:
-        k = candidate_key(item.get("title", ""))
-        if k not in by_key or int(item.get("noiz", 0)) > int(by_key[k].get("noiz", 0)):
-            by_key[k] = item
-
-    # 새 후보가 적을 때만 기존 데이터 보강. 단 low-info는 제외된다.
-    for old in existing_items:
-        old.setdefault("infoVolume", "medium")
-        signals_text = " ".join(old.get("signals", []))
-        old.setdefault("reactionCount", 0 if ("후기 축적 전" in signals_text or "후기 부족" in signals_text) else 1)
-        old.setdefault("evidenceCount", 2 if old.get("reactionCount", 0) else 1)
-        old.setdefault("confidence", "medium" if old.get("reactionCount", 0) else "low")
-        k = candidate_key(old.get("title", ""))
-        if k not in by_key:
-            by_key[k] = old
-
-    ranked_pool = [item for item in by_key.values() if is_rankable_item(item)]
-    ranked_pool.sort(key=lambda x: int(x.get("noiz", 0)), reverse=True)
-
-    top = ranked_pool[:10]
+    merged = merge_seed_candidates(candidates)
+    today = datetime.now(KST)
+    current = [m for m in merged if active_or_currentish(m, today)]
+    items = [make_noiz_item(m) for m in current]
+    items = [x for x in items if x.get("infoVolume") != "low" and x.get("reactionCount", 0) > 0]
+    items.sort(key=lambda x: (int(x.get("noiz", 0)), int(x.get("favorability", 0)), int(x.get("evidenceCount", 0))), reverse=True)
+    top = items[:10]
     for i, item in enumerate(top, 1):
         item["rank"] = i
     return top
 
-
 def make_weekly_read(items: list[dict[str, Any]]) -> str:
     if not items:
-        return "이번 주 공개 검색에서 충분한 관람 후기성 반응이 확인된 미술 전시 후보를 찾지 못했다."
-
-    areas: dict[str, int] = {}
-    for item in items[:10]:
-        area = item.get("area", "서울/수도권")
-        areas[area] = areas.get(area, 0) + 1
+        return "이번 주 공개 검색과 Art Week Korea watchlist에서 충분히 확인된 미술 전시 후보를 찾지 못했다."
+    areas = {}
+    for item in items:
+        areas[item.get("area", "서울/수도권")] = areas.get(item.get("area", "서울/수도권"), 0) + 1
     area_line = "·".join(sorted(areas, key=areas.get, reverse=True)[:3])
-    top = items[0]
     return (
-        f"이번 주 ART NOIZ는 {area_line}의 미술관·갤러리 전시 반응을 중심으로 잡힌다. "
-        f"1위는 {top.get('title')}이며, 공개 노출과 관람 후기성 신호가 동시에 확인된 후보 중 가장 높은 화제성을 보인다."
+        f"이번 주 ART NOIZ는 {area_line}의 미술관·갤러리 전시를 중심으로 잡힌다. "
+        "Art Week Korea의 전시 후보와 서울·수도권 watchlist를 기반으로 공식 확인·교차 확인 신호가 있는 항목을 우선 노출한다."
     )
 
-
 def main() -> None:
-    existing = load_existing()
-    sources = ART_SOURCES
-
-    candidates: list[Candidate] = []
-
-    for source in sources:
-        print(f"[INFO] scanning source: {source['name']}")
-        candidates.extend(extract_candidates_from_source(source))
-
-    print("[INFO] scanning free public search signals")
-    candidates.extend(discover_search_candidates())
-
-    merged_new = merge_candidates(candidates)
-    items = merge_with_existing(merged_new, existing.get("items", []))
-
+    items = build_items()
     payload = {
         "site": "NOIZ. Art",
         "updated_at": datetime.now(KST).isoformat(timespec="seconds"),
         "weekly_read": make_weekly_read(items),
         "items": items,
         "creator": "이원준 시니어매니저",
-        "method_note": (
-            "미술관·갤러리·아트 플랫폼·뉴스 RSS·전시 리뷰 검색 스니펫을 바탕으로 산출한 "
-            "미술 전시 전용 공개 노출·관람 반응 톤 기반 ART NOIZ 데이터입니다."
-        ),
+        "method_note": "Art Week Korea expanded prototype의 candidates/venues 데이터, 미술관·갤러리 공식 페이지, 아트 플랫폼, 전시 리뷰 검색 신호 기반 ART NOIZ 데이터.",
     }
-
     DATA_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"[OK] wrote {DATA_PATH} with {len(items)} rankable items")
-
+    print(f"[OK] wrote {DATA_PATH} with {len(items)} ART NOIZ items")
 
 if __name__ == "__main__":
     main()

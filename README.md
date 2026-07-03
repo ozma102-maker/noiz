@@ -128,3 +128,18 @@ NOIZ. 로고 3회 빠른 탭
 ```
 
 ART 모드는 메인 페이지와 별도로 `data/art-noiz-data.json`을 읽고, GitHub Actions에서 `scripts/update_art_noiz.py`가 함께 갱신합니다.
+
+
+## ART NOIZ 수집 강화
+
+`art.html`은 업로드한 `Art Week Korea — Expanded Coverage Prototype`의 전시 후보와 서울·수도권 공간 watchlist를 기반으로 갱신됩니다.
+
+```txt
+data/art-week-seed.json
+→ 기존 Art Week Korea candidates 25개
+→ 서울·수도권 watchlist venues 175개
+→ scripts/update_art_noiz.py에서 공식 페이지/검색 신호와 결합
+→ data/art-noiz-data.json 생성
+```
+
+메인 NOIZ와 달리 ART 모드는 브랜드 팝업을 제외하고 미술관, 갤러리, 대안공간, 아트 플랫폼, 전시 리뷰 신호만 봅니다.
