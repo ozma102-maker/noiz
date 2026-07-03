@@ -73,6 +73,25 @@
     .score-mood{justify-content:flex-end;font-size:12px;margin-top:7px;white-space:nowrap}
     .score-mood svg{width:16px;height:16px}
   }
+
+  /* v30 score mood fix */
+  .scorebox{display:flex;flex-direction:column;align-items:flex-end;text-align:right;flex:0 0 auto;justify-self:end;align-self:start}
+  .score-mood{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:9px;font-size:13px;font-weight:850;color:var(--ink);line-height:1;white-space:nowrap}
+  .score-mood svg{width:18px;height:18px;display:block;flex:0 0 auto;fill:none!important;stroke:currentColor!important}
+  .score-mood svg *{fill:none!important;stroke:currentColor!important}
+  @media (max-width:720px){
+    .card{position:relative}
+    .head{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:start!important;gap:14px!important}
+    .scorebox{grid-column:2!important;grid-row:1!important;justify-self:end!important;align-self:start!important;min-width:58px!important;text-align:right!important;display:flex!important;flex-direction:column!important;align-items:flex-end!important}
+    .score{font-size:clamp(38px,12vw,58px)!important;line-height:.85!important}
+    .score-label{font-size:9px!important;white-space:nowrap!important;letter-spacing:.08em!important}
+    .score-mood{justify-content:flex-end!important;font-size:12px!important;margin-top:7px!important;white-space:nowrap!important}
+    .score-mood svg{width:16px!important;height:16px!important}
+  }
+  @media (max-width:520px){
+    .head{grid-template-columns:minmax(0,1fr) auto!important}
+    .title{max-width:calc(100vw - 160px)}
+  }
 </style>
 </head>
 <body>
@@ -190,6 +209,21 @@ function formatWeekLabel(iso) {
   return `${year} ${months[month - 1]} week ${week}`;
 }
 
+
+function moodIconSvg(icon) {
+  const common = 'aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+  if (icon === "sunglasses") {
+    return `<svg ${common}><circle cx="12" cy="12" r="9"></circle><path d="M6.8 9.2h4.1l-.7 3H7.5l-.7-3Z"></path><path d="M13.1 9.2h4.1l-.7 3h-2.7l-.7-3Z"></path><path d="M10.9 10.6h2.2"></path><path d="M8.7 15.1c.9.8 2 1.25 3.3 1.25s2.4-.45 3.3-1.25"></path></svg>`;
+  }
+  if (icon === "smile") {
+    return `<svg ${common}><circle cx="12" cy="12" r="9"></circle><path d="M8.7 14.2c.8 1.1 1.9 1.7 3.3 1.7s2.5-.6 3.3-1.7"></path><path d="M9 9.5h.01"></path><path d="M15 9.5h.01"></path></svg>`;
+  }
+  if (icon === "frown") {
+    return `<svg ${common}><circle cx="12" cy="12" r="9"></circle><path d="M8.7 15.8c.8-1.1 1.9-1.7 3.3-1.7s2.5.6 3.3 1.7"></path><path d="M9 9.5h.01"></path><path d="M15 9.5h.01"></path></svg>`;
+  }
+  return `<svg ${common}><circle cx="12" cy="12" r="9"></circle><path d="M8.5 14h7"></path><path d="M9 9.5h.01"></path><path d="M15 9.5h.01"></path></svg>`;
+}
+
 function renderItem(item, index) {
   const rank = item.rank || index + 1;
   const mood = moodInfo(item.favorability, item);
@@ -209,7 +243,7 @@ function renderItem(item, index) {
           </div>
           <div class="scorebox">
             <div class="score">${escapeHtml(item.noiz ?? "")}</div>
-            <div class="score-label">NOIZ Meter</div>\n            <div class="score-mood"><svg aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-${mood.icon}"></use></svg><span>${mood.label}</span></div>
+            <div class="score-label">NOIZ Meter</div>\n            <div class="score-mood">${moodIconSvg(mood.icon)}<span>${mood.label}</span></div>
           </div>
         </div>
         <div class="meter">
