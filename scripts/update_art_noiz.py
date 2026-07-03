@@ -170,6 +170,85 @@ def ko_city(value: str) -> str:
     return CITY_KO.get(value, value)
 
 
+TAG_KO = {
+    "painting": "회화",
+    "sculpture": "조각",
+    "photography": "사진",
+    "video": "영상",
+    "media": "미디어",
+    "sound": "사운드",
+    "installation": "설치",
+    "archive": "아카이브",
+    "conceptual": "개념미술",
+    "contemporary": "동시대미술",
+    "solo": "개인전",
+    "group": "그룹전",
+    "museum": "미술관 전시",
+    "gallery": "갤러리 전시",
+    "korean modern": "한국 근현대",
+    "young artist": "젊은 작가",
+    "old masters": "고전 명작",
+    "modern": "근대미술",
+    "institution": "기관 전시",
+    "design": "디자인",
+    "illustration": "일러스트레이션",
+    "family": "가족 관람",
+    "collection": "소장품",
+}
+
+KNOWN_DESCRIPTIONS = {
+    "Katherine Bradford: Living a Dream": "몽환적인 색면과 느슨한 인물 형상이 중심이 되는 회화 전시. 꿈, 밤, 물, 몸의 감각이 섞인 장면을 통해 일상적인 풍경을 비현실적인 분위기로 밀어붙인다.",
+    "유영국: A Mountain Within Me": "산과 자연을 추상 회화의 구조로 밀어붙인 유영국의 대규모 전시. 색면, 리듬, 형태가 어떻게 한국 근현대 추상의 핵심 언어가 되는지 보기 좋다.",
+    "This is (Not) Conceptual Art": "개념미술을 둘러싼 언어, 제도, 기록의 방식을 살피는 기획전. 작품이 물성보다 아이디어와 맥락으로 작동하는 순간을 보여준다.",
+    "Objects in Oscillation / 진동하는 사물들": "사진과 사물이 서로의 경계를 흔드는 그룹전. 이미지가 단순한 재현을 넘어 물성, 표면, 시간의 감각으로 확장되는 지점을 다룬다.",
+    "The Poetics of Form / 형태의 시학": "로버트 메이플소프의 사진이 가진 조형성과 균형감을 중심으로 보는 전시. 인물, 신체, 사물의 형태가 고전적인 긴장감으로 정리된다.",
+    "Before It Becomes a Scene": "이근민의 회화가 장면으로 고정되기 직전의 불안정한 형상과 감각을 보여주는 개인전. 인물, 환각, 심리적 압력이 뒤엉키는 지점이 핵심이다.",
+    "SAUVE QUI PEUT": "여러 작가의 작업을 통해 불안정한 시대의 감각과 생존의 태도를 묶어보는 그룹전. 하나의 주제보다 서로 다른 시각적 긴장이 만들어내는 분위기가 중요하다.",
+    "조각의 바깥에서 At the Edge of Sculpture": "이승택의 조각적 실험을 통해 조각이 물질, 행위, 공간으로 확장되는 방식을 보여주는 전시. 전통적인 조각 개념의 바깥을 확인할 수 있다.",
+    "권병준: 내 마음속에 너는": "소리, 기계, 신체 감각이 결합된 미디어아트 전시. 보는 전시라기보다 듣고 움직이며 체감하는 경험에 가깝다.",
+    "Endoskopeia": "송은에서 진행되는 동시대미술 전시. 내면을 들여다보는 듯한 제목처럼 시선, 구조, 감각의 안쪽을 탐색하는 흐름으로 읽힌다.",
+    "렘브란트에서 고야까지 : 톨레도 미술관 명작展": "렘브란트, 고야 등 서양미술사의 주요 작가들을 통해 고전 회화의 밀도와 시대적 변화를 확인하는 명작전.",
+    "The Cubists: Inventing Modern Vision": "입체주의를 중심으로 근대적 시각이 어떻게 분해되고 재구성되었는지 보여주는 전시. 피카소와 브라크 이후의 시각 언어를 따라가기 좋다.",
+}
+
+def make_exhibition_description(raw: dict[str, Any]) -> str:
+    title = raw.get("title", "이 전시")
+    if raw.get("editorialDescription"):
+        return raw["editorialDescription"]
+    if title in KNOWN_DESCRIPTIONS:
+        return KNOWN_DESCRIPTIONS[title]
+
+    artist = raw.get("artist") or raw.get("brand") or ""
+    tags = raw.get("tags", []) or []
+    ko_tags = []
+    for tag in tags:
+        value = TAG_KO.get(str(tag), str(tag))
+        if value and value not in ko_tags:
+            ko_tags.append(value)
+    ko_tags = ko_tags[:3]
+
+    if "group" in tags:
+        who = "여러 작가의 작업을 묶어"
+    elif artist and artist not in ["Group exhibition", "TBC"]:
+        who = f"{artist}의 작업을 중심으로"
+    else:
+        who = "동시대 작가들의 작업을 중심으로"
+
+    medium = "·".join(ko_tags) if ko_tags else "동시대미술"
+    venue_type = raw.get("venueType", "")
+    if venue_type == "museum":
+        frame = "미술관 규모의 맥락 안에서"
+    elif venue_type == "gallery":
+        frame = "갤러리 공간의 밀도 안에서"
+    elif venue_type == "nonprofit":
+        frame = "대안공간 특유의 실험성 안에서"
+    else:
+        frame = "전시 공간 안에서"
+
+    return f"{who} {medium}의 흐름을 보여주는 전시. {frame} 작품의 형식과 분위기를 함께 읽어볼 수 있다."
+
+
+
 def clean_text(text: str) -> str:
     text = html.unescape(text or "")
     text = re.sub(r"<[^>]+>", " ", text)
@@ -320,7 +399,7 @@ def make_noiz_item(raw: dict[str, Any]) -> dict[str, Any]:
         "sourceLabel": "정보 출처",
         "noiz": noiz,
         "favorability": favor,
-        "description": raw.get("note") or "미술관·갤러리·아트 플랫폼 기반 전시 후보입니다.",
+        "description": make_exhibition_description(raw),
         "signals": signals,
         "infoVolume": info_volume,
         "evidenceCount": max(1, source_count),

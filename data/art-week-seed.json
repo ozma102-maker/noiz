@@ -60,7 +60,8 @@
       "note": "국립현대미술관 서울관 현재 전시. 개념미술을 둘러싼 언어와 제도적 맥락을 확인하기 좋은 미술관급 전시.",
       "url": "https://www.mmca.go.kr/eng/exhibitions/progressList.do",
       "sourceKey": "official",
-      "sourceName": "MMCA official"
+      "sourceName": "MMCA official",
+      "editorialDescription": "개념미술을 둘러싼 언어, 제도, 기록의 방식을 살피는 기획전. 작품이 물성보다 아이디어와 맥락으로 작동하는 순간을 보여준다."
     },
     {
       "id": "sema-yoo-2026-official",
@@ -85,7 +86,8 @@
       "note": "서울시립미술관 서소문본관의 한국 근현대 거장급 전시. 회화, 부조, 사진, 드로잉, 아카이브를 함께 볼 수 있는 구조.",
       "url": "https://sema.seoul.go.kr/kr/whatson/exhibition/detail?exNo=1529410",
       "sourceKey": "official",
-      "sourceName": "SeMA official"
+      "sourceName": "SeMA official",
+      "editorialDescription": "산과 자연을 추상 회화의 구조로 밀어붙인 유영국의 대규모 전시. 색면, 리듬, 형태가 어떻게 한국 근현대 추상의 핵심 언어가 되는지 보기 좋다."
     },
     {
       "id": "sema-kwon-2026-official",
@@ -110,7 +112,8 @@
       "note": "북서울미술관 B1 전시실의 미디어아트 전시. 장기 진행 전시라 월간 리스트에 안정적으로 남는 항목.",
       "url": "https://sema.seoul.go.kr/kr/whatson/exhibition/detail?exNo=1538201",
       "sourceKey": "official",
-      "sourceName": "SeMA official"
+      "sourceName": "SeMA official",
+      "editorialDescription": "소리, 기계, 신체 감각이 결합된 미디어아트 전시. 보는 전시라기보다 듣고 움직이며 체감하는 경험에 가깝다."
     },
     {
       "id": "sema-heosuin-2026-official",
@@ -134,7 +137,8 @@
       "note": "서울시립미술관 2026 신진미술인 지원 프로그램으로 포착됨. 세부 전시장/공간 확인 후 공개 권장.",
       "url": "https://sema.seoul.go.kr/kr/whatson/landing",
       "sourceKey": "official",
-      "sourceName": "SeMA listing"
+      "sourceName": "SeMA listing",
+      "editorialDescription": "허수인의 작업을 중심으로 젊은 작가·project·미술관 전시의 흐름을 보여주는 전시. 미술관 규모의 맥락 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
     },
     {
       "id": "kukje-objects-2026-official",
@@ -158,7 +162,8 @@
       "note": "국제갤러리 K1/K2에서 진행 중인 사진 중심 기획전. 삼청 동선의 핵심 체크 포인트.",
       "url": "https://www.kukjegallery.com/exhibitions",
       "sourceKey": "official",
-      "sourceName": "Kukje official"
+      "sourceName": "Kukje official",
+      "editorialDescription": "사진과 사물이 서로의 경계를 흔드는 그룹전. 이미지가 단순한 재현을 넘어 물성, 표면, 시간의 감각으로 확장되는 지점을 다룬다."
     },
     {
       "id": "kukje-mapplethorpe-2026-official",
@@ -182,7 +187,8 @@
       "note": "국제갤러리 한옥 공간의 로버트 메이플소프 전시. 공간성과 작가성이 강하게 맞물리는 항목.",
       "url": "https://www.kukjegallery.com/exhibitions",
       "sourceKey": "official",
-      "sourceName": "Kukje official"
+      "sourceName": "Kukje official",
+      "editorialDescription": "로버트 메이플소프의 사진이 가진 조형성과 균형감을 중심으로 보는 전시. 인물, 신체, 사물의 형태가 고전적인 긴장감으로 정리된다."
     },
     {
       "id": "hyundai-bradford-2026-official",
@@ -206,7 +212,8 @@
       "note": "갤러리현대 본관급 전시. 7월 둘째 주 종료 예정이라 주간 리스트에서 마감 임박으로 강조.",
       "url": "https://www.galleryhyundai.com/exhibition/onview",
       "sourceKey": "official",
-      "sourceName": "Gallery Hyundai official"
+      "sourceName": "Gallery Hyundai official",
+      "editorialDescription": "몽환적인 색면과 느슨한 인물 형상이 중심이 되는 회화 전시. 꿈, 밤, 물, 몸의 감각이 섞인 장면을 통해 일상적인 풍경을 비현실적인 분위기로 밀어붙인다."
     },
     {
       "id": "hyundai-bradford-2026-frieze",
@@ -230,7 +237,8 @@
       "note": "Frieze 갤러리 프로필에서 동일 전시로 감지된 중복 후보.",
       "url": "https://www.frieze.com/gallery/gallery-hyundai",
       "sourceKey": "ocula",
-      "sourceName": "Frieze gallery profile"
+      "sourceName": "Frieze gallery profile",
+      "editorialDescription": "몽환적인 색면과 느슨한 인물 형상이 중심이 되는 회화 전시. 꿈, 밤, 물, 몸의 감각이 섞인 장면을 통해 일상적인 풍경을 비현실적인 분위기로 밀어붙인다."
     },
     {
       "id": "hyundai-sauve-2026-official",
@@ -254,7 +262,8 @@
       "note": "갤러리현대의 여름 시즌 기획전. 소스별 날짜가 하루 정도 차이 나는 항목이라 병합 로그에서 충돌 표시.",
       "url": "https://www.galleryhyundai.com/exhibition/onview",
       "sourceKey": "official",
-      "sourceName": "Gallery Hyundai official"
+      "sourceName": "Gallery Hyundai official",
+      "editorialDescription": "여러 작가의 작업을 통해 불안정한 시대의 감각과 생존의 태도를 묶어보는 그룹전. 하나의 주제보다 서로 다른 시각적 긴장이 만들어내는 분위기가 중요하다."
     },
     {
       "id": "hyundai-sauve-2026-frieze",
@@ -278,7 +287,8 @@
       "note": "Frieze/Artsy 계열에서 감지된 날짜 후보. 공식 페이지와 날짜 차이가 있어 검토 필요.",
       "url": "https://www.frieze.com/gallery/gallery-hyundai",
       "sourceKey": "ocula",
-      "sourceName": "Frieze / market listing"
+      "sourceName": "Frieze / market listing",
+      "editorialDescription": "여러 작가의 작업을 통해 불안정한 시대의 감각과 생존의 태도를 묶어보는 그룹전. 하나의 주제보다 서로 다른 시각적 긴장이 만들어내는 분위기가 중요하다."
     },
     {
       "id": "pkm-keunmin-2026-ocula",
@@ -303,7 +313,8 @@
       "note": "PKM의 이근민 개인전. 사용자의 컬렉션 관심사와도 직접 연결되는 주요 전시.",
       "url": "https://www.pkmgallery.com/",
       "sourceKey": "official",
-      "sourceName": "PKM official / Ocula cross-check"
+      "sourceName": "PKM official / Ocula cross-check",
+      "editorialDescription": "이근민의 회화가 장면으로 고정되기 직전의 불안정한 형상과 감각을 보여주는 개인전. 인물, 환각, 심리적 압력이 뒤엉키는 지점이 핵심이다."
     },
     {
       "id": "ocula-arario-jihyun-2026",
@@ -327,7 +338,8 @@
       "note": "Ocula 서울 전시 리스트에서 포착. 공식 갤러리 페이지 교차 확인 후 안정화하면 좋음.",
       "url": "https://ocula.com/cities/south-korea/seoul-art-galleries/exhibitions/",
       "sourceKey": "ocula",
-      "sourceName": "Ocula Seoul exhibitions"
+      "sourceName": "Ocula Seoul exhibitions",
+      "editorialDescription": "Jihyun Lee의 작업을 중심으로 개인전·갤러리 전시·동시대미술의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
     },
     {
       "id": "ocula-baton-bae-2026",
@@ -351,7 +363,8 @@
       "note": "한남권 동선에서 체크할 수 있는 Gallery Baton 전시. 회화 기반 관심자에게 우선 노출.",
       "url": "https://ocula.com/cities/south-korea/seoul-art-galleries/exhibitions/",
       "sourceKey": "ocula",
-      "sourceName": "Ocula Seoul exhibitions"
+      "sourceName": "Ocula Seoul exhibitions",
+      "editorialDescription": "Bae Yoon Hwan의 작업을 중심으로 개인전·회화·갤러리 전시의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
     },
     {
       "id": "ocula-page-kuho-2026",
@@ -375,7 +388,8 @@
       "note": "성수권 갤러리 동선에 들어갈 수 있는 전시. 매체 태그는 공식 확인 후 조정 권장.",
       "url": "https://ocula.com/cities/south-korea/seoul-art-galleries/exhibitions/",
       "sourceKey": "ocula",
-      "sourceName": "Ocula Seoul exhibitions"
+      "sourceName": "Ocula Seoul exhibitions",
+      "editorialDescription": "Kuho Jung의 작업을 중심으로 개인전·디자인·갤러리 전시의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
     },
     {
       "id": "ocula-caption-vanilla-2026",
@@ -399,7 +413,8 @@
       "note": "젊은 갤러리/프로젝트 스페이스 성격으로 분류 가능한 전시. 세부 참여 작가 확인 후 편집 코멘트 추가.",
       "url": "https://ocula.com/cities/south-korea/seoul-art-galleries/exhibitions/",
       "sourceKey": "ocula",
-      "sourceName": "Ocula Seoul exhibitions"
+      "sourceName": "Ocula Seoul exhibitions",
+      "editorialDescription": "여러 작가의 작업을 묶어 그룹전·갤러리 전시·젊은 작가의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
     },
     {
       "id": "ocula-songeun-jun-2026",
@@ -423,7 +438,8 @@
       "note": "송은에서 진행 중인 전시. 청담권 미술 동선의 주요 기관 항목.",
       "url": "https://ocula.com/cities/south-korea/seoul-art-galleries/exhibitions/",
       "sourceKey": "ocula",
-      "sourceName": "Ocula Seoul exhibitions"
+      "sourceName": "Ocula Seoul exhibitions",
+      "editorialDescription": "송은에서 진행되는 동시대미술 전시. 내면을 들여다보는 듯한 제목처럼 시선, 구조, 감각의 안쪽을 탐색하는 흐름으로 읽힌다."
     },
     {
       "id": "ggallery-faisandage-2026-official",
@@ -448,7 +464,8 @@
       "note": "G Gallery 공식 전시 페이지 검색 결과에서 2026년 7월 1일–31일 예정 전시로 확인. Seoul Art Friend 7/1 오픈 리스트와 교차 반영한 항목.",
       "url": "https://www.ggallery.kr/exhibitions",
       "sourceKey": "official",
-      "sourceName": "G Gallery official / Seoul Art Friend cross-check"
+      "sourceName": "G Gallery official / Seoul Art Friend cross-check",
+      "editorialDescription": "여러 작가의 작업을 묶어 그룹전·갤러리 전시·젊은 작가의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
     },
     {
       "id": "wwnn-july-1-2026-instagram-candidate",
@@ -472,7 +489,8 @@
       "note": "Seoul Art Friend에서 7/1 오픈 후보로 확인된 항목. 공식 홈페이지에서 제목·참여작가·종료일을 안정적으로 추출하지 못해 검수 대기 상태로 노출.",
       "url": "https://wwnn.kr/",
       "sourceKey": "instagram",
-      "sourceName": "Seoul Art Friend reference / WWNN official check needed"
+      "sourceName": "Seoul Art Friend reference / WWNN official check needed",
+      "editorialDescription": "동시대 작가들의 작업을 중심으로 nonprofit·젊은 작가·needs verification의 흐름을 보여주는 전시. 대안공간 특유의 실험성 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
     },
     {
       "id": "artmap-toledo-2026",
@@ -496,7 +514,8 @@
       "note": "ARTMAP 인기 전시에서 포착. 순수 동시대 미술은 아니지만, 대형 미술 전시로 주간 종료 임박 노출 가치가 있음.",
       "url": "https://art-map.co.kr/",
       "sourceKey": "artmap",
-      "sourceName": "ARTMAP"
+      "sourceName": "ARTMAP",
+      "editorialDescription": "렘브란트, 고야 등 서양미술사의 주요 작가들을 통해 고전 회화의 밀도와 시대적 변화를 확인하는 명작전."
     },
     {
       "id": "artmap-picturebook-2026",
@@ -520,7 +539,8 @@
       "note": "소마미술관 장기 진행 전시. 가족/대중형 전시로 별도 카테고리에 둘 수 있음.",
       "url": "https://art-map.co.kr/",
       "sourceKey": "artmap",
-      "sourceName": "ARTMAP"
+      "sourceName": "ARTMAP",
+      "editorialDescription": "동시대 작가들의 작업을 중심으로 미술관 전시·일러스트레이션·가족 관람의 흐름을 보여주는 전시. 미술관 규모의 맥락 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
     },
     {
       "id": "artmap-omg-jeong-2026",
@@ -544,7 +564,8 @@
       "note": "7월 첫 주 종료 전시. ARTMAP 기반 포착 후 공식/인스타 확인을 권장.",
       "url": "https://art-map.co.kr/",
       "sourceKey": "artmap",
-      "sourceName": "ARTMAP"
+      "sourceName": "ARTMAP",
+      "editorialDescription": "정보경의 작업을 중심으로 개인전·갤러리 전시·회화의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
     },
     {
       "id": "artmap-suwon-panorama-2026",
@@ -568,7 +589,8 @@
       "note": "수도권 확장 범위에 포함되는 수원시립미술관 장기 소장품전.",
       "url": "https://art-map.co.kr/",
       "sourceKey": "artmap",
-      "sourceName": "ARTMAP"
+      "sourceName": "ARTMAP",
+      "editorialDescription": "Collection exhibition의 작업을 중심으로 소장품·미술관 전시·gyeonggi의 흐름을 보여주는 전시. 미술관 규모의 맥락 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
     },
     {
       "id": "artmap-soma-seungtaek-2026",
@@ -592,7 +614,8 @@
       "note": "소마미술관 이승택 개인전. 조각/설치 계열 주요 전시로 추천 리스트에 포함.",
       "url": "https://art-map.co.kr/",
       "sourceKey": "artmap",
-      "sourceName": "ARTMAP"
+      "sourceName": "ARTMAP",
+      "editorialDescription": "이승택의 조각적 실험을 통해 조각이 물질, 행위, 공간으로 확장되는 방식을 보여주는 전시. 전통적인 조각 개념의 바깥을 확인할 수 있다."
     },
     {
       "id": "artmap-staging-2026",
@@ -616,7 +639,8 @@
       "note": "서초권 공간 전시. 제목이 짧아 중복 위험이 있으므로 작가/공간명과 함께 병합해야 함.",
       "url": "https://art-map.co.kr/",
       "sourceKey": "artmap",
-      "sourceName": "ARTMAP"
+      "sourceName": "ARTMAP",
+      "editorialDescription": "김태동, 이요나의 작업을 중심으로 사진·영상·갤러리 전시의 흐름을 보여주는 전시. 갤러리 공간의 밀도 안에서 작품의 형식과 분위기를 함께 읽어볼 수 있다."
     },
     {
       "id": "pompidou-hanwha-cubists-2026-news",
@@ -641,7 +665,8 @@
       "note": "뉴스 보도 기반으로 6월 개관 및 10월까지 진행으로 파악. 정확한 종료일은 공식 페이지 확인 후 공개 권장.",
       "url": "https://www.lemonde.fr/en/culture/article/2026/06/05/seoul-s-centre-pompidou-hanwha-aims-to-build-a-cultural-bridge-between-france-and-south-korea_6754154_30.html",
       "sourceKey": "official",
-      "sourceName": "News / official check needed"
+      "sourceName": "News / official check needed",
+      "editorialDescription": "입체주의를 중심으로 근대적 시각이 어떻게 분해되고 재구성되었는지 보여주는 전시. 피카소와 브라크 이후의 시각 언어를 따라가기 좋다."
     }
   ],
   "venues": [
