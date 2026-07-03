@@ -64,6 +64,20 @@
   .mode-word{font-size:.18em;vertical-align:super;margin-left:.22em;letter-spacing:.02em}
 
   .art-overview{max-width:760px;margin-top:10px;font-size:15px;line-height:1.45;font-weight:760;color:var(--ink);text-decoration:none}
+
+  .score-mood{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:9px;font-size:13px;font-weight:850;color:var(--ink);line-height:1}
+  .score-mood svg{width:18px;height:18px;flex:0 0 auto}
+
+  /* mobile scorebox fix */
+  @media (max-width:720px){
+    .card{position:relative}
+    .head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:14px}
+    .scorebox{align-self:start;justify-self:end;min-width:58px;text-align:right;display:flex;flex-direction:column;align-items:flex-end}
+    .score{font-size:clamp(38px,12vw,58px);line-height:.85}
+    .score-label{font-size:9px;white-space:nowrap;letter-spacing:.08em}
+    .score-mood{justify-content:flex-end;font-size:12px;margin-top:7px;white-space:nowrap}
+    .score-mood svg{width:16px;height:16px}
+  }
 </style>
 </head>
 <body>
@@ -204,13 +218,10 @@ function renderItem(item, index) {
           </div>
           <div class="scorebox">
             <div class="score">${escapeHtml(item.noiz ?? "")}</div>
-            <div class="score-label">NOIZ Meter</div>
+            <div class="score-label">NOIZ Meter</div>\n            <div class="score-mood"><svg aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-${mood.icon}"></use></svg><span>${mood.label}</span></div>
           </div>
         </div>
         <div class="meter">
-          <div class="meter-top">
-            <span class="mood"><svg aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-${mood.icon}"></use></svg><span>${mood.label}</span></span>
-          </div>
           <div class="meter-track"><div class="meter-fill" style="--noise:${Math.max(0, Math.min(100, Number(item.noiz || 0)))}%;"></div></div>
         </div>
         <p class="desc">${escapeHtml(item.description || "")}</p>
