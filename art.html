@@ -7,13 +7,13 @@
 <title>NOIZ. Art — Hidden Exhibition Radar</title>
 <style>
   :root{
-    --bg:#de8b9c;
-    --ink:#00717b;
-    --muted:#006a74;
-    --line:rgba(0,113,123,.24);
-    --soft:rgba(255,255,255,.22);
-    --card:rgba(222,139,156,.72);
-    --pill:rgba(255,255,255,.22);
+    --bg:#000000;
+    --ink:#f7f7f2;
+    --muted:#c8c8c2;
+    --line:rgba(255,255,255,.24);
+    --soft:rgba(255,255,255,.06);
+    --card:rgba(255,255,255,.035);
+    --pill:rgba(255,255,255,.08);
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Noto Sans KR",Segoe UI,sans-serif;letter-spacing:-.04em}
@@ -255,6 +255,14 @@
   @media (max-width:720px){
     .art-location{margin-top:8px!important;font-size:15px!important;line-height:1.3!important}
   }
+
+  /* v47 ART black & white mode */
+  .panel,.card{background:var(--card)!important;border-color:var(--line)!important}
+  .chip,.badge{background:var(--pill)!important;border-color:var(--line)!important;color:var(--ink)!important}
+  .meter-track{background:rgba(255,255,255,.12)!important;border-color:rgba(255,255,255,.18)!important}
+  .meter-fill{background:var(--ink)!important}
+  .place-link,.art-location .place-link{color:var(--ink)!important}
+  .week-arrow{color:var(--ink)!important}
 </style>
 </head>
 <body>

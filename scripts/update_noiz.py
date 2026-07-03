@@ -35,6 +35,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "data" / "noiz-data.json"
 ARCHIVE_DIR = ROOT / "data" / "archive"
 ARCHIVE_INDEX_PATH = ROOT / "data" / "noiz-archive-index.json"
+THEME_HISTORY_PATH = ROOT / "data" / "noiz-theme-history.json"
 SOURCES_PATH = ROOT / "scripts" / "sources.json"
 KST = timezone(timedelta(hours=9))
 
@@ -42,6 +43,9 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; NOIZBot/1.5; weekly-space-radar)",
     "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.7,en;q=0.6",
 }
+
+COLOR_SCHEMES: list[dict[str, str]] = [{'id': 'hippie-green-lemon', 'name': 'Hippie Green & Lemon', 'bg': '#5f914f', 'ink': '#ffde00', 'muted': '#ffe84c', 'line': 'rgba(255,222,0,.32)', 'paper': 'rgba(255,255,255,.10)', 'white': '#fffbe6'}, {'id': 'coffee-broom', 'name': 'Coffee & Broom', 'bg': '#7b705d', 'ink': '#f5ff00', 'muted': '#fbff61', 'line': 'rgba(245,255,0,.30)', 'paper': 'rgba(255,255,255,.09)', 'white': '#fffde8'}, {'id': 'carnation-fiord', 'name': 'Carnation & Fiord', 'bg': '#f57365', 'ink': '#395b80', 'muted': '#466c95', 'line': 'rgba(57,91,128,.26)', 'paper': 'rgba(255,255,255,.12)', 'white': '#fff4ef'}, {'id': 'sisal-cerise', 'name': 'Sisal & Cerise', 'bg': '#d3d0c1', 'ink': '#ef2ea6', 'muted': '#d72896', 'line': 'rgba(239,46,166,.24)', 'paper': 'rgba(255,255,255,.16)', 'white': '#fff7fb'}, {'id': 'san-juan-salmon', 'name': 'San Juan & Salmon', 'bg': '#2c5b7b', 'ink': '#ff8174', 'muted': '#ff9b91', 'line': 'rgba(255,129,116,.30)', 'paper': 'rgba(255,255,255,.09)', 'white': '#fff3f1'}, {'id': 'dodger-blue-ebb', 'name': 'Dodger Blue & Ebb', 'bg': '#3987ee', 'ink': '#efe5e2', 'muted': '#f7efed', 'line': 'rgba(239,229,226,.34)', 'paper': 'rgba(255,255,255,.12)', 'white': '#fff8f6'}, {'id': 'ripe-lemon-royal-blue', 'name': 'Ripe Lemon & Royal Blue', 'bg': '#f2ec00', 'ink': '#387ee8', 'muted': '#4c8cef', 'line': 'rgba(56,126,232,.27)', 'paper': 'rgba(255,255,255,.16)', 'white': '#f7fbff'}, {'id': 'screamin-green-martinique', 'name': "Screamin' Green & Martinique", 'bg': '#67f86f', 'ink': '#4b4070', 'muted': '#5d5280', 'line': 'rgba(75,64,112,.25)', 'paper': 'rgba(255,255,255,.14)', 'white': '#fbf7ff'}, {'id': 'bossanova-chartreuse', 'name': 'Bossanova & Chartreuse Yellow', 'bg': '#5c3e73', 'ink': '#d8ff00', 'muted': '#e4ff45', 'line': 'rgba(216,255,0,.30)', 'paper': 'rgba(255,255,255,.08)', 'white': '#fbffe8'}, {'id': 'cerise-pear', 'name': 'Cerise & Pear', 'bg': '#d7359c', 'ink': '#bfff32', 'muted': '#ceff67', 'line': 'rgba(191,255,50,.30)', 'paper': 'rgba(255,255,255,.10)', 'white': '#fbffe8'}, {'id': 'chathams-blue-screamin-green', 'name': "Chathams Blue & Screamin' Green", 'bg': '#126a7a', 'ink': '#62f777', 'muted': '#86ff96', 'line': 'rgba(98,247,119,.30)', 'paper': 'rgba(255,255,255,.08)', 'white': '#f0fff3'}, {'id': 'sunset-orange-starship', 'name': 'Sunset Orange & Starship', 'bg': '#fb4f43', 'ink': '#fffb2a', 'muted': '#fff766', 'line': 'rgba(255,251,42,.30)', 'paper': 'rgba(255,255,255,.10)', 'white': '#fffde8'}, {'id': 'mulled-wine-screamin-green', 'name': "Mulled Wine & Screamin' Green", 'bg': '#584966', 'ink': '#62fa84', 'muted': '#85ffa0', 'line': 'rgba(98,250,132,.30)', 'paper': 'rgba(255,255,255,.08)', 'white': '#f0fff5'}, {'id': 'geyser-mandy', 'name': 'Geyser & Mandy', 'bg': '#d9e0e0', 'ink': '#ef4d54', 'muted': '#d94249', 'line': 'rgba(239,77,84,.24)', 'paper': 'rgba(255,255,255,.18)', 'white': '#fff6f6'}, {'id': 'deco-royal-blue', 'name': 'Deco & Royal Blue', 'bg': '#dcd996', 'ink': '#367ee8', 'muted': '#4b8df0', 'line': 'rgba(54,126,232,.25)', 'paper': 'rgba(255,255,255,.16)', 'white': '#f7fbff'}]
+DEFAULT_THEME_ID = 'ripe-lemon-royal-blue'
 
 # 무료 공개 검색 쿼리. 후보군을 넓히는 용도.
 SEARCH_QUERIES = [
@@ -672,6 +676,70 @@ def make_weekly_read(items: list[dict[str, Any]]) -> str:
     return f"이번 주 NOIZ는 {area_line or '서울/수도권'} 중심으로 잡혀. {list_name}는 팝업/브랜드 경험 {popup_count}개, 전시/문화 경험 {art_count}개가 섞여 있고, 가장 강한 신호는 {rankable[0].get('title', '상위 후보')} 쪽이야. {why} {environment} {congestion}"
 
 
+
+def get_theme_by_id(theme_id: str | None) -> dict[str, str]:
+    for theme in COLOR_SCHEMES:
+        if theme.get("id") == theme_id:
+            return dict(theme)
+    for theme in COLOR_SCHEMES:
+        if theme.get("id") == DEFAULT_THEME_ID:
+            return dict(theme)
+    return dict(COLOR_SCHEMES[0])
+
+
+def load_theme_history() -> dict[str, Any]:
+    if THEME_HISTORY_PATH.exists():
+        try:
+            return json.loads(THEME_HISTORY_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return {"site": "NOIZ Theme History", "entries": []}
+
+
+def pick_weekly_theme(existing_theme: dict[str, Any] | None = None) -> dict[str, str]:
+    """Change the main page color scheme on Mondays, avoiding the last 8 selected themes."""
+    current_dt = datetime.now(KST)
+    existing_id = (existing_theme or {}).get("id")
+
+    # Not Monday: keep the current theme stable.
+    if current_dt.weekday() != 0:
+        return get_theme_by_id(existing_id)
+
+    monday_key = current_dt.strftime("%Y-%m-%d")
+    history = load_theme_history()
+    entries = [
+        entry for entry in history.get("entries", [])
+        if entry.get("date") and entry.get("theme_id")
+    ]
+
+    # If today's Monday theme was already selected, reuse it.
+    for entry in entries:
+        if entry.get("date") == monday_key:
+            return get_theme_by_id(entry.get("theme_id"))
+
+    recent_ids = [entry.get("theme_id") for entry in entries[-8:]]
+    candidates = [theme for theme in COLOR_SCHEMES if theme.get("id") not in recent_ids]
+    if not candidates:
+        candidates = COLOR_SCHEMES[:]
+
+    rng = random.Random(monday_key)
+    selected = dict(rng.choice(candidates))
+
+    entries.append({
+        "date": monday_key,
+        "theme_id": selected.get("id"),
+        "theme_name": selected.get("name"),
+    })
+
+    history = {
+        "site": "NOIZ Theme History",
+        "updated_at": current_dt.isoformat(timespec="seconds"),
+        "entries": entries[-52:],
+    }
+    THEME_HISTORY_PATH.write_text(json.dumps(history, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"[OK] weekly theme selected: {selected.get('name')}")
+    return selected
+
 def archive_payload(payload: dict[str, Any]) -> None:
     """Save one weekly NOIZ snapshot on Mondays only."""
     updated_at = str(payload.get("updated_at", ""))
@@ -734,10 +802,12 @@ def main() -> None:
 
     merged_new = merge_candidates(candidates)
     items = merge_with_existing(merged_new, existing.get("items", []))
+    theme = pick_weekly_theme(existing.get("theme"))
 
     payload = {
         "site": "NOIZ",
         "updated_at": datetime.now(KST).isoformat(timespec="seconds"),
+        "theme": theme,
         "weekly_read": make_weekly_read(items),
         "items": items,
         "creator": "이원준 시니어매니저",
