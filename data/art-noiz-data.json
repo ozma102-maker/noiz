@@ -1,0 +1,109 @@
+{
+  "site": "NOIZ. Art",
+  "updated_at": "2026-07-03T00:00:00+09:00",
+  "weekly_read": "히든 ART 모드는 미술관, 갤러리, 아트 플랫폼, 전시 리뷰 신호만 따로 읽는다. 팝업/브랜드 공간과 분리해 이번 주 실제 관람 반응이 있는 미술 전시만 추린다.",
+  "items": [
+    {
+      "rank": 1,
+      "brand": "Max Siedentopf",
+      "title": "맥스 시덴토프 개인전",
+      "owner": "위트·광고적 이미지·초현실적 장면 연출로 대중 관람성과 SNS 확산성이 강한 전시",
+      "venue": "그라운드시소 센트럴",
+      "area": "중구",
+      "region": "중구",
+      "mapQuery": "그라운드시소 센트럴",
+      "sourceUrl": "https://groundseesaw.co.kr/product/%EB%A7%A5%EC%8A%A4-%EC%8B%9C%EB%8D%B4%ED%86%A0%ED%94%84-%EA%B0%9C%EC%9D%B8%EC%A0%84/1323/",
+      "sourceLabel": "정보 출처",
+      "noiz": 84,
+      "favorability": 71,
+      "description": "‘가볍게 보기 좋은 전시’ 쪽의 노이즈가 크다. 현대미술의 깊이보다는 사진성·위트·접근성이 강점이라, 미술 애호가보다 일반 관람객에게 더 유리하다.",
+      "signals": [
+        "SNS 친화",
+        "가벼움 논쟁",
+        "티켓/공식페이지"
+      ],
+      "infoVolume": "medium",
+      "reactionCount": 1,
+      "evidenceCount": 2,
+      "confidence": "medium",
+      "category": "art"
+    },
+    {
+      "rank": 2,
+      "brand": "Toledo Museum of Art",
+      "title": "렘브란트에서 고야까지",
+      "owner": "톨레도미술관 소장품 기반의 유럽 고전 회화 대형전",
+      "venue": "더현대 서울 ALT.1",
+      "area": "여의도",
+      "region": "영등포구",
+      "mapQuery": "더현대 서울 ALT.1",
+      "sourceUrl": "https://tickets.interpark.com/goods/26000395",
+      "sourceLabel": "정보 출처",
+      "noiz": 82,
+      "favorability": 78,
+      "description": "종료 임박 효과로 이번 주 방문 압력이 높다. 전시 자체는 고전 회화 대형전이라 안정적 호감이 강하지만, 막판 관람객 집중은 감안해야 한다.",
+      "signals": [
+        "대형 명작전",
+        "종료 임박 혼잡",
+        "티켓/도슨트"
+      ],
+      "infoVolume": "medium",
+      "reactionCount": 1,
+      "evidenceCount": 2,
+      "confidence": "medium",
+      "category": "art"
+    },
+    {
+      "rank": 3,
+      "brand": "성률",
+      "title": "여름을 닮은 우리",
+      "owner": "수채화 기반의 맑은 색감과 계절감을 전면에 둔 그라운드시소 한남 기획전",
+      "venue": "그라운드시소 한남",
+      "area": "한남",
+      "region": "용산구",
+      "mapQuery": "그라운드시소 한남",
+      "sourceUrl": "https://groundseesaw.co.kr/product/%EC%84%B1%EB%A5%A0-%EA%B8%B0%ED%9A%8D%EC%A0%84-%EC%97%AC%EB%A6%84%EC%9D%84-%EB%8B%AE%EC%9D%80-%EC%9A%B0%EB%A6%AC/1327/",
+      "sourceLabel": "정보 출처",
+      "noiz": 80,
+      "favorability": 84,
+      "description": "호불호 논쟁보다 감성적 만족 쪽 신호가 강하다. 데이트/가벼운 관람 목적에는 유리하지만, 강한 비평성보다 정서적 이미지 소비에 가까운 전시로 읽힌다.",
+      "signals": [
+        "호감 톤 강함",
+        "계절감",
+        "예매 페이지"
+      ],
+      "infoVolume": "medium",
+      "reactionCount": 1,
+      "evidenceCount": 2,
+      "confidence": "medium",
+      "category": "art"
+    },
+    {
+      "rank": 4,
+      "brand": "서울시립미술관 / 유영국",
+      "title": "유영국: 산은 내 안에 있다",
+      "owner": "한국 추상미술 선구자 유영국을 대규모로 조망하는 미술관급 전시",
+      "venue": "서울시립미술관 서소문본관",
+      "area": "중구",
+      "region": "중구",
+      "mapQuery": "서울시립미술관 서소문본관",
+      "sourceUrl": "https://sema.seoul.go.kr/kr/whatson/exhibition/detail?exNo=1529410",
+      "sourceLabel": "정보 출처",
+      "noiz": 77,
+      "favorability": 79,
+      "description": "팝업형 폭발력은 약하지만, 미술관급 신뢰도와 작가 중요도에서 꾸준한 관람 가치가 높다. ‘이번 주 꼭 시끄러운 것’보다는 오래 볼 전시 쪽 추천.",
+      "signals": [
+        "작가 중요도",
+        "공식 미술관",
+        "장기 관람 가치"
+      ],
+      "infoVolume": "medium",
+      "reactionCount": 1,
+      "evidenceCount": 2,
+      "confidence": "medium",
+      "category": "art"
+    }
+  ],
+  "creator": "이원준 시니어매니저",
+  "method_note": "미술관·갤러리·아트 플랫폼·전시 리뷰 검색 스니펫 기반의 미술 전시 전용 NOIZ 데이터."
+}

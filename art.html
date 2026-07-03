@@ -4,15 +4,16 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>NOIZ. — Weekly Space Radar</title>
+<title>NOIZ. Art — Hidden Exhibition Radar</title>
 <style>
   :root{
-    --bg:#c6ff00;
-    --paper:rgba(255,255,255,.16);
-    --ink:#3f5d7f;
-    --muted:#58779a;
-    --line:rgba(63,93,127,.26);
-    --white:#f7f8f2;
+    --bg:#de8b9c;
+    --ink:#00717b;
+    --muted:#006a74;
+    --line:rgba(0,113,123,.24);
+    --soft:rgba(255,255,255,.22);
+    --card:rgba(222,139,156,.72);
+    --pill:rgba(255,255,255,.22);
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Noto Sans KR",Segoe UI,sans-serif;letter-spacing:-.04em}
@@ -59,6 +60,8 @@
   .foot{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.65}.foot b{color:var(--ink)}
   .status{margin:14px 0 0;font-size:12px;color:var(--muted);font-weight:700}
   @media (max-width:760px){.wrap{padding:24px 13px 52px}.logo{font-size:56px}header{grid-template-columns:1fr}.stamp{text-align:left}.card{grid-template-columns:1fr;gap:13px}.rank{height:54px;width:64px;border-radius:17px;font-size:21px}.head{display:block}.scorebox{text-align:left;margin-top:12px;display:flex;align-items:end;gap:8px}.score{font-size:38px}.title{font-size:23px}.tag{font-size:15px}}
+
+  .mode-word{font-size:.18em;vertical-align:super;margin-left:.22em;letter-spacing:.02em}
 </style>
 </head>
 <body>
@@ -78,13 +81,13 @@
 <div class="wrap">
 <header>
 <div>
-<h1 class="logo">NOIZ<span class="dot">.</span></h1>
+<h1 class="logo">NOIZ<span class="dot">.</span><span class="mode-word">art</span></h1>
 <p class="tag week-label" id="weekLabel">2026 July week 1</p>
 </div>
 </header>
 <section class="hero">
 <div class="panel read-panel">
-<h2>What's NOIZy this week?</h2>
+<h2>What's NOIZy in art this week?</h2>
 <p id="weeklyRead">업데이트 데이터를 불러오고 있어.</p>
 </div>
 </section>
@@ -94,7 +97,7 @@
 </section>
 </div>
 <script>
-const DATA_URL = "./data/noiz-data.json";
+const DATA_URL = "./data/art-noiz-data.json";
 
 function escapeHtml(str = "") {
   return String(str).replace(/[&<>"']/g, ch => ({
@@ -226,7 +229,7 @@ function setupHiddenArtMode() {
 
     if (taps.length >= 3) {
       taps = [];
-      window.location.href = "./art.html";
+      window.location.href = "./index.html";
     }
   });
 }
