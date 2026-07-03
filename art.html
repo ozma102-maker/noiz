@@ -236,6 +236,12 @@ function setupHiddenArtMode() {
 
 
 
+
+function keepArtWeeklyTitleFixed() {
+  const weeklyTitle = document.getElementById("weeklyTitle");
+  if (weeklyTitle) weeklyTitle.textContent = "What's NOIZy in art this week?";
+}
+
 async function loadData() {
   try {
     const res = await fetch(`${DATA_URL}?t=${Date.now()}`, { cache: "no-store" });
@@ -250,6 +256,7 @@ async function loadData() {
       .slice(0, 10)
       .map((item, i) => ({ ...item, rank: i + 1 }));
 
+    keepArtWeeklyTitleFixed();
     document.getElementById("rankList").innerHTML = items.map(renderItem).join("");
   } catch (err) {
     document.getElementById("weekLabel").textContent = formatWeekLabel();
