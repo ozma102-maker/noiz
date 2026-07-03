@@ -271,6 +271,35 @@
     .week-nav{gap:6px;margin-top:16px}
     .week-arrow{width:20px;height:24px;font-size:21px}
   }
+
+  /* v50 top-right color shuffle icon */
+  header{position:relative}
+  .theme-shuffle{
+    position:absolute;
+    top:6px;
+    right:0;
+    width:38px;
+    height:34px;
+    padding:0;
+    border:0;
+    background:transparent;
+    color:var(--ink);
+    opacity:.72;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:opacity .12s ease, transform .12s ease;
+  }
+  .theme-shuffle:hover{opacity:1;transform:translateY(-1px)}
+  .theme-shuffle:active{transform:translateY(0) scale(.96)}
+  .theme-shuffle svg{width:31px;height:26px;display:block;overflow:visible}
+  .theme-shuffle circle{fill:none;stroke:currentColor;stroke-width:4.2;mix-blend-mode:multiply}
+  @media (max-width:720px){
+    .theme-shuffle{top:4px;right:0;width:34px;height:31px}
+    .theme-shuffle svg{width:28px;height:24px}
+    .theme-shuffle circle{stroke-width:4}
+  }
 </style>
 </head>
 <body>
@@ -297,6 +326,13 @@
 <button aria-label="다음 업데이트" class="week-arrow" id="archiveNext" type="button">›</button>
 </div>
 </div>
+<button aria-label="컬러 바꾸기" class="theme-shuffle" id="themeShuffle" title="컬러 바꾸기" type="button">
+<svg aria-hidden="true" viewbox="0 0 64 52">
+<circle cx="32" cy="18" r="17"></circle>
+<circle cx="24" cy="32" r="17"></circle>
+<circle cx="40" cy="32" r="17"></circle>
+</svg>
+</button>
 </header>
 <section class="hero">
 <div class="panel read-panel">
@@ -314,22 +350,26 @@ const DATA_URL = "./data/noiz-data.json";
 const ARCHIVE_INDEX_URL = "./data/noiz-archive-index.json";
 let archiveEntries = [];
 let activeArchiveDate = null;
+let currentThemeId = null;
 
 const THEME_POOL = [{"id": "legacy-lime-blue", "name": "Legacy Lime & Blue", "bg": "#c6ff00", "paper": "rgba(255,255,255,.18)", "ink": "#3f5d7f", "muted": "#58779a", "line": "rgba(63,93,127,.24)", "white": "#f4ffd8"}, {"id": "hippie-green-lemon", "name": "Hippie Green & Lemon", "bg": "#5f914f", "ink": "#ffde00", "muted": "#ffe84c", "line": "rgba(255,222,0,.32)", "paper": "rgba(255,255,255,.10)", "white": "#fffbe6"}, {"id": "coffee-broom", "name": "Coffee & Broom", "bg": "#7b705d", "ink": "#f5ff00", "muted": "#fbff61", "line": "rgba(245,255,0,.30)", "paper": "rgba(255,255,255,.09)", "white": "#fffde8"}, {"id": "carnation-fiord", "name": "Carnation & Fiord", "bg": "#f57365", "ink": "#395b80", "muted": "#466c95", "line": "rgba(57,91,128,.26)", "paper": "rgba(255,255,255,.12)", "white": "#fff4ef"}, {"id": "sisal-cerise", "name": "Sisal & Cerise", "bg": "#d3d0c1", "ink": "#ef2ea6", "muted": "#d72896", "line": "rgba(239,46,166,.24)", "paper": "rgba(255,255,255,.16)", "white": "#fff7fb"}, {"id": "san-juan-salmon", "name": "San Juan & Salmon", "bg": "#2c5b7b", "ink": "#ff8174", "muted": "#ff9b91", "line": "rgba(255,129,116,.30)", "paper": "rgba(255,255,255,.09)", "white": "#fff3f1"}, {"id": "dodger-blue-ebb", "name": "Dodger Blue & Ebb", "bg": "#3987ee", "ink": "#efe5e2", "muted": "#f7efed", "line": "rgba(239,229,226,.34)", "paper": "rgba(255,255,255,.12)", "white": "#fff8f6"}, {"id": "ripe-lemon-royal-blue", "name": "Ripe Lemon & Royal Blue", "bg": "#f2ec00", "ink": "#387ee8", "muted": "#4c8cef", "line": "rgba(56,126,232,.27)", "paper": "rgba(255,255,255,.16)", "white": "#f7fbff"}, {"id": "screamin-green-martinique", "name": "Screamin' Green & Martinique", "bg": "#67f86f", "ink": "#4b4070", "muted": "#5d5280", "line": "rgba(75,64,112,.25)", "paper": "rgba(255,255,255,.14)", "white": "#fbf7ff"}, {"id": "bossanova-chartreuse", "name": "Bossanova & Chartreuse Yellow", "bg": "#5c3e73", "ink": "#d8ff00", "muted": "#e4ff45", "line": "rgba(216,255,0,.30)", "paper": "rgba(255,255,255,.08)", "white": "#fbffe8"}, {"id": "cerise-pear", "name": "Cerise & Pear", "bg": "#d7359c", "ink": "#bfff32", "muted": "#ceff67", "line": "rgba(191,255,50,.30)", "paper": "rgba(255,255,255,.10)", "white": "#fbffe8"}, {"id": "chathams-blue-screamin-green", "name": "Chathams Blue & Screamin' Green", "bg": "#126a7a", "ink": "#62f777", "muted": "#86ff96", "line": "rgba(98,247,119,.30)", "paper": "rgba(255,255,255,.08)", "white": "#f0fff3"}, {"id": "sunset-orange-starship", "name": "Sunset Orange & Starship", "bg": "#fb4f43", "ink": "#fffb2a", "muted": "#fff766", "line": "rgba(255,251,42,.30)", "paper": "rgba(255,255,255,.10)", "white": "#fffde8"}, {"id": "mulled-wine-screamin-green", "name": "Mulled Wine & Screamin' Green", "bg": "#584966", "ink": "#62fa84", "muted": "#85ffa0", "line": "rgba(98,250,132,.30)", "paper": "rgba(255,255,255,.08)", "white": "#f0fff5"}, {"id": "geyser-mandy", "name": "Geyser & Mandy", "bg": "#d9e0e0", "ink": "#ef4d54", "muted": "#d94249", "line": "rgba(239,77,84,.24)", "paper": "rgba(255,255,255,.18)", "white": "#fff6f6"}, {"id": "deco-royal-blue", "name": "Deco & Royal Blue", "bg": "#dcd996", "ink": "#367ee8", "muted": "#4b8df0", "line": "rgba(54,126,232,.25)", "paper": "rgba(255,255,255,.16)", "white": "#f7fbff"}];
 const DEFAULT_THEME = THEME_POOL[0];
 
-function randomTheme() {
+function randomTheme(excludeId = null) {
   if (!THEME_POOL.length) return DEFAULT_THEME;
+  const candidates = THEME_POOL.filter(theme => theme.id !== excludeId);
+  const pool = candidates.length ? candidates : THEME_POOL;
   if (window.crypto && crypto.getRandomValues) {
     const arr = new Uint32Array(1);
     crypto.getRandomValues(arr);
-    return THEME_POOL[arr[0] % THEME_POOL.length];
+    return pool[arr[0] % pool.length];
   }
-  return THEME_POOL[Math.floor(Math.random() * THEME_POOL.length)];
+  return pool[Math.floor(Math.random() * pool.length)];
 }
 
 function applyColorTheme(theme = DEFAULT_THEME) {
   const selected = { ...DEFAULT_THEME, ...(theme || {}) };
+  currentThemeId = selected.id || null;
   const root = document.documentElement;
   ["bg", "paper", "ink", "muted", "line", "white"].forEach(key => {
     if (selected[key]) root.style.setProperty(`--${key}`, selected[key]);
@@ -679,6 +719,15 @@ async function loadData(targetDate = null) {
   }
 }
 
+
+function setupThemeShuffle() {
+  const button = document.getElementById("themeShuffle");
+  if (!button) return;
+  button.addEventListener("click", () => {
+    applyColorTheme(randomTheme(currentThemeId));
+  });
+}
+
 async function initNoizPage() {
   applyColorTheme(randomTheme());
   await loadArchiveIndex();
@@ -686,6 +735,7 @@ async function initNoizPage() {
 }
 
 setupHiddenArtMode();
+setupThemeShuffle();
 initNoizPage();
 </script>
 </body>
