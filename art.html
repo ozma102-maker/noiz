@@ -87,7 +87,7 @@
 </header>
 <section class="hero">
 <div class="panel read-panel">
-<h2>What's NOIZy in art this week?</h2>
+<h2 id="weeklyTitle">Loading ART NOIZ summary…</h2>
 <p id="weeklyRead">업데이트 데이터를 불러오고 있어.</p>
 </div>
 </section>
@@ -234,6 +234,55 @@ function setupHiddenArtMode() {
   });
 }
 
+
+function buildArtSummaryTitle(items) {
+  const list = (items || []).filter(Boolean);
+  if (!list.length) return "No confirmed ART NOIZ yet.";
+
+  const top = list[0];
+  const areas = {};
+  const venueTypes = {};
+  const signals = {};
+
+  list.forEach(item => {
+    const area = item.area || item.region || "서울/수도권";
+    const vt = item.venueType || (
+      (item.signals || []).includes("미술관") ? "museum" :
+      (item.signals || []).includes("갤러리") ? "gallery" :
+      (item.signals || []).includes("대안공간") ? "nonprofit" : "art"
+    );
+
+    areas[area] = (areas[area] || 0) + 1;
+    venueTypes[vt] = (venueTypes[vt] || 0) + 1;
+
+    (item.signals || []).forEach(s => {
+      signals[s] = (signals[s] || 0) + 1;
+    });
+  });
+
+  const topAreas = Object.entries(areas)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 2)
+    .map(([k]) => k)
+    .join("·");
+
+  const museumCount = venueTypes.museum || 0;
+  const galleryCount = venueTypes.gallery || 0;
+  const nonprofitCount = venueTypes.nonprofit || 0;
+
+  const hasOfficial = Object.keys(signals).some(s => s.includes("공식"));
+  const hasCross = Object.keys(signals).some(s => s.includes("교차"));
+  const signalPhrase = hasOfficial && hasCross ? "공식 확인과 교차 확인이 강한" : hasOfficial ? "공식 확인 중심의" : "공개 신호 기반의";
+
+  const venuePhrase = [
+    museumCount ? `미술관 ${museumCount}` : "",
+    galleryCount ? `갤러리 ${galleryCount}` : "",
+    nonprofitCount ? `대안공간 ${nonprofitCount}` : ""
+  ].filter(Boolean).join(" · ");
+
+  return `${topAreas || "서울/수도권"} 중심, ${signalPhrase} ART NOIZ ${list.length}선 — ${venuePhrase || "미술 전시"} 중 ${top.title || "주요 전시"}가 가장 시끄럽다.`;
+}
+
 async function loadData() {
   try {
     const res = await fetch(`${DATA_URL}?t=${Date.now()}`, { cache: "no-store" });
@@ -247,6 +296,10 @@ async function loadData() {
       .sort((a, b) => Number(b.noiz || 0) - Number(a.noiz || 0))
       .slice(0, 10)
       .map((item, i) => ({ ...item, rank: i + 1 }));
+
+    const weeklyTitle = document.getElementById("weeklyTitle");
+    if (weeklyTitle) weeklyTitle.textContent = buildArtSummaryTitle(items);
+
     document.getElementById("rankList").innerHTML = items.map(renderItem).join("");
   } catch (err) {
     document.getElementById("weekLabel").textContent = formatWeekLabel();
