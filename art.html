@@ -394,7 +394,7 @@ function moodIconSvg(icon) {
 
 
 function venueMapQuery(item) {
-  return [item.venue || "", item.area || item.region || ""].filter(Boolean).join(" ").trim();
+  return String(item.venue || "").trim();
 }
 
 function renderItem(item, index) {
