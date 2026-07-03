@@ -4,9 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>NOIZ.</title>
-<title>NOIZ.</title>
-
+<title>NOIZ. — Weekly Space Radar</title>
 <style>
   :root{
     --bg:#c6ff00;
@@ -46,7 +44,7 @@
   .score{font-size:42px;font-weight:880;line-height:.88;letter-spacing:-.08em;color:var(--ink)}
   .score-label{font-size:10px;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);margin-top:7px;font-weight:760}
   .meter{margin:17px 0 12px}
-  .meter-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:760;gap:12px;flex-wrap:wrap}
+  .meter-top{display:flex;justify-content:flex-start;align-items:center;font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:760;gap:12px;flex-wrap:wrap}
   .meter-track{height:16px;border-radius:999px;background:rgba(63,93,127,.12);border:1px solid rgba(63,93,127,.2);overflow:hidden;position:relative}
   .meter-fill{height:100%;width:var(--noise);border-radius:999px;background:currentColor;opacity:.92}
   .mood{display:inline-flex;align-items:center;gap:7px;color:var(--ink);font-weight:800}
@@ -80,7 +78,7 @@
 </header>
 <section class="hero">
 <div class="panel read-panel">
-<h2>What's NOIZy this week?</h2>
+<h2>What's up this week?</h2>
 <p id="weeklyRead">업데이트 데이터를 불러오고 있어.</p>
 </div>
 </section>
@@ -175,7 +173,6 @@ function renderItem(item, index) {
         </div>
         <div class="meter">
           <div class="meter-top">
-            <span>NOIZ ${escapeHtml(item.noiz ?? "")}</span>
             <span class="mood"><svg aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-${mood.icon}"></use></svg><span>${mood.label}</span></span>
           </div>
           <div class="meter-track"><div class="meter-fill" style="--noise:${Math.max(0, Math.min(100, Number(item.noiz || 0)))}%;"></div></div>
