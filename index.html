@@ -124,19 +124,21 @@ function moodInfo(favorability, item = {}) {
 function isRankable(item) {
   const signals = (item.signals || []).join(" ");
   const status = String(item.status || item.openStatus || "").toLowerCase();
-  const reactionCount = Number(item.reactionCount || 0);
-  const hasNoReaction =
+
+  const lowInfo =
     item.infoVolume === "low" ||
     item.lowInfo === true ||
-    reactionCount <= 0 ||
     signals.includes("후기 축적 전") ||
-    signals.includes("후기 부족") ||
+    signals.includes("후기 부족");
+
+  const notOpenOrNoReaction =
     signals.includes("오픈 예정") ||
     signals.includes("반응 없음") ||
     status.includes("upcoming") ||
     status.includes("preopen") ||
     status.includes("pre-open");
-  return !hasNoReaction;
+
+  return !(lowInfo || notOpenOrNoReaction);
 }
 
 

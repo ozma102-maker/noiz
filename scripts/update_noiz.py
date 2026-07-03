@@ -544,8 +544,6 @@ def is_rankable_item(item: dict[str, Any]) -> bool:
 
     if item.get("infoVolume") == "low" or item.get("lowInfo") is True:
         return False
-    if int(item.get("reactionCount", 0) or 0) <= 0:
-        return False
     if any(x in signals for x in ["후기 축적 전", "후기 부족", "오픈 예정", "반응 없음"]):
         return False
     if any(x in status for x in ["upcoming", "preopen", "pre-open"]):
