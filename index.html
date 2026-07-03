@@ -68,7 +68,13 @@
 <symbol id="icon-neutral" viewbox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9 9.5h.01"></path><path d="M15 9.5h.01"></path><path d="M9 14.5h6"></path></symbol>
 <symbol id="icon-frown" viewbox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9 9.5h.01"></path><path d="M15 9.5h.01"></path><path d="M8.5 16c1-1.5 2.2-2 3.5-2s2.5.5 3.5 2"></path></symbol>
 </defs>
-</svg>
+<symbol id="icon-sunglasses" viewbox="0 0 24 24">
+<circle cx="12" cy="12" fill="none" r="9" stroke="currentColor" stroke-width="2"></circle>
+<path d="M7 9.2h4.2l-.7 3H7.7L7 9.2Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"></path>
+<path d="M12.8 9.2H17l-.7 3h-2.8l-.7-3Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"></path>
+<path d="M11.2 10.5h1.6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"></path>
+<path d="M8.5 15c1 .9 2.1 1.35 3.5 1.35S14.5 15.9 15.5 15" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
+</symbol></svg>
 <div class="wrap">
 <header>
 <div>
@@ -78,8 +84,8 @@
 </header>
 <section class="hero">
 <div class="panel read-panel">
-<h2>What's NOIZy this week?</h2>
-<p id="weeklyRead">업데이트 데이터를 불러오는 중이야!</p>
+<h2>What's up this week?</h2>
+<p id="weeklyRead">업데이트 데이터를 불러오고 있어.</p>
 </div>
 </section>
 <main class="rank-list" id="rankList"></main>
@@ -109,7 +115,7 @@ function moodInfo(favorability, item = {}) {
   if (hasLowInfo(item)) return { icon: "neutral", label: "후기 축적 중" };
 
   const score = Number(favorability ?? 60);
-  if (score >= 80) return { icon: "smile", label: "극호" };
+  if (score >= 80) return { icon: "sunglasses", label: "극호" };
   if (score >= 70) return { icon: "smile", label: "호감" };
   if (score >= 50) return { icon: "neutral", label: "중립" };
   return { icon: "frown", label: "불호" };
