@@ -447,9 +447,30 @@ function includesAny(text, words) {
 }
 
 function classifyMainItem(item) {
-  const text = [item.title, item.brand, item.owner, item.venue, item.area, item.description, ...(item.signals || [])].join(" ");
-  if (includesAny(text, ["팝업", "POP UP", "popup", "스토어", "브랜드", "굿즈", "IP", "팬덤", "더현대", "성수", "체험"])) return "팝업/브랜드 경험";
-  if (includesAny(text, ["전시", "미술", "미술관", "개인전", "기획전", "그라운드시소", "서울시립", "유영국", "렘브란트", "고야"])) return "전시/문화 경험";
+  const category = String(item.category || item.type || "").toLowerCase();
+  if (["exhibition", "culture", "art", "museum"].some(x => category.includes(x))) return "전시/문화 경험";
+  if (["popup", "brand", "retail"].some(x => category.includes(x))) return "팝업/브랜드 경험";
+
+  const title = String(item.title || "");
+  const brand = String(item.brand || item.owner || "");
+  const signals = (item.signals || []).join(" ");
+  const description = String(item.description || "");
+  const strongText = [title, brand, signals].join(" ");
+  const allText = [strongText, description].join(" ");
+
+  const exhibitionStrongWords = [
+    "개인전", "기획전", "미술관", "전시", "명작전", "회고전", "회고", "작가",
+    "서울시립미술관", "그라운드시소", "도슨트", "유영국", "렘브란트", "고야"
+  ];
+  const popupStrongWords = [
+    "팝업", "POP UP", "popup", "팝업스토어", "스토어", "굿즈", "IP 팬덤", "캐릭터",
+    "브랜드 체험", "제품 탐색", "구매 욕구", "이벤트", "더현대", "T1", "SK텔레콤", "GS25", "돈키호테", "NH농협", "마른파이브"
+  ];
+
+  if (includesAny(strongText, exhibitionStrongWords)) return "전시/문화 경험";
+  if (includesAny(strongText, popupStrongWords)) return "팝업/브랜드 경험";
+  if (includesAny(allText, ["팝업", "POP UP", "popup", "굿즈", "한정", "브랜드 체험", "제품 탐색", "구매 욕구"])) return "팝업/브랜드 경험";
+  if (includesAny(allText, ["전시", "미술", "관람", "작품", "작가", "회화", "사진", "조각"])) return "전시/문화 경험";
   return "공간 경험";
 }
 
@@ -487,7 +508,8 @@ function buildNoizWeeklyAnalysis(items, data = {}) {
 
   const congestion = hasWait ? "다만 웨이팅·혼잡 신호도 같이 보여. 화제성은 높지만 방문 피로도는 꼭 같이 봐야 해!" : "혼잡 신호는 상대적으로 약해. 이번 주는 화제성 대비 접근성이 꽤 괜찮아 보여!";
 
-  return `이번 주 NOIZ는 ${topAreas || "서울/수도권"} 중심으로 잡혀. Top 10은 팝업/브랜드 경험 ${popupCount}개, 전시/문화 경험 ${artCount}개가 섞여 있고, 가장 강한 신호는 ${top.title || "상위 후보"}야. ${why} ${environment} ${congestion}`;
+  const listName = list.length >= 10 ? "Top 10" : "상위 후보";
+  return `이번 주 NOIZ는 ${topAreas || "서울/수도권"} 중심으로 잡혀. ${listName}는 팝업/브랜드 경험 ${popupCount}개, 전시/문화 경험 ${artCount}개가 섞여 있고, 가장 강한 신호는 ${top.title || "상위 후보"}야. ${why} ${environment} ${congestion}`;
 }
 
 async function loadData() {

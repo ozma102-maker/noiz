@@ -588,6 +588,43 @@ def merge_with_existing(new_items: list[dict[str, Any]], existing_items: list[di
     return top
 
 
+def classify_experience_type(item: dict[str, Any]) -> str:
+    category = str(item.get("category", item.get("type", ""))).lower()
+    if any(x in category for x in ["exhibition", "culture", "art", "museum"]):
+        return "전시/문화 경험"
+    if any(x in category for x in ["popup", "brand", "retail"]):
+        return "팝업/브랜드 경험"
+
+    title = item.get("title", "")
+    brand = item.get("brand", item.get("owner", ""))
+    signals = " ".join(item.get("signals", []))
+    description = item.get("description", "")
+    strong_text = " ".join([title, brand, signals])
+    all_text = " ".join([strong_text, description])
+    strong_lower = strong_text.lower()
+    all_lower = all_text.lower()
+
+    exhibition_words = [
+        "개인전", "기획전", "미술관", "전시", "명작전", "회고전", "회고", "작가",
+        "서울시립미술관", "그라운드시소", "도슨트", "유영국", "렘브란트", "고야"
+    ]
+    popup_words = [
+        "팝업", "pop up", "popup", "팝업스토어", "스토어", "굿즈", "ip 팬덤", "캐릭터",
+        "브랜드 체험", "제품 탐색", "구매 욕구", "이벤트", "더현대", "t1", "sk텔레콤",
+        "gs25", "돈키호테", "nh농협", "마른파이브"
+    ]
+
+    if any(w.lower() in strong_lower for w in exhibition_words):
+        return "전시/문화 경험"
+    if any(w.lower() in strong_lower for w in popup_words):
+        return "팝업/브랜드 경험"
+    if any(w.lower() in all_lower for w in ["팝업", "pop up", "popup", "굿즈", "한정", "브랜드 체험", "제품 탐색", "구매 욕구"]):
+        return "팝업/브랜드 경험"
+    if any(w in all_text for w in ["전시", "미술", "관람", "작품", "작가", "회화", "사진", "조각"]):
+        return "전시/문화 경험"
+    return "공간 경험"
+
+
 def make_weekly_read(items: list[dict[str, Any]]) -> str:
     rankable = sorted([i for i in items if is_rankable_item(i)], key=lambda x: int(x.get("noiz", 0)), reverse=True)[:10]
     if not rankable:
@@ -600,7 +637,8 @@ def make_weekly_read(items: list[dict[str, Any]]) -> str:
     for item in rankable:
         area = item.get("area") or item.get("region") or "서울/수도권"
         areas[area] = areas.get(area, 0) + 1
-        text = " ".join([
+        types[classify_experience_type(item)] += 1
+        blob_parts.append(" ".join([
             item.get("title", ""),
             item.get("brand", ""),
             item.get("owner", ""),
@@ -608,15 +646,7 @@ def make_weekly_read(items: list[dict[str, Any]]) -> str:
             item.get("area", ""),
             item.get("description", ""),
             " ".join(item.get("signals", [])),
-        ])
-        lower = text.lower()
-        if any(x.lower() in lower for x in ["팝업", "pop up", "popup", "스토어", "브랜드", "굿즈", "ip", "팬덤", "더현대", "성수", "체험"]):
-            types["팝업/브랜드 경험"] += 1
-        elif any(x in text for x in ["전시", "미술", "미술관", "개인전", "기획전", "그라운드시소", "서울시립", "유영국", "렘브란트", "고야"]):
-            types["전시/문화 경험"] += 1
-        else:
-            types["공간 경험"] += 1
-        blob_parts.append(text)
+        ]))
 
     area_line = "·".join(sorted(areas, key=areas.get, reverse=True)[:3])
     popup_count = types.get("팝업/브랜드 경험", 0)
@@ -636,7 +666,8 @@ def make_weekly_read(items: list[dict[str, Any]]) -> str:
         environment = "전체 환경은 대형 전시와 미술관 동선의 비중이 높고, 관객은 검증된 콘텐츠를 중심으로 주말 일정을 짜는 흐름이야."
 
     congestion = "다만 웨이팅·혼잡 신호도 같이 보여. 화제성은 높지만 방문 피로도는 꼭 같이 봐야 해!" if any(x in blob for x in ["웨이팅", "혼잡", "줄", "대기", "더현대"]) else "혼잡 신호는 상대적으로 약해. 이번 주는 화제성 대비 접근성이 꽤 괜찮아 보여!"
-    return f"이번 주 NOIZ는 {area_line or '서울/수도권'} 중심으로 잡혀. Top 10은 팝업/브랜드 경험 {popup_count}개, 전시/문화 경험 {art_count}개가 섞여 있고, 가장 강한 신호는 {rankable[0].get('title', '상위 후보')}야. {why} {environment} {congestion}"
+    list_name = "Top 10" if len(rankable) >= 10 else "상위 후보"
+    return f"이번 주 NOIZ는 {area_line or '서울/수도권'} 중심으로 잡혀. {list_name}는 팝업/브랜드 경험 {popup_count}개, 전시/문화 경험 {art_count}개가 섞여 있고, 가장 강한 신호는 {rankable[0].get('title', '상위 후보')}야. {why} {environment} {congestion}"
 
 def main() -> None:
     existing = load_existing()
