@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>NOIZ. — Weekly Space Radar</title>
+<style>
+  :root{
+    --bg:#c6ff00;
+    --paper:rgba(255,255,255,.16);
+    --ink:#3f5d7f;
+    --muted:#58779a;
+    --line:rgba(63,93,127,.26);
+    --white:#f7f8f2;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Noto Sans KR",Segoe UI,sans-serif;letter-spacing:-.04em}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:30px 22px 72px}
+  header{display:grid;grid-template-columns:1fr;gap:20px;align-items:end;padding:4px 0 24px;border-bottom:1px solid var(--line)}
+  .logo{font-size:78px;font-weight:850;letter-spacing:-.09em;line-height:.88;margin:0;color:var(--ink)}
+  .logo .dot{display:inline-block;margin-left:.04em}
+  .tag{font-size:20px;font-weight:850;color:var(--ink);line-height:1.2;margin:18px 0 0;max-width:760px;letter-spacing:-.055em}
+  .stamp{text-align:right;font-size:12px;color:var(--muted);line-height:1.45}.stamp b{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
+  .hero{display:grid;grid-template-columns:1fr;gap:14px;margin:22px 0 18px}
+  .panel{background:rgba(255,255,255,.18);border:1px solid var(--line);border-radius:28px;padding:22px}
+  .panel h2{margin:0 0 9px;font-size:28px;font-weight:850;letter-spacing:-.06em;color:var(--ink)}.panel p{margin:0;color:var(--muted);line-height:1.68;font-size:15px;font-weight:650}
+  .rank-list{display:grid;gap:14px}
+  .card{background:rgba(255,255,255,.16);border:1px solid var(--line);border-radius:30px;padding:18px;display:grid;grid-template-columns:84px 1fr;gap:18px}
+  .rank{height:72px;width:72px;border-radius:20px;background:rgba(255,255,255,.48);color:var(--ink);display:flex;align-items:center;justify-content:center;font-weight:850;font-size:24px;letter-spacing:-.08em}
+  .head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+  .meta{font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:760}
+  .title{font-size:25px;font-weight:850;letter-spacing:-.07em;margin:0 0 5px;color:var(--ink)}
+  .owner{font-size:15px;color:var(--ink);line-height:1.48;font-weight:760}
+  .place{font-size:13px;color:var(--muted);margin-top:5px;font-weight:700}
+
+  .title-link{display:inline;text-decoration:none;color:var(--ink)}
+  .title-link:hover{text-decoration:underline;text-underline-offset:.13em}
+  .place-link{display:inline;color:var(--muted);text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px;font-weight:760}
+  .place-link:hover{color:var(--ink)}
+
+  .scorebox{text-align:right;min-width:92px}
+  .score{font-size:42px;font-weight:880;line-height:.88;letter-spacing:-.08em;color:var(--ink)}
+  .score-label{font-size:10px;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);margin-top:7px;font-weight:760}
+  .meter{margin:17px 0 12px}
+  .meter-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:760;gap:12px;flex-wrap:wrap}
+  .meter-track{height:16px;border-radius:999px;background:rgba(63,93,127,.12);border:1px solid rgba(63,93,127,.2);overflow:hidden;position:relative}
+  .meter-fill{height:100%;width:var(--noise);border-radius:999px;background:currentColor;opacity:.92}
+  .mood{display:inline-flex;align-items:center;gap:7px;color:var(--ink);font-weight:800}
+  .mood svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+  .desc{font-size:14px;line-height:1.68;color:var(--ink);margin:10px 0 13px;font-weight:660}
+  .signals{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+  .sig{font-size:11px;border-radius:999px;background:rgba(255,255,255,.35);border:1px solid var(--line);padding:6px 8px;color:var(--ink);font-weight:720}
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:rgba(255,255,255,.34);color:var(--ink);border-radius:999px;padding:10px 12px;font-size:13px;font-weight:780}
+  .btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .btn:hover{transform:translateY(-1px)}
+  .foot{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.65}.foot b{color:var(--ink)}
+  .status{margin:14px 0 0;font-size:12px;color:var(--muted);font-weight:700}
+  @media (max-width:760px){.wrap{padding:24px 13px 52px}.logo{font-size:56px}header{grid-template-columns:1fr}.stamp{text-align:left}.card{grid-template-columns:1fr;gap:13px}.rank{height:54px;width:64px;border-radius:17px;font-size:21px}.head{display:block}.scorebox{text-align:left;margin-top:12px;display:flex;align-items:end;gap:8px}.score{font-size:38px}.title{font-size:23px}.tag{font-size:15px}}
+</style>
+</head>
+<body>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+<defs>
+<symbol id="icon-smile" viewbox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9 9.5h.01"></path><path d="M15 9.5h.01"></path><path d="M8.5 14c1 1.5 2.2 2 3.5 2s2.5-.5 3.5-2"></path></symbol>
+<symbol id="icon-neutral" viewbox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9 9.5h.01"></path><path d="M15 9.5h.01"></path><path d="M9 14.5h6"></path></symbol>
+<symbol id="icon-frown" viewbox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9 9.5h.01"></path><path d="M15 9.5h.01"></path><path d="M8.5 16c1-1.5 2.2-2 3.5-2s2.5.5 3.5 2"></path></symbol>
+</defs>
+</svg>
+<div class="wrap">
+<header>
+<div>
+<h1 class="logo">NOIZ<span class="dot">.</span></h1>
+<p class="tag week-label" id="weekLabel">2026 July week 1</p>
+</div>
+</header>
+<section class="hero">
+<div class="panel read-panel">
+<h2>What's up this week?</h2>
+<p id="weeklyRead">업데이트 데이터를 불러오고 있어.</p>
+</div>
+</section>
+<main class="rank-list" id="rankList"></main>
+<section class="foot">
+<b>제작자:</b> <span id="creator">이원준 시니어매니저</span>
+</section>
+</div>
+<script>
+const DATA_URL = "./data/noiz-data.json";
+
+function escapeHtml(str = "") {
+  return String(str).replace(/[&<>"']/g, ch => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+  }[ch]));
+}
+
+function mapUrl(query) {
+  return `https://map.naver.com/p/search/${encodeURIComponent(query || "")}`;
+}
+
+function moodInfo(favorability) {
+  const score = Number(favorability ?? 70);
+  if (score >= 76) return { icon: "smile", label: "호감 우세" };
+  if (score >= 66) return { icon: "neutral", label: "중립 / 혼재" };
+  return { icon: "frown", label: "불호 신호" };
+}
+
+function formatDate(iso) {
+  if (!iso) return "업데이트 시간 확인 불가";
+  try {
+    const date = new Date(iso);
+    return new Intl.DateTimeFormat("ko-KR", {
+      timeZone: "Asia/Seoul",
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit"
+    }).format(date) + " 기준";
+  } catch {
+    return iso;
+  }
+}
+
+
+function formatWeekLabel(iso) {
+  const date = iso ? new Date(iso) : new Date();
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric"
+  }).formatToParts(date);
+  const year = Number(parts.find(p => p.type === "year").value);
+  const month = Number(parts.find(p => p.type === "month").value);
+  const day = Number(parts.find(p => p.type === "day").value);
+  const week = Math.ceil(day / 7);
+  return `${year} ${months[month - 1]} week ${week}`;
+}
+
+function renderItem(item, index) {
+  const rank = item.rank || index + 1;
+  const mood = moodInfo(item.favorability);
+  const sourceUrl = item.sourceUrl || "#";
+  const mapQuery = item.mapQuery || `${item.venue || ""} ${item.area || ""}`;
+  const signals = (item.signals || []).map(s => `<span class="sig">${escapeHtml(s)}</span>`).join("");
+  return `
+    <article class="card">
+      <div class="rank">#${rank}</div>
+      <div>
+        <div class="head">
+          <div>
+            <div class="meta">${escapeHtml(item.brand || item.ownerName || "")}</div>
+            <h2 class="title"><a class="title-link" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(item.title || "Untitled")}</a></h2>
+            <div class="owner">${escapeHtml(item.owner || "")}</div>
+            <div class="place"><a class="place-link" href="${mapUrl(mapQuery)}" target="_blank" rel="noopener">${escapeHtml(item.venue || "")} · ${escapeHtml(item.area || item.region || "")}</a></div>
+          </div>
+          <div class="scorebox">
+            <div class="score">${escapeHtml(item.noiz ?? "")}</div>
+            <div class="score-label">NOIZ Meter</div>
+          </div>
+        </div>
+        <div class="meter">
+          <div class="meter-top">
+            <span>NOIZ ${escapeHtml(item.noiz ?? "")}</span>
+            <span class="mood"><svg aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-${mood.icon}"></use></svg><span>${mood.label}</span></span>
+          </div>
+          <div class="meter-track"><div class="meter-fill" style="--noise:${Math.max(0, Math.min(100, Number(item.noiz || 0)))}%;"></div></div>
+        </div>
+        <p class="desc">${escapeHtml(item.description || "")}</p>
+        <div class="signals">${signals}</div>
+
+      </div>
+    </article>
+  `;
+}
+
+
+
+async function loadData() {
+  try {
+    const res = await fetch(`${DATA_URL}?t=${Date.now()}`, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    document.getElementById("weeklyRead").textContent = data.weekly_read || "이번 주 요약 없음";
+    document.getElementById("weekLabel").textContent = formatWeekLabel(data.updated_at);
+    document.getElementById("creator").textContent = data.creator || "이원준 시니어매니저";
+    document.getElementById("rankList").innerHTML = (data.items || []).slice(0, 10).map(renderItem).join("");
+  } catch (err) {
+    document.getElementById("weekLabel").textContent = formatWeekLabel();
+    console.warn(`데이터 로드 실패: ${err.message}`);
+    document.getElementById("rankList").innerHTML = `
+      <article class="card"><div class="rank">!</div><div><h2 class="title">noiz-data.json을 불러오지 못했어</h2><p class="desc">로컬 파일로 직접 열면 브라우저 보안 때문에 JSON fetch가 막힐 수 있어. GitHub Pages에 배포하면 정상 작동해.</p></div></article>
+    `;
+  }
+}
+
+loadData();
+</script>
+</body>
+</html>
