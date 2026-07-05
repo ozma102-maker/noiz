@@ -4,7 +4,7 @@
 <head><meta content="#c6ff00" name="theme-color"/><meta content="default" name="apple-mobile-web-app-status-bar-style"/>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>NOIZ! — Weekly Space Radar</title>
+<title>NOIZ. — Weekly Space Radar</title>
 <style>
   :root{
     --bg:#c6ff00;
@@ -24,10 +24,10 @@
   .tag{font-size:20px;font-weight:850;color:var(--ink);line-height:1.2;margin:18px 0 0;max-width:760px;letter-spacing:-.055em}
   .stamp{text-align:right;font-size:12px;color:var(--muted);line-height:1.45}.stamp b{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
   .hero{display:grid;grid-template-columns:1fr;gap:14px;margin:22px 0 18px}
-  .panel{background:rgba(255,255,255,.18);border:1px solid var(--line);border-radius:28px;padding:22px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:28px;padding:22px}
   .panel h2{margin:0 0 9px;font-size:28px;font-weight:850;letter-spacing:-.06em;color:var(--ink)}.panel p{margin:0;color:var(--muted);line-height:1.68;font-size:15px;font-weight:650}
   .rank-list{display:grid;gap:14px}
-  .card{background:rgba(255,255,255,.16);border:1px solid var(--line);border-radius:30px;padding:18px;display:grid;grid-template-columns:84px 1fr;gap:18px}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:30px;padding:18px;display:grid;grid-template-columns:84px 1fr;gap:18px}
   .rank{height:72px;width:72px;border-radius:20px;background:rgba(255,255,255,.48);color:var(--ink);display:flex;align-items:center;justify-content:center;font-weight:850;font-size:24px;letter-spacing:-.08em}
   .head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
   .meta{font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:760}
@@ -386,14 +386,14 @@
 <div class="wrap">
 <header>
 <div>
-<h1 class="logo">NOIZ<span class="dot">!</span></h1>
+<h1 class="logo">NOIZ<span class="dot">.</span></h1>
 <div aria-label="NOIZ archive navigation" class="week-nav">
 <button aria-label="이전 업데이트" class="week-arrow" id="archivePrev" type="button">‹</button>
 <p class="tag week-label" id="weekLabel">2026 July week 1</p>
 <button aria-label="다음 업데이트" class="week-arrow" id="archiveNext" type="button">›</button>
 </div>
 </div>
-<button aria-label="랜덤 컬러" class="theme-shuffle" id="themeShuffle" title="랜덤 컬러" type="button">
+<button aria-label="랜덤 컬러" class="theme-shuffle" id="themeShuffle" onclick="shuffleThemeNow();" title="랜덤 컬러" type="button">
 <svg aria-hidden="true" viewbox="0 0 64 52">
 <rect class="dice-outline" height="30" rx="7" ry="7" width="30" x="9" y="9"></rect>
 <g aria-hidden="true" class="dice-pips" id="dicePips">
@@ -409,7 +409,7 @@
 </header>
 <section class="hero">
 <div class="panel read-panel">
-<h2>What's NOIZi this week?</h2>
+<h2>What's NOIZy this week?</h2>
 <p id="weeklyRead">업데이트 데이터를 불러오고 있어.</p>
 </div>
 </section>
@@ -432,12 +432,15 @@ function randomTheme(excludeId = null) {
   if (!THEME_POOL.length) return DEFAULT_THEME;
   const candidates = THEME_POOL.filter(theme => theme.id !== excludeId);
   const pool = candidates.length ? candidates : THEME_POOL;
+  let index = 0;
   if (window.crypto && crypto.getRandomValues) {
     const arr = new Uint32Array(1);
     crypto.getRandomValues(arr);
-    return pool[arr[0] % pool.length];
+    index = arr[0] % pool.length;
+  } else {
+    index = Math.floor((Math.random() * pool.length + Date.now()) % pool.length);
   }
-  return pool[Math.floor(Math.random() * pool.length)];
+  return pool[index];
 }
 
 const DICE_PATTERNS = {
@@ -475,15 +478,17 @@ function rollDiceFace() {
 function applyColorTheme(theme = DEFAULT_THEME) {
   const selected = { ...DEFAULT_THEME, ...(theme || {}) };
   currentThemeId = selected.id || null;
-  document.body.dataset.theme = currentThemeId || "";
+  if (document.body) document.body.dataset.theme = currentThemeId || "";
+
   const root = document.documentElement;
   ["bg", "paper", "ink", "muted", "line", "white"].forEach(key => {
     if (selected[key]) root.style.setProperty(`--${key}`, selected[key]);
   });
 
   if (selected.bg) {
-    document.documentElement.style.backgroundColor = selected.bg;
-    document.body.style.backgroundColor = selected.bg;
+    root.style.backgroundColor = selected.bg;
+    if (document.body) document.body.style.backgroundColor = selected.bg;
+
     let metaTheme = document.querySelector('meta[name="theme-color"]');
     if (!metaTheme) {
       metaTheme = document.createElement("meta");
@@ -491,6 +496,14 @@ function applyColorTheme(theme = DEFAULT_THEME) {
       document.head.appendChild(metaTheme);
     }
     metaTheme.setAttribute("content", selected.bg);
+
+    let metaApple = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (!metaApple) {
+      metaApple = document.createElement("meta");
+      metaApple.setAttribute("name", "apple-mobile-web-app-status-bar-style");
+      document.head.appendChild(metaApple);
+    }
+    metaApple.setAttribute("content", "default");
   }
 }
 
@@ -725,7 +738,7 @@ function buildNoizWeeklyAnalysis(items, data = {}) {
   const congestion = hasWait ? "다만 웨이팅·혼잡 신호도 같이 보여. 화제성은 높지만 방문 피로도는 꼭 같이 봐야 해!" : "혼잡 신호는 상대적으로 약해. 이번 주는 화제성 대비 접근성이 꽤 괜찮아 보여!";
 
   const listName = list.length >= 10 ? "Top 10" : "상위 후보";
-  return `이번 주 노이즈는 ${topAreas || "서울/수도권"} 중심으로 잡혀. ${listName}는 팝업/브랜드 경험 ${popupCount}개, 전시/문화 경험 ${artCount}개가 섞여 있고, 가장 강한 신호는 ${top.title || "상위 후보"} 쪽이야. ${why} ${environment} ${congestion}`;
+  return `이번 주 NOIZ는 ${topAreas || "서울/수도권"} 중심으로 잡혀. ${listName}는 팝업/브랜드 경험 ${popupCount}개, 전시/문화 경험 ${artCount}개가 섞여 있고, 가장 강한 신호는 ${top.title || "상위 후보"} 쪽이야. ${why} ${environment} ${congestion}`;
 }
 
 
@@ -854,17 +867,25 @@ function animateDiceRoll(button) {
     button.classList.remove("is-rolling");
   }, 580);
 }
+
+function shuffleThemeNow() {
+  const button = document.getElementById("themeShuffle");
+  if (button) animateDiceRoll(button);
+
+  const next = randomTheme(currentThemeId);
+  // Change the page color immediately so the click always feels responsive.
+  applyColorTheme(next);
+
+  window.setTimeout(() => {
+    rollDiceFace();
+  }, 220);
+}
+
 function setupThemeShuffle() {
   const button = document.getElementById("themeShuffle");
   if (!button) return;
   setDiceFace(6);
-  button.addEventListener("click", () => {
-    animateDiceRoll(button);
-    window.setTimeout(() => {
-      rollDiceFace();
-      applyColorTheme(randomTheme(currentThemeId));
-    }, 360);
-  });
+  button.onclick = shuffleThemeNow;
 }
 
 async function initNoizPage() {
