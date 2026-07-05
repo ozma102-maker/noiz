@@ -367,6 +367,35 @@
     stroke:none!important;
     opacity:1!important;
   }
+
+  /* v63 small title-side service descriptor */
+  .logo-row{
+    display:flex;
+    align-items:flex-end;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .logo-subtitle{
+    margin:0 0 7px;
+    color:var(--ink);
+    font-size:15px;
+    font-weight:760;
+    line-height:1;
+    letter-spacing:-.045em;
+    white-space:nowrap;
+    opacity:.92;
+  }
+  @media (max-width:720px){
+    .logo-row{
+      gap:8px;
+      align-items:flex-end;
+    }
+    .logo-subtitle{
+      margin:0 0 5px;
+      font-size:11.5px;
+      letter-spacing:-.04em;
+    }
+  }
 </style>
 </head>
 <body>
@@ -386,7 +415,7 @@
 <div class="wrap">
 <header>
 <div>
-<h1 class="logo">NOIZ<span class="dot">.</span></h1>
+<div class="logo-row"><h1 class="logo">NOIZ<span class="dot">.</span></h1><p class="logo-subtitle">AI-powered weekly CX radar</p></div>
 <div aria-label="NOIZ archive navigation" class="week-nav">
 <button aria-label="이전 업데이트" class="week-arrow" id="archivePrev" type="button">‹</button>
 <p class="tag week-label" id="weekLabel">2026 July week 1</p>
