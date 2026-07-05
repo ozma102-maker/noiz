@@ -742,23 +742,40 @@ def pick_weekly_theme(existing_theme: dict[str, Any] | None = None) -> dict[str,
     print(f"[OK] weekly theme selected: {selected.get('name')}")
     return selected
 
-def archive_payload(payload: dict[str, Any]) -> None:
-    """Save one weekly NOIZ snapshot on Mondays only."""
-    updated_at = str(payload.get("updated_at", ""))
-    try:
-        current_dt = datetime.fromisoformat(updated_at)
-    except Exception:
-        current_dt = datetime.now(KST)
+def archive_payload(payload: dict[str, Any], *, now_dt: datetime | None = None) -> None:
+    """Save the existing live NOIZ page before the Monday weekly rollover.
 
-    # Monday = 0. Other days update the live page only, not the archive.
+    This function is intentionally called BEFORE generating/writing the new Monday data.
+    That way the archive keeps the page that was visible until Monday 09:00 KST,
+    and the live data can then roll forward to the new week.
+    """
+    if not payload or not payload.get("items"):
+        print("[INFO] weekly archive skipped: no existing live payload")
+        return
+
+    current_dt = now_dt or datetime.now(KST)
     if current_dt.weekday() != 0:
         print(f"[INFO] weekly archive skipped: {current_dt.date()} is not Monday")
         return
 
+    updated_at = str(payload.get("updated_at", ""))
+    try:
+        payload_dt = datetime.fromisoformat(updated_at)
+        if payload_dt.tzinfo is None:
+            payload_dt = payload_dt.replace(tzinfo=KST)
+    except Exception:
+        payload_dt = current_dt - timedelta(days=1)
+
+    # If a manual rerun happens after the Monday rollover already wrote new data,
+    # do not archive the new Monday page as if it were the previous week.
+    if payload_dt.date() == current_dt.date():
+        print("[INFO] weekly archive skipped: live payload is already today's rollover data")
+        return
+
     ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
 
-    monday_key = current_dt.strftime("%Y-%m-%d")
-    archive_file = ARCHIVE_DIR / f"noiz-week-{monday_key}.json"
+    archive_key = payload_dt.strftime("%Y-%m-%d")
+    archive_file = ARCHIVE_DIR / f"noiz-week-{archive_key}.json"
     archive_file.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
     if ARCHIVE_INDEX_PATH.exists():
@@ -774,23 +791,27 @@ def archive_payload(payload: dict[str, Any]) -> None:
         for entry in archive_index.get("entries", [])
         if entry.get("date")
     }
-    entries_by_date[monday_key] = {
-        "date": monday_key,
+    iso = payload_dt.isocalendar()
+    entries_by_date[archive_key] = {
+        "date": archive_key,
         "updated_at": payload.get("updated_at"),
-        "file": f"./data/archive/noiz-week-{monday_key}.json",
-        "label": f"{current_dt.isocalendar().year} W{current_dt.isocalendar().week:02d}",
+        "file": f"./data/archive/noiz-week-{archive_key}.json",
+        "label": f"{iso.year} W{iso.week:02d}",
+        "snapshot": "before_monday_rollover",
     }
 
     entries = sorted(entries_by_date.values(), key=lambda entry: str(entry.get("date", "")))
     archive_index = {
         "site": "NOIZ Weekly Archive",
-        "updated_at": payload.get("updated_at"),
+        "updated_at": current_dt.isoformat(timespec="seconds"),
         "entries": entries[-52:],
     }
     ARCHIVE_INDEX_PATH.write_text(json.dumps(archive_index, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"[OK] archived weekly NOIZ snapshot: {archive_file}")
+    print(f"[OK] archived previous weekly NOIZ snapshot: {archive_file}")
 def main() -> None:
     existing = load_existing()
+    now_dt = datetime.now(KST)
+    archive_payload(existing, now_dt=now_dt)
     sources = json.loads(SOURCES_PATH.read_text(encoding="utf-8"))
 
     candidates: list[Candidate] = []
@@ -808,7 +829,7 @@ def main() -> None:
 
     payload = {
         "site": "NOIZ",
-        "updated_at": datetime.now(KST).isoformat(timespec="seconds"),
+        "updated_at": now_dt.isoformat(timespec="seconds"),
         "theme": theme,
         "weekly_read": make_weekly_read(items),
         "items": items,
@@ -817,7 +838,6 @@ def main() -> None:
     }
 
     DATA_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    archive_payload(payload)
     print(f"[OK] wrote {DATA_PATH} with {len(items)} rankable items")
 
 

@@ -787,31 +787,46 @@ function updateArchiveNav(currentDate) {
   const state = document.getElementById("archiveState");
   if (!prevBtn || !nextBtn) return;
 
-  const dates = archiveEntries.map(entry => entry.date);
+  const dates = archiveEntries
+    .map(entry => entry.date)
+    .filter(Boolean)
+    .sort();
+
+  prevBtn.onclick = null;
+  nextBtn.onclick = null;
+
   if (!dates.length) {
     prevBtn.disabled = true;
     nextBtn.disabled = true;
     return;
   }
 
-  let dateKey = currentDate || activeArchiveDate || dates[dates.length - 1] || null;
+  const viewingArchive = Boolean(activeArchiveDate);
+  const currentKey = activeArchiveDate || currentDate || null;
 
-  if (dateKey && !dates.includes(dateKey)) {
-    dates.push(dateKey);
-    dates.sort();
+  if (!viewingArchive) {
+    // Live/current week: previous arrow goes to the most recent saved week.
+    prevBtn.disabled = false;
+    nextBtn.disabled = true;
+    prevBtn.onclick = () => setArchiveUrl(dates[dates.length - 1]);
+    return;
   }
 
-  const index = dateKey ? dates.indexOf(dateKey) : dates.length - 1;
-  const latestIndex = dates.length - 1;
-
+  const index = dates.indexOf(currentKey);
   prevBtn.disabled = index <= 0;
-  nextBtn.disabled = index < 0 || index >= latestIndex;
+  nextBtn.disabled = index < 0;
 
   prevBtn.onclick = () => {
     if (index > 0) setArchiveUrl(dates[index - 1]);
   };
+
   nextBtn.onclick = () => {
-    if (index >= 0 && index < latestIndex) setArchiveUrl(dates[index + 1]);
+    if (index >= 0 && index < dates.length - 1) {
+      setArchiveUrl(dates[index + 1]);
+    } else if (index === dates.length - 1) {
+      // Newest archived week → live/current week.
+      setArchiveUrl(null);
+    }
   };
 
   if (state) {
