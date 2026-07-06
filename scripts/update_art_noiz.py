@@ -570,7 +570,7 @@ def build_items() -> list[dict[str, Any]]:
 def make_weekly_read(items: list[dict[str, Any]]) -> str:
     ranked = sorted(items, key=lambda x: int(x.get("noiz", 0)), reverse=True)[:10]
     if not ranked:
-        return "이번 주는 아직 뚜렷하게 잡히는 전시 신호가 많지 않아. 조금 더 쌓이면 바로 읽어볼게!"
+        return "현재는 아직 뚜렷하게 잡히는 전시 신호가 많지 않아. 조금 더 쌓이면 바로 읽어볼게!"
 
     areas: dict[str, int] = {}
     venue_types: dict[str, int] = {"미술관": 0, "갤러리": 0, "전시공간": 0}
@@ -636,17 +636,17 @@ def make_weekly_read(items: list[dict[str, Any]]) -> str:
     if gallery_count >= 5 and "삼청" in area_line:
         reason = "특히 삼청권 갤러리들이 상위권에 모이면서, 하나의 전시만 보기보다 짧은 반경 안에서 여러 전시를 이어보는 동선형 관심이 강해져."
 
-    return f"이번 주 ART NOIZ는 {area_line or '서울/수도권'} 중심으로 잡혀. Top 10의 핵심 매체는 {medium_line or '동시대미술'}이고, 구성은 미술관 {museum_count}개, 갤러리 {gallery_count}개에 가까워. {interest} 가장 강한 신호는 {ranked[0].get('title', '상위 전시')}지만, 단독 목적지라기보다 주변 전시들과 묶어 볼 때 더 설득력 있어 보여. {market} {reason}"
+    return f"현재 ART NOIZ는 {area_line or '서울/수도권'} 중심으로 잡혀. Top 10의 핵심 매체는 {medium_line or '동시대미술'}이고, 구성은 미술관 {museum_count}개, 갤러리 {gallery_count}개에 가까워. {interest} 가장 강한 신호는 {ranked[0].get('title', '상위 전시')}지만, 단독 목적지라기보다 주변 전시들과 묶어 볼 때 더 설득력 있어 보여. {market} {reason}"
 
 def main() -> None:
     items = build_items()
     payload = {
-        "site": "NOIZ. Art",
+        "site": "NOIZ! Art",
         "updated_at": datetime.now(KST).isoformat(timespec="seconds"),
         "weekly_read": make_weekly_read(items),
         "items": items,
         "creator": "이원준 시니어매니저",
-        "method_note": "미술관·갤러리 공식 페이지, 아트 플랫폼, 전시 리뷰 검색 신호를 함께 본 ART NOIZ 데이터야. 전시를 평점 매기기보다, 이번 주 관객 관심이 어디로 움직이는지 읽는 용도야!",
+        "method_note": "미술관·갤러리 공식 페이지, 아트 플랫폼, 전시 리뷰 검색 신호를 함께 본 ART NOIZ 데이터야. 전시를 평점 매기기보다, 현재 관객 관심이 어디로 움직이는지 읽는 용도야!",
     }
     DATA_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[OK] wrote {DATA_PATH} with {len(items)} ART NOIZ items")
