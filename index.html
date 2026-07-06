@@ -855,7 +855,31 @@ function currentRequestedArchiveDate() {
   return params.get("date") || params.get("archive") || null;
 }
 
+
+function markWeekThemeShuffle() {
+  try {
+    window.sessionStorage.setItem("noiz-week-theme-shuffle", "1");
+  } catch {
+    // sessionStorage can be unavailable in some browser modes.
+  }
+}
+
+function shouldShuffleThemeAfterWeekChange() {
+  try {
+    const key = "noiz-week-theme-shuffle";
+    const value = window.sessionStorage.getItem(key);
+    if (value === "1") {
+      window.sessionStorage.removeItem(key);
+      return true;
+    }
+  } catch {
+    // Keep default lime if sessionStorage is unavailable.
+  }
+  return false;
+}
+
 function setArchiveUrl(dateKey) {
+  markWeekThemeShuffle();
   const url = new URL(window.location.href);
   if (dateKey) {
     url.searchParams.set("date", dateKey);
@@ -1005,7 +1029,9 @@ function setupThemeShuffle() {
 }
 
 async function initNoizPage() {
-  applyColorTheme(DEFAULT_THEME);
+  const shuffleOnWeekChange = shouldShuffleThemeAfterWeekChange();
+  applyColorTheme(shuffleOnWeekChange ? randomTheme(DEFAULT_THEME.id) : DEFAULT_THEME);
+  if (shuffleOnWeekChange) rollDiceFace();
   await loadArchiveIndex();
   await loadData(currentRequestedArchiveDate());
 }
