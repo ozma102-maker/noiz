@@ -4,7 +4,7 @@
 <head><meta content="#c6ff00" name="theme-color"/><meta content="default" name="apple-mobile-web-app-status-bar-style"/>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>NOIZ! — Weekly CX Radar</title>
+<title>NOIZ. — Weekly Space Radar</title>
 <style>
   :root{
     --bg:#c6ff00;
@@ -415,7 +415,7 @@
 <div class="wrap">
 <header>
 <div>
-<div class="logo-row"><h1 class="logo">NOIZ<span class="dot">!</span></h1><p class="logo-subtitle">AI-powered weekly CX radar</p></div>
+<div class="logo-row"><h1 class="logo">NOIZ<span class="dot">.</span></h1><p class="logo-subtitle">AI-powered weekly CX radar</p></div>
 <div aria-label="NOIZ archive navigation" class="week-nav">
 <button aria-label="이전 업데이트" class="week-arrow" id="archivePrev" type="button">‹</button>
 <p class="tag week-label" id="weekLabel">2026 July week 1</p>
@@ -608,12 +608,28 @@ function formatWeekLabel(iso) {
     timeZone: "Asia/Seoul",
     year: "numeric",
     month: "numeric",
-    day: "numeric"
+    day: "numeric",
+    hour: "numeric",
+    hour12: false
   }).formatToParts(date);
+
   const year = Number(parts.find(p => p.type === "year").value);
   const month = Number(parts.find(p => p.type === "month").value);
   const day = Number(parts.find(p => p.type === "day").value);
-  const week = Math.ceil(day / 7);
+  const hour = Number(parts.find(p => p.type === "hour").value);
+
+  // Week labels roll over every Monday at 09:00 KST.
+  // Example: 2026-07-06 09:00 KST -> 2026 July week 2.
+  let rollovers = 0;
+  for (let d = 1; d <= day; d += 1) {
+    const weekday = new Date(Date.UTC(year, month - 1, d, 12)).getUTCDay(); // 1 = Monday
+    if (weekday !== 1) continue;
+    if (d < day || (d === day && hour >= 9)) {
+      rollovers += 1;
+    }
+  }
+
+  const week = 1 + rollovers;
   return `${year} ${months[month - 1]} week ${week}`;
 }
 
