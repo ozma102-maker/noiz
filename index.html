@@ -889,7 +889,9 @@ async function loadData(targetDate = null) {
     const dataDate = dateKeyFromIso(data.updated_at) || targetDate;
 
     // weeklyRead is generated after Top 10 ranking.
-    document.getElementById("weekLabel").textContent = formatWeekLabel(data.updated_at);
+    document.getElementById("weekLabel").textContent = targetDate
+      ? formatWeekLabel(data.updated_at)
+      : formatWeekLabel();
     document.getElementById("creator").textContent = data.creator || "이원준 시니어매니저";
     const items = (data.items || [])
       .filter(isRankable)

@@ -1,0 +1,229 @@
+{
+  "site": "NOIZ",
+  "updated_at": "2026-07-03T00:00:00+09:00",
+  "weekly_read": "이번 주 NOIZ는 성수·여의도·중구 중심으로 잡혀. 상위 후보는 팝업/브랜드 경험 5개, 전시/문화 경험 4개가 섞여 있고, 가장 강한 신호는 암행천문 : 별을 헤다 쪽이야. 관심이 모이는 이유는 굿즈, 한정성, 무료 체험처럼 바로 움직이게 만드는 요소가 강하기 때문이야. 전체 환경은 성수·더현대식 팝업 경쟁이 강하고, 관객은 오래 머무는 전시보다 짧고 인증하기 좋은 방문 경험에 빠르게 반응하는 흐름이야. 다만 웨이팅·혼잡 신호도 같이 보여. 화제성은 높지만 방문 피로도는 꼭 같이 봐야 해!",
+  "items": [
+    {
+      "rank": 1,
+      "brand": "T1 × SK텔레콤",
+      "title": "암행천문 : 별을 헤다",
+      "owner": "T1의 우승 트로피, 페이커 실착 유니폼, 팬 보상형 체험을 묶은 대형 팬덤 팝업",
+      "venue": "T Factory 성수",
+      "area": "성수",
+      "region": "성동구",
+      "mapQuery": "T Factory 성수",
+      "sourceUrl": "https://www.yna.co.kr/view/AKR20260610065300017",
+      "sourceLabel": "정보 출처",
+      "noiz": 97,
+      "favorability": 86,
+      "description": "E-sports 팬덤의 결집력과 SKT/T1 스토리텔링이 제대로 붙은 팝업이야. 사전예약, 굿즈/보상, 페이커 관련 전시 요소까지 있어서 이번 주 화제성이 가장 강하게 터져!",
+      "signals": [
+        "언론 기사",
+        "예약/팬덤 신호",
+        "웨이팅 가능성"
+      ],
+      "category": "popup_brand"
+    },
+    {
+      "rank": 2,
+      "brand": "빤쮸토끼 / Kawaii IP",
+      "title": "빤쮸토끼 POP UP in 더현대 서울",
+      "owner": "캐릭터 IP 굿즈·포토존 중심의 더현대 B2 팝업",
+      "venue": "더현대 서울 B2 아이코닉",
+      "area": "여의도",
+      "region": "영등포구",
+      "mapQuery": "더현대 서울 B2 아이코닉",
+      "sourceUrl": "https://dayforyou.com/getDetail?scheduleSeq=24116",
+      "sourceLabel": "정보 출처",
+      "noiz": 93,
+      "favorability": 72,
+      "description": "짧게 열리는 캐릭터 굿즈 팝업이라 관심과 혼잡 신호가 동시에 커. 사진 찍고 굿즈 사러 가는 목적이 뚜렷해서 주말에는 꽤 붐빌 가능성이 높아!",
+      "signals": [
+        "IP 팬덤",
+        "더현대 혼잡",
+        "일정 확인"
+      ],
+      "category": "popup_brand"
+    },
+    {
+      "rank": 3,
+      "brand": "GS25 × 돈키호테",
+      "title": "GS25 X 돈키호테 팝업스토어",
+      "owner": "일본 돈키호테 PB/JONETZ 상품과 GS25 콜라보 상품을 전면에 내세운 리테일형 팝업",
+      "venue": "더현대 서울 B1",
+      "area": "여의도",
+      "region": "영등포구",
+      "mapQuery": "더현대 서울 B1",
+      "sourceUrl": "https://popply.co.kr/popup/3628",
+      "sourceLabel": "정보 출처",
+      "noiz": 91,
+      "favorability": 67,
+      "description": "제품 탐색과 구매 욕구가 확실한 팝업이야. 대중적이고 가볍게 들르기 좋지만, 체험형 전시라기보다는 쇼핑 이벤트에 가까워서 호불호는 조금 갈릴 수 있어.",
+      "signals": [
+        "대중 화제성",
+        "상업성 피로",
+        "팝업 플랫폼"
+      ],
+      "category": "popup_brand"
+    },
+    {
+      "rank": 4,
+      "brand": "마른파이브",
+      "title": "Marn5 Beach Club in Mallorca",
+      "owner": "성수 쎈느를 마요르카 비치 클럽처럼 연출한 언더웨어/라이프스타일 브랜드 팝업",
+      "venue": "쎈느 Scène",
+      "area": "성수",
+      "region": "성동구",
+      "mapQuery": "쎈느 성수",
+      "sourceUrl": "https://popga.co.kr/popup/7275",
+      "sourceLabel": "정보 출처",
+      "noiz": 88,
+      "favorability": 74,
+      "description": "여름 시즌 무드와 브랜드 체험이 강하게 붙은 팝업이야. 휴양지 콘셉트와 사진 찍기 좋은 연출이 핵심이라, 가볍게 분위기 즐기려는 방문에 잘 맞아!",
+      "signals": [
+        "인생샷/공간감",
+        "짧은 운영기간",
+        "팝가픽"
+      ],
+      "category": "popup_brand"
+    },
+    {
+      "rank": 5,
+      "brand": "NH농협은행",
+      "title": "NH드림뱅크 팝업스토어",
+      "owner": "금융 브랜드를 드림ID 카드·게임·굿즈 경험으로 풀어낸 성수 대형 팝업",
+      "venue": "성수 더 가베",
+      "area": "성수",
+      "region": "성동구",
+      "mapQuery": "성수 더 가베",
+      "sourceUrl": "https://popply.co.kr/popup/5297",
+      "sourceLabel": "정보 출처",
+      "noiz": 86,
+      "favorability": 70,
+      "description": "은행 브랜드가 체험형 팝업으로 친근하게 다가가려는 케이스야. 금융 콘텐츠 자체보다 이벤트, 참여형 장치, 접근성이 관심을 만드는 구조로 보여.",
+      "signals": [
+        "무료/굿즈",
+        "현장 웨이팅",
+        "운영정보 명확"
+      ],
+      "category": "popup_brand"
+    },
+    {
+      "rank": 6,
+      "brand": "Max Siedentopf",
+      "title": "맥스 시덴토프 개인전",
+      "owner": "위트·광고적 이미지·초현실적 장면 연출로 대중 관람성과 SNS 확산성이 강한 전시",
+      "venue": "그라운드시소 센트럴",
+      "area": "중구",
+      "region": "중구",
+      "mapQuery": "그라운드시소 센트럴",
+      "sourceUrl": "https://groundseesaw.co.kr/product/%EB%A7%A5%EC%8A%A4-%EC%8B%9C%EB%8D%B4%ED%86%A0%ED%94%84-%EA%B0%9C%EC%9D%B8%EC%A0%84/1323/",
+      "sourceLabel": "정보 출처",
+      "noiz": 84,
+      "favorability": 71,
+      "description": "이미지 유머와 낯선 연출을 좋아하는 관객에게 잘 맞는 전시야. 대중 팝업만큼 즉각적인 폭발력은 아니지만, 사진·전시 관람 목적이 분명해서 꾸준한 관심이 붙어!",
+      "signals": [
+        "SNS 친화",
+        "가벼움 논쟁",
+        "티켓/공식페이지"
+      ],
+      "category": "exhibition_culture"
+    },
+    {
+      "rank": 7,
+      "brand": "Toledo Museum of Art",
+      "title": "렘브란트에서 고야까지",
+      "owner": "톨레도미술관 소장품 기반의 유럽 고전 회화 대형전",
+      "venue": "더현대 서울 ALT.1",
+      "area": "여의도",
+      "region": "영등포구",
+      "mapQuery": "더현대 서울 ALT.1",
+      "sourceUrl": "https://tickets.interpark.com/goods/26000395",
+      "sourceLabel": "정보 출처",
+      "noiz": 82,
+      "favorability": 78,
+      "description": "검증된 이름과 미술사적 안정감이 강한 전시야. 새로움보다는 명작전의 신뢰감이 방문 이유가 되고, 가족·데이트·주말 전시 코스로도 무난하게 선택될 가능성이 높아.",
+      "signals": [
+        "대형 명작전",
+        "종료 임박 혼잡",
+        "티켓/도슨트"
+      ],
+      "category": "exhibition_culture"
+    },
+    {
+      "rank": 8,
+      "brand": "성률",
+      "title": "여름을 닮은 우리",
+      "owner": "수채화 기반의 맑은 색감과 계절감을 전면에 둔 그라운드시소 한남 기획전",
+      "venue": "그라운드시소 한남",
+      "area": "한남",
+      "region": "용산구",
+      "mapQuery": "그라운드시소 한남",
+      "sourceUrl": "https://groundseesaw.co.kr/product/%EC%84%B1%EB%A5%A0-%EA%B8%B0%ED%9A%8D%EC%A0%84-%EC%97%AC%EB%A6%84%EC%9D%84-%EB%8B%AE%EC%9D%80-%EC%9A%B0%EB%A6%AC/1327/",
+      "sourceLabel": "정보 출처",
+      "noiz": 80,
+      "favorability": 84,
+      "description": "계절감이 분명한 전시라 가볍게 보기 좋아. 강한 화제성보다는 여름 분위기, 사진, 산책형 관람 욕구에 맞는 조용한 선택지로 보여!",
+      "signals": [
+        "호감 톤 강함",
+        "계절감",
+        "예매 페이지"
+      ],
+      "category": "exhibition_culture"
+    },
+    {
+      "rank": 9,
+      "brand": "서울시립미술관 / 유영국",
+      "title": "유영국: 산은 내 안에 있다",
+      "owner": "한국 추상미술 선구자 유영국을 대규모로 조망하는 미술관급 전시",
+      "venue": "서울시립미술관 서소문본관",
+      "area": "중구",
+      "region": "중구",
+      "mapQuery": "서울시립미술관 서소문본관",
+      "sourceUrl": "https://sema.seoul.go.kr/kr/whatson/exhibition/detail?exNo=1529410",
+      "sourceLabel": "정보 출처",
+      "noiz": 77,
+      "favorability": 79,
+      "description": "유영국의 색면과 추상 회화가 주는 안정적인 몰입감이 있는 전시야. 대중 팝업처럼 시끄럽진 않지만, 미술관 목적 방문층에게는 꽤 탄탄한 신호야.",
+      "signals": [
+        "작가 중요도",
+        "공식 미술관",
+        "장기 관람 가치"
+      ],
+      "category": "exhibition_culture"
+    },
+    {
+      "rank": 10,
+      "brand": "ANOETIC",
+      "title": "아노에틱 팝업",
+      "owner": "패션/뷰티 감도 기반의 성수 팝업. 오픈 예정 신호가 강한 후보",
+      "venue": "엘레멘츠",
+      "area": "성수",
+      "region": "성동구",
+      "mapQuery": "엘레멘츠 성수이로14길 15",
+      "sourceUrl": "https://popga.co.kr/content/magazine/334",
+      "sourceLabel": "정보 출처",
+      "noiz": 75,
+      "favorability": 65,
+      "description": "아직 후기 신호가 충분히 쌓이기 전이라 순위 반영은 조심스럽게 보는 게 좋아. 브랜드 톤은 잡히지만, 실제 반응은 조금 더 지켜봐야 해!",
+      "signals": [
+        "후기 축적 전",
+        "성수 감도",
+        "팝업 리스트 중복"
+      ],
+      "category": "popup_brand"
+    }
+  ],
+  "creator": "이원준 시니어매니저",
+  "method_note": "무료 공개 소스, 검색 결과, 뉴스 RSS, 블로그/후기성 스니펫을 바탕으로 본 주간 신호 레이더야. 객관적 평점이라기보다는 지금 어디가 시끄러운지 읽는 용도야!",
+  "theme": {
+    "id": "legacy-lime-blue",
+    "name": "Legacy Lime & Blue",
+    "bg": "#c6ff00",
+    "paper": "rgba(255,255,255,.18)",
+    "ink": "#3f5d7f",
+    "muted": "#58779a",
+    "line": "rgba(63,93,127,.24)",
+    "white": "#f4ffd8"
+  }
+}
