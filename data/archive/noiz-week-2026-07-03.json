@@ -22,7 +22,8 @@
         "예약/팬덤 신호",
         "웨이팅 가능성"
       ],
-      "category": "popup_brand"
+      "category": "popup_brand",
+      "start": "2026-07-02"
     },
     {
       "rank": 2,
@@ -43,7 +44,9 @@
         "더현대 혼잡",
         "일정 확인"
       ],
-      "category": "popup_brand"
+      "category": "popup_brand",
+      "start": "2026-07-02",
+      "end": "2026-07-15"
     },
     {
       "rank": 3,
@@ -85,7 +88,9 @@
         "짧은 운영기간",
         "팝가픽"
       ],
-      "category": "popup_brand"
+      "category": "popup_brand",
+      "start": "2026-07-03",
+      "end": "2026-07-12"
     },
     {
       "rank": 5,
@@ -106,7 +111,9 @@
         "현장 웨이팅",
         "운영정보 명확"
       ],
-      "category": "popup_brand"
+      "category": "popup_brand",
+      "start": "2026-06-19",
+      "end": "2026-07-18"
     },
     {
       "rank": 6,
@@ -127,7 +134,9 @@
         "가벼움 논쟁",
         "티켓/공식페이지"
       ],
-      "category": "exhibition_culture"
+      "category": "exhibition_culture",
+      "start": "2026-03-27",
+      "end": "2026-08-30"
     },
     {
       "rank": 7,
@@ -148,7 +157,9 @@
         "종료 임박 혼잡",
         "티켓/도슨트"
       ],
-      "category": "exhibition_culture"
+      "category": "exhibition_culture",
+      "start": "2026-03-21",
+      "end": "2026-07-04"
     },
     {
       "rank": 8,
@@ -169,7 +180,9 @@
         "계절감",
         "예매 페이지"
       ],
-      "category": "exhibition_culture"
+      "category": "exhibition_culture",
+      "start": "2026-04-30",
+      "end": "2026-09-27"
     },
     {
       "rank": 9,
@@ -190,7 +203,9 @@
         "공식 미술관",
         "장기 관람 가치"
       ],
-      "category": "exhibition_culture"
+      "category": "exhibition_culture",
+      "start": "2026-05-19",
+      "end": "2026-10-25"
     },
     {
       "rank": 10,
@@ -211,7 +226,9 @@
         "성수 감도",
         "팝업 리스트 중복"
       ],
-      "category": "popup_brand"
+      "category": "popup_brand",
+      "start": "2026-07-10",
+      "end": "2026-07-19"
     }
   ],
   "creator": "이원준 시니어매니저",

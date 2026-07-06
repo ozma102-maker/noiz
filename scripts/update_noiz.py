@@ -566,6 +566,9 @@ def load_existing() -> dict[str, Any]:
     return {"items": []}
 
 
+PERIOD_FIELDS = ("start", "end", "startDate", "endDate", "openDate", "closeDate", "period", "dateRange", "displayPeriod")
+
+
 def merge_with_existing(new_items: list[dict[str, Any]], existing_items: list[dict[str, Any]]) -> list[dict[str, Any]]:
     by_key: dict[str, dict[str, Any]] = {}
 
@@ -585,6 +588,10 @@ def merge_with_existing(new_items: list[dict[str, Any]], existing_items: list[di
         k = candidate_key(old.get("title", ""))
         if k not in by_key:
             by_key[k] = old
+        else:
+            for field in PERIOD_FIELDS:
+                if old.get(field) and not by_key[k].get(field):
+                    by_key[k][field] = old.get(field)
 
     ranked_pool = [item for item in by_key.values() if is_rankable_item(item)]
     ranked_pool.sort(key=lambda x: int(x.get("noiz", 0)), reverse=True)

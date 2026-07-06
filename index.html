@@ -396,6 +396,27 @@
       letter-spacing:-.04em;
     }
   }
+
+  /* v70 title-side period + fixed representative landing color */
+  .title-period{
+    display:inline-flex;
+    align-items:center;
+    margin-left:10px;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:780;
+    line-height:1.1;
+    letter-spacing:-.035em;
+    vertical-align:middle;
+    white-space:nowrap;
+  }
+  @media (max-width:720px){
+    .title-period{
+      display:block;
+      margin:5px 0 0;
+      font-size:11.5px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -415,7 +436,7 @@
 <div class="wrap">
 <header>
 <div>
-<div class="logo-row"><h1 class="logo">NOIZ<span class="dot">!</span></h1><p class="logo-subtitle">AI-powered CX radar</p></div>
+<div class="logo-row"><h1 class="logo">NOIZ<span class="dot">.</span></h1><p class="logo-subtitle">AI-powered weekly CX radar</p></div>
 <div aria-label="NOIZ archive navigation" class="week-nav">
 <button aria-label="이전 업데이트" class="week-arrow" id="archivePrev" type="button">‹</button>
 <p class="tag week-label" id="weekLabel">2026 July week 1</p>
@@ -634,6 +655,37 @@ function formatWeekLabel(iso) {
 }
 
 
+
+function formatPeriodDatePart(iso, includeYear = false) {
+  if (!iso) return "";
+  const str = String(iso).trim();
+  const normalized = str.replace(/\./g, "-").replace(/\//g, "-");
+  const parts = normalized.split("-").filter(Boolean);
+  if (parts.length >= 3) {
+    const [year, month, day] = parts;
+    return includeYear ? `${year}.${String(month).padStart(2, "0")}.${String(day).padStart(2, "0")}` : `${String(month).padStart(2, "0")}.${String(day).padStart(2, "0")}`;
+  }
+  return str;
+}
+
+function formatExperiencePeriod(item = {}) {
+  const explicit = item.period || item.dateRange || item.displayPeriod;
+  if (explicit) return String(explicit);
+  const start = item.start || item.startDate || item.openDate;
+  const end = item.end || item.endDate || item.closeDate;
+  if (!start && !end) return "";
+  if (start && end) {
+    const startYear = String(start).slice(0, 4);
+    const endYear = String(end).slice(0, 4);
+    if (startYear && endYear && startYear === endYear) {
+      return `${formatPeriodDatePart(start, true)}–${formatPeriodDatePart(end, false)}`;
+    }
+    return `${formatPeriodDatePart(start, true)}–${formatPeriodDatePart(end, true)}`;
+  }
+  if (start) return `${formatPeriodDatePart(start, true)}–`;
+  return `–${formatPeriodDatePart(end, true)}`;
+}
+
 function moodIconSvg(icon) {
   const common = 'aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
   if (icon === "sunglasses") {
@@ -654,6 +706,8 @@ function renderItem(item, index) {
   const sourceUrl = item.sourceUrl || "#";
   const mapQuery = item.mapQuery || `${item.venue || ""} ${item.area || ""}`;
   const signals = (item.signals || []).map(s => `<span class="sig">${escapeHtml(s)}</span>`).join("");
+  const period = formatExperiencePeriod(item);
+  const periodHtml = period ? `<span class="title-period">${escapeHtml(period)}</span>` : "";
   return `
     <article class="card">
       <div class="rank">#${rank}</div>
@@ -661,7 +715,7 @@ function renderItem(item, index) {
         <div class="head">
           <div>
             <div class="meta">${escapeHtml(item.brand || item.ownerName || "")}</div>
-            <h2 class="title"><a class="title-link" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(item.title || "Untitled")}</a></h2>
+            <h2 class="title"><a class="title-link" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(item.title || "Untitled")}</a>${periodHtml}</h2>
             <div class="owner">${escapeHtml(item.owner || "")}</div>
             <div class="place"><a class="place-link" href="${mapUrl(mapQuery)}" target="_blank" rel="noopener">${escapeHtml(item.venue || "")} · ${escapeHtml(item.area || item.region || "")}</a></div>
           </div>
@@ -951,7 +1005,7 @@ function setupThemeShuffle() {
 }
 
 async function initNoizPage() {
-  applyColorTheme(randomTheme());
+  applyColorTheme(DEFAULT_THEME);
   await loadArchiveIndex();
   await loadData(currentRequestedArchiveDate());
 }
