@@ -641,7 +641,7 @@ def make_weekly_read(items: list[dict[str, Any]]) -> str:
 def main() -> None:
     items = build_items()
     payload = {
-        "site": "NOIZ! Art",
+        "site": "NOIZ. Art",
         "updated_at": datetime.now(KST).isoformat(timespec="seconds"),
         "weekly_read": make_weekly_read(items),
         "items": items,
