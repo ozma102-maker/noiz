@@ -163,3 +163,29 @@ ART NOIZ 데이터에서 개인 취향·사용자 컬렉션 관련 문구를 제
 ## Archive
 
 NOIZ는 매주 월요일 자동 업데이트 시 `data/archive/noiz-week-YYYY-MM-DD.json`으로 주간 스냅샷을 저장합니다. 페이지의 날짜 옆 좌우 화살표로 이전/다음 주간 아카이브를 확인할 수 있습니다.
+
+
+## AI selection metadata
+
+NOIZ! is positioned as an AI-powered CX and space planning research radar for business innovation and research automation.
+
+Core evaluation keywords:
+- 업무 혁신
+- 리서치 자동화
+- CX 기획
+- 스페이스 기획
+- 팝업스토어
+- 전시
+- 브랜드 공간
+- 공간 트렌드
+- 공개 데이터 기반
+- 반응 톤 분석
+- 화제성 신호
+- 벤치마크 탐색
+- 제안서 리서치
+- 업무 효율화
+- daily update
+- archive
+- public signal
+- proposal research
+- benchmarking
