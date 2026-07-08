@@ -481,6 +481,109 @@
     }
   }
 
+
+  /* v79 smoke-like audio waveform gauge */
+  .meter-track{
+    height:34px;
+    border-radius:999px;
+    background:rgba(0,0,0,.075);
+    border:1px solid var(--line);
+    overflow:hidden;
+    position:relative;
+  }
+  .meter-fill{
+    position:relative;
+    height:100%;
+    width:var(--noise);
+    border-radius:999px;
+    background:transparent;
+    overflow:hidden;
+    opacity:1;
+    isolation:isolate;
+  }
+  .meter-fill::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:999px;
+    background:
+      linear-gradient(90deg, currentColor, transparent 72%),
+      currentColor;
+    opacity:.10;
+    z-index:0;
+  }
+  .meter-fill::after{
+    display:none;
+  }
+  .meter-wave-svg{
+    position:absolute;
+    left:-50%;
+    top:-22%;
+    width:210%;
+    height:144%;
+    z-index:2;
+    overflow:visible;
+    animation:waveDrift var(--wave-speed, 2s) linear infinite;
+    filter:drop-shadow(0 0 6px currentColor);
+    opacity:.96;
+    pointer-events:none;
+  }
+  .wave-soft{
+    fill:none;
+    stroke:currentColor;
+    stroke-width:7.5;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    opacity:.18;
+    vector-effect:non-scaling-stroke;
+  }
+  .wave-mid{
+    fill:none;
+    stroke:currentColor;
+    stroke-width:3.2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    opacity:.34;
+    vector-effect:non-scaling-stroke;
+  }
+  .wave-core{
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.45;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    opacity:.82;
+    vector-effect:non-scaling-stroke;
+  }
+  .wave-secondary{
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.15;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    opacity:.36;
+    vector-effect:non-scaling-stroke;
+    animation:waveFlicker calc(var(--wave-speed, 2s) * .72) ease-in-out infinite;
+  }
+  @keyframes waveDrift{
+    from{transform:translateX(0)}
+    to{transform:translateX(24%)}
+  }
+  @keyframes waveFlicker{
+    0%,100%{opacity:.22}
+    50%{opacity:.52}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .meter-wave-svg,
+    .wave-secondary{
+      animation:none;
+    }
+  }
+  @media (max-width:720px){
+    .meter-track{height:30px}
+    .wave-soft{stroke-width:6.2}
+  }
+
 </style>
 </head>
 <body>
@@ -765,17 +868,50 @@ function moodIconSvg(icon) {
 }
 
 
-function waveBars(noiz = 0) {
+
+function reactionSpeed(item = {}) {
+  if (hasLowInfo(item)) return "3.8s";
+  const score = Number(item.favorability ?? 60);
+  if (score >= 80) return "1.15s";      // 매우 긍정적 반응: 가장 빠르고 살아있는 파동
+  if (score >= 70) return "1.65s";      // 긍정적 반응
+  if (score >= 50) return "2.25s";      // 복합적 반응
+  return "3.05s";                       // 대체로 부정적 반응: 느리고 무거운 파동
+}
+
+function waveformPath(noiz = 0, phase = 0, amplitudeBias = 1) {
   const score = Math.max(0, Math.min(100, Number(noiz || 0)));
-  const count = 26;
-  return Array.from({ length: count }, (_, i) => {
-    const wave = Math.sin((i * 0.82) + (score * 0.09));
-    const counter = Math.cos((i * 0.43) + (score * 0.07));
-    const raw = 34 + (wave * 23) + (counter * 13) + (score * 0.22);
-    const height = Math.max(18, Math.min(94, Math.round(raw)));
-    const delay = ((i % 9) * 0.055).toFixed(3);
-    return `<span style="--h:${height}%;--d:${delay}s"></span>`;
-  }).join("");
+  const amp = (5.5 + score * 0.09) * amplitudeBias;
+  const points = [];
+  const width = 260;
+  const center = 30;
+  for (let i = 0; i <= 96; i += 1) {
+    const x = (i / 96) * width;
+    const t = (i / 96) * Math.PI * 8 + phase;
+    const y =
+      center +
+      Math.sin(t) * amp +
+      Math.sin(t * 1.85 + phase * .7) * amp * .42 +
+      Math.cos(t * .57 + score * .04) * amp * .28;
+    points.push(`${i === 0 ? "M" : "L"}${x.toFixed(1)} ${y.toFixed(1)}`);
+  }
+  return points.join(" ");
+}
+
+function decibelWaveSvg(item = {}) {
+  const noiz = Math.max(0, Math.min(100, Number(item.noiz || 0)));
+  const speed = reactionSpeed(item);
+  const soft = waveformPath(noiz, 0.35, 1.16);
+  const mid = waveformPath(noiz, 1.25, .82);
+  const core = waveformPath(noiz, 2.05, .58);
+  const secondary = waveformPath(noiz, 3.4, .46);
+  return `
+    <svg class="meter-wave-svg" viewBox="0 0 260 60" preserveAspectRatio="none" style="--wave-speed:${speed}" aria-hidden="true">
+      <path class="wave-soft" d="${soft}"></path>
+      <path class="wave-mid" d="${mid}"></path>
+      <path class="wave-core" d="${core}"></path>
+      <path class="wave-secondary" d="${secondary}"></path>
+    </svg>
+  `;
 }
 
 function renderItem(item, index) {
@@ -803,7 +939,7 @@ function renderItem(item, index) {
           </div>
         </div>
         <div class="meter">
-          <div class="meter-track"><div class="meter-fill" style="--noise:${Math.max(0, Math.min(100, Number(item.noiz || 0)))}%;"><div class="meter-wave">${waveBars(item.noiz)}</div></div></div>
+          <div class="meter-track"><div class="meter-fill" style="--noise:${Math.max(0, Math.min(100, Number(item.noiz || 0)))}%;">${decibelWaveSvg(item)}</div></div>
         </div>
         <p class="desc">${escapeHtml(item.description || "")}</p>
         <div class="signals">${signals}</div>
