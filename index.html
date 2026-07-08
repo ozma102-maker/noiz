@@ -787,6 +787,24 @@
     }
   }
 
+
+  /* v83 same-color signal gauge; reaction difference by signal strength only */
+  .meter-fill{
+    opacity:.88 !important;
+  }
+  .meter-fill::before{
+    opacity:.48 !important;
+  }
+  .meter-fill::after{
+    opacity:.38 !important;
+  }
+  .meter-signal span{
+    opacity:.78 !important;
+  }
+  .meter-signal span:nth-child(3n){
+    opacity:.78 !important;
+  }
+
 </style>
 </head>
 <body>
@@ -1118,19 +1136,23 @@ function decibelWaveSvg(item = {}) {
 
 
 function reactionSignalSettings(item = {}) {
+  const sameTone = {
+    opacity: ".88",
+    gridAlpha: ".34",
+    gridOpacity: ".48",
+    sweepOpacity: ".38"
+  };
+
   if (hasLowInfo(item)) {
     return {
+      ...sameTone,
       speed: "3.25s",
       scale: "1.02",
       amp: .30,
       count: 24,
       gap: "8px",
       tickWidth: "1.4px",
-      tickWidthPc: "1.2px",
-      opacity: ".58",
-      gridAlpha: ".18",
-      gridOpacity: ".24",
-      sweepOpacity: ".16"
+      tickWidthPc: "1.2px"
     };
   }
 
@@ -1138,64 +1160,52 @@ function reactionSignalSettings(item = {}) {
 
   if (score >= 80) {
     return {
+      ...sameTone,
       speed: ".78s",
       scale: "1.72",
       amp: 1.22,
       count: 42,
       gap: "4px",
       tickWidth: "2.4px",
-      tickWidthPc: "1.9px",
-      opacity: ".98",
-      gridAlpha: ".48",
-      gridOpacity: ".68",
-      sweepOpacity: ".62"
+      tickWidthPc: "1.9px"
     };
   }
 
   if (score >= 70) {
     return {
+      ...sameTone,
       speed: "1.25s",
       scale: "1.42",
       amp: .88,
       count: 36,
       gap: "5px",
       tickWidth: "2px",
-      tickWidthPc: "1.7px",
-      opacity: ".88",
-      gridAlpha: ".36",
-      gridOpacity: ".52",
-      sweepOpacity: ".46"
+      tickWidthPc: "1.7px"
     };
   }
 
   if (score >= 50) {
     return {
+      ...sameTone,
       speed: "2.05s",
       scale: "1.16",
       amp: .56,
       count: 30,
       gap: "6px",
       tickWidth: "1.7px",
-      tickWidthPc: "1.45px",
-      opacity: ".74",
-      gridAlpha: ".26",
-      gridOpacity: ".36",
-      sweepOpacity: ".28"
+      tickWidthPc: "1.45px"
     };
   }
 
   return {
+    ...sameTone,
     speed: "2.95s",
     scale: "1.04",
     amp: .34,
     count: 24,
     gap: "8px",
     tickWidth: "1.35px",
-    tickWidthPc: "1.2px",
-    opacity: ".60",
-    gridAlpha: ".18",
-    gridOpacity: ".24",
-    sweepOpacity: ".18"
+    tickWidthPc: "1.2px"
   };
 }
 
