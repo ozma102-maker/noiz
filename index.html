@@ -652,6 +652,92 @@
     .wave-line{stroke-width:1.8}
   }
 
+
+  /* v81 NOIZ-style decibel signal gauge */
+  .meter-track{
+    height:18px;
+    border-radius:999px;
+    background:rgba(0,0,0,.075);
+    border:1px solid var(--line);
+    overflow:hidden;
+    position:relative;
+  }
+  .meter-fill{
+    position:relative;
+    height:100%;
+    width:var(--noise);
+    border-radius:999px;
+    background:currentColor;
+    opacity:.88;
+    overflow:hidden;
+  }
+  .meter-fill::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:999px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        rgba(255,255,255,.34) 0 1px,
+        transparent 1px 7px
+      );
+    mix-blend-mode:screen;
+    opacity:.42;
+    z-index:1;
+  }
+  .meter-fill::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:999px;
+    background:linear-gradient(90deg, transparent 0 18%, rgba(255,255,255,.55) 46%, transparent 74% 100%);
+    transform:translateX(-115%);
+    animation:signalSweep var(--signal-speed, 2s) ease-in-out infinite;
+    opacity:.38;
+    z-index:3;
+  }
+  .meter-signal{
+    position:absolute;
+    inset:3px 9px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:3px;
+    z-index:2;
+    pointer-events:none;
+  }
+  .meter-signal span{
+    width:2px;
+    height:var(--h, 55%);
+    border-radius:999px;
+    background:var(--bg);
+    opacity:.78;
+    transform-origin:center;
+    animation:signalTick var(--signal-speed, 2s) ease-in-out infinite;
+    animation-delay:var(--d, 0s);
+  }
+  @keyframes signalTick{
+    0%,100%{transform:scaleY(.68);opacity:.46}
+    42%{transform:scaleY(var(--signal-scale, 1.18));opacity:.92}
+  }
+  @keyframes signalSweep{
+    0%,18%{transform:translateX(-115%)}
+    58%{transform:translateX(115%)}
+    100%{transform:translateX(115%)}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .meter-fill::after,
+    .meter-signal span{
+      animation:none;
+    }
+  }
+  @media (max-width:720px){
+    .meter-track{height:16px}
+    .meter-signal{inset:3px 8px;gap:2px}
+    .meter-signal span{width:1.5px}
+  }
+
 </style>
 </head>
 <body>
@@ -981,6 +1067,33 @@ function decibelWaveSvg(item = {}) {
   `;
 }
 
+
+function reactionSignalSettings(item = {}) {
+  if (hasLowInfo(item)) return { speed: "3.1s", scale: "1.04", amp: .42 };
+  const score = Number(item.favorability ?? 60);
+  if (score >= 80) return { speed: "1.05s", scale: "1.42", amp: 1.0 };
+  if (score >= 70) return { speed: "1.45s", scale: "1.28", amp: .78 };
+  if (score >= 50) return { speed: "2.05s", scale: "1.14", amp: .56 };
+  return { speed: "2.7s", scale: "1.06", amp: .38 };
+}
+
+function decibelSignalMarkup(item = {}) {
+  const noiz = Math.max(0, Math.min(100, Number(item.noiz || 0)));
+  const settings = reactionSignalSettings(item);
+  const count = 22;
+  const ticks = Array.from({ length: count }, (_, i) => {
+    const t = i / Math.max(1, count - 1);
+    const wave = Math.sin((t * Math.PI * 5.4) + noiz * .08);
+    const counter = Math.cos((t * Math.PI * 2.2) + noiz * .04);
+    const raw = 34 + (wave * 22 + counter * 10) * settings.amp + noiz * .22;
+    const height = Math.max(26, Math.min(96, Math.round(raw)));
+    const delay = ((i % 8) * 0.045).toFixed(3);
+    return `<span style="--h:${height}%;--d:${delay}s"></span>`;
+  }).join("");
+
+  return `<div class="meter-signal" style="--signal-speed:${settings.speed};--signal-scale:${settings.scale}">${ticks}</div>`;
+}
+
 function renderItem(item, index) {
   const rank = item.rank || index + 1;
   const mood = moodInfo(item.favorability, item);
@@ -1006,7 +1119,7 @@ function renderItem(item, index) {
           </div>
         </div>
         <div class="meter">
-          <div class="meter-track"><div class="meter-fill" style="--noise:${Math.max(0, Math.min(100, Number(item.noiz || 0)))}%;">${decibelWaveSvg(item)}</div></div>
+          <div class="meter-track"><div class="meter-fill" style="--noise:${Math.max(0, Math.min(100, Number(item.noiz || 0)))}%;--signal-speed:${reactionSignalSettings(item).speed};">${decibelSignalMarkup(item)}</div></div>
         </div>
         <p class="desc">${escapeHtml(item.description || "")}</p>
         <div class="signals">${signals}</div>
