@@ -738,6 +738,55 @@
     .meter-signal span{width:1.5px}
   }
 
+
+  /* v82 clearer reaction-stage signal gauge */
+  .meter-fill{
+    opacity:var(--signal-opacity, .88);
+  }
+  .meter-fill::before{
+    background:
+      repeating-linear-gradient(
+        90deg,
+        rgba(255,255,255,var(--signal-grid-alpha, .34)) 0 1px,
+        transparent 1px var(--signal-gap, 7px)
+      );
+    opacity:var(--signal-grid-opacity, .48);
+  }
+  .meter-fill::after{
+    animation-duration:var(--signal-speed, 2s);
+    opacity:var(--signal-sweep-opacity, .38);
+  }
+  .meter-signal{
+    inset:3px 8px;
+    gap:var(--signal-tick-gap, 3px);
+  }
+  .meter-signal span{
+    width:var(--signal-tick-width, 2px);
+    opacity:var(--signal-tick-opacity, .78);
+  }
+  .meter-signal span:nth-child(3n){
+    opacity:calc(var(--signal-tick-opacity, .78) * .72);
+  }
+  .meter-signal span:nth-child(5n){
+    width:calc(var(--signal-tick-width, 2px) + .7px);
+  }
+  @media (min-width:900px){
+    .meter-track{
+      height:20px;
+    }
+    .meter-signal{
+      inset:3px 10px;
+    }
+    .meter-signal span{
+      width:var(--signal-tick-width-pc, 1.6px);
+    }
+  }
+  @media (max-width:720px){
+    .meter-signal span:nth-child(n+23){
+      display:none;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -1069,29 +1118,114 @@ function decibelWaveSvg(item = {}) {
 
 
 function reactionSignalSettings(item = {}) {
-  if (hasLowInfo(item)) return { speed: "3.1s", scale: "1.04", amp: .42 };
+  if (hasLowInfo(item)) {
+    return {
+      speed: "3.25s",
+      scale: "1.02",
+      amp: .30,
+      count: 24,
+      gap: "8px",
+      tickWidth: "1.4px",
+      tickWidthPc: "1.2px",
+      opacity: ".58",
+      gridAlpha: ".18",
+      gridOpacity: ".24",
+      sweepOpacity: ".16"
+    };
+  }
+
   const score = Number(item.favorability ?? 60);
-  if (score >= 80) return { speed: "1.05s", scale: "1.42", amp: 1.0 };
-  if (score >= 70) return { speed: "1.45s", scale: "1.28", amp: .78 };
-  if (score >= 50) return { speed: "2.05s", scale: "1.14", amp: .56 };
-  return { speed: "2.7s", scale: "1.06", amp: .38 };
+
+  if (score >= 80) {
+    return {
+      speed: ".78s",
+      scale: "1.72",
+      amp: 1.22,
+      count: 42,
+      gap: "4px",
+      tickWidth: "2.4px",
+      tickWidthPc: "1.9px",
+      opacity: ".98",
+      gridAlpha: ".48",
+      gridOpacity: ".68",
+      sweepOpacity: ".62"
+    };
+  }
+
+  if (score >= 70) {
+    return {
+      speed: "1.25s",
+      scale: "1.42",
+      amp: .88,
+      count: 36,
+      gap: "5px",
+      tickWidth: "2px",
+      tickWidthPc: "1.7px",
+      opacity: ".88",
+      gridAlpha: ".36",
+      gridOpacity: ".52",
+      sweepOpacity: ".46"
+    };
+  }
+
+  if (score >= 50) {
+    return {
+      speed: "2.05s",
+      scale: "1.16",
+      amp: .56,
+      count: 30,
+      gap: "6px",
+      tickWidth: "1.7px",
+      tickWidthPc: "1.45px",
+      opacity: ".74",
+      gridAlpha: ".26",
+      gridOpacity: ".36",
+      sweepOpacity: ".28"
+    };
+  }
+
+  return {
+    speed: "2.95s",
+    scale: "1.04",
+    amp: .34,
+    count: 24,
+    gap: "8px",
+    tickWidth: "1.35px",
+    tickWidthPc: "1.2px",
+    opacity: ".60",
+    gridAlpha: ".18",
+    gridOpacity: ".24",
+    sweepOpacity: ".18"
+  };
 }
 
 function decibelSignalMarkup(item = {}) {
   const noiz = Math.max(0, Math.min(100, Number(item.noiz || 0)));
   const settings = reactionSignalSettings(item);
-  const count = 22;
+  const count = settings.count || 30;
   const ticks = Array.from({ length: count }, (_, i) => {
     const t = i / Math.max(1, count - 1);
-    const wave = Math.sin((t * Math.PI * 5.4) + noiz * .08);
-    const counter = Math.cos((t * Math.PI * 2.2) + noiz * .04);
-    const raw = 34 + (wave * 22 + counter * 10) * settings.amp + noiz * .22;
-    const height = Math.max(26, Math.min(96, Math.round(raw)));
-    const delay = ((i % 8) * 0.045).toFixed(3);
+    const wave = Math.sin((t * Math.PI * 7.2) + noiz * .08);
+    const counter = Math.cos((t * Math.PI * 3.1) + noiz * .05);
+    const raw = 30 + (wave * 26 + counter * 13) * settings.amp + noiz * .24;
+    const height = Math.max(18, Math.min(98, Math.round(raw)));
+    const delay = ((i % 11) * 0.038).toFixed(3);
     return `<span style="--h:${height}%;--d:${delay}s"></span>`;
   }).join("");
 
-  return `<div class="meter-signal" style="--signal-speed:${settings.speed};--signal-scale:${settings.scale}">${ticks}</div>`;
+  return `
+    <div class="meter-signal" style="
+      --signal-speed:${settings.speed};
+      --signal-scale:${settings.scale};
+      --signal-tick-gap:${settings.gap};
+      --signal-tick-width:${settings.tickWidth};
+      --signal-tick-width-pc:${settings.tickWidthPc};
+      --signal-tick-opacity:${settings.opacity};
+      --signal-grid-alpha:${settings.gridAlpha};
+      --signal-grid-opacity:${settings.gridOpacity};
+      --signal-sweep-opacity:${settings.sweepOpacity};
+    ">${ticks}</div>
+  `;
 }
 
 function renderItem(item, index) {
@@ -1119,7 +1253,7 @@ function renderItem(item, index) {
           </div>
         </div>
         <div class="meter">
-          <div class="meter-track"><div class="meter-fill" style="--noise:${Math.max(0, Math.min(100, Number(item.noiz || 0)))}%;--signal-speed:${reactionSignalSettings(item).speed};">${decibelSignalMarkup(item)}</div></div>
+          <div class="meter-track"><div class="meter-fill" style="--noise:${Math.max(0, Math.min(100, Number(item.noiz || 0)))}%;--signal-speed:${reactionSignalSettings(item).speed};--signal-opacity:${reactionSignalSettings(item).opacity};">${decibelSignalMarkup(item)}</div></div>
         </div>
         <p class="desc">${escapeHtml(item.description || "")}</p>
         <div class="signals">${signals}</div>
