@@ -584,6 +584,74 @@
     .wave-soft{stroke-width:6.2}
   }
 
+
+  /* v80 compact single-line waveform gauge */
+  .meter-track{
+    height:20px;
+    border-radius:999px;
+    background:rgba(0,0,0,.07);
+    border:1px solid var(--line);
+    overflow:hidden;
+    position:relative;
+  }
+  .meter-fill{
+    position:relative;
+    height:100%;
+    width:var(--noise);
+    border-radius:999px;
+    background:transparent;
+    overflow:hidden;
+    opacity:1;
+  }
+  .meter-fill::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:999px;
+    background:currentColor;
+    opacity:.08;
+    z-index:0;
+  }
+  .meter-fill::after{
+    display:none;
+  }
+  .meter-wave-svg{
+    position:absolute;
+    left:-44%;
+    top:50%;
+    width:205%;
+    height:54px;
+    z-index:2;
+    overflow:visible;
+    transform:translateY(-50%);
+    animation:singleWaveDrift var(--wave-speed, 2s) linear infinite;
+    pointer-events:none;
+  }
+  .wave-line{
+    fill:none;
+    stroke:currentColor;
+    stroke-width:2.1;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    opacity:.9;
+    vector-effect:non-scaling-stroke;
+    filter:drop-shadow(0 0 2px currentColor);
+  }
+  @keyframes singleWaveDrift{
+    0%{transform:translate(0, calc(-50% - var(--wave-bounce, 0px)))}
+    25%{transform:translate(6%, -50%)}
+    50%{transform:translate(12%, calc(-50% + var(--wave-bounce, 0px)))}
+    75%{transform:translate(18%, -50%)}
+    100%{transform:translate(24%, calc(-50% - var(--wave-bounce, 0px)))}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .meter-wave-svg{animation:none}
+  }
+  @media (max-width:720px){
+    .meter-track{height:18px}
+    .wave-line{stroke-width:1.8}
+  }
+
 </style>
 </head>
 <body>
@@ -869,47 +937,46 @@ function moodIconSvg(icon) {
 
 
 
-function reactionSpeed(item = {}) {
-  if (hasLowInfo(item)) return "3.8s";
+
+function reactionWaveSettings(item = {}) {
+  if (hasLowInfo(item)) {
+    return { speed: "3.2s", amp: .42, bounce: "0.4px" };
+  }
   const score = Number(item.favorability ?? 60);
-  if (score >= 80) return "1.15s";      // 매우 긍정적 반응: 가장 빠르고 살아있는 파동
-  if (score >= 70) return "1.65s";      // 긍정적 반응
-  if (score >= 50) return "2.25s";      // 복합적 반응
-  return "3.05s";                       // 대체로 부정적 반응: 느리고 무거운 파동
+  if (score >= 80) return { speed: "1.2s", amp: 1.18, bounce: "3.0px" };   // 매우 긍정적 반응
+  if (score >= 70) return { speed: "1.65s", amp: .92, bounce: "2.1px" };  // 긍정적 반응
+  if (score >= 50) return { speed: "2.15s", amp: .68, bounce: "1.25px" }; // 복합적 반응
+  return { speed: "2.9s", amp: .46, bounce: "0.7px" };                   // 대체로 부정적 반응
 }
 
-function waveformPath(noiz = 0, phase = 0, amplitudeBias = 1) {
+function waveformPath(noiz = 0, amplitudeScale = 1) {
   const score = Math.max(0, Math.min(100, Number(noiz || 0)));
-  const amp = (5.5 + score * 0.09) * amplitudeBias;
-  const points = [];
+  const amp = (3.8 + score * 0.055) * amplitudeScale;
   const width = 260;
   const center = 30;
-  for (let i = 0; i <= 96; i += 1) {
-    const x = (i / 96) * width;
-    const t = (i / 96) * Math.PI * 8 + phase;
+  const points = [];
+
+  for (let i = 0; i <= 88; i += 1) {
+    const x = (i / 88) * width;
+    const t = (i / 88) * Math.PI * 8.7;
     const y =
       center +
       Math.sin(t) * amp +
-      Math.sin(t * 1.85 + phase * .7) * amp * .42 +
-      Math.cos(t * .57 + score * .04) * amp * .28;
+      Math.sin(t * 2.18 + 1.1) * amp * .32 +
+      Math.cos(t * .72 + score * .05) * amp * .2;
     points.push(`${i === 0 ? "M" : "L"}${x.toFixed(1)} ${y.toFixed(1)}`);
   }
+
   return points.join(" ");
 }
 
 function decibelWaveSvg(item = {}) {
   const noiz = Math.max(0, Math.min(100, Number(item.noiz || 0)));
-  const speed = reactionSpeed(item);
-  const soft = waveformPath(noiz, 0.35, 1.16);
-  const mid = waveformPath(noiz, 1.25, .82);
-  const core = waveformPath(noiz, 2.05, .58);
-  const secondary = waveformPath(noiz, 3.4, .46);
+  const settings = reactionWaveSettings(item);
+  const path = waveformPath(noiz, settings.amp);
   return `
-    <svg class="meter-wave-svg" viewBox="0 0 260 60" preserveAspectRatio="none" style="--wave-speed:${speed}" aria-hidden="true">
-      <path class="wave-soft" d="${soft}"></path>
-      <path class="wave-mid" d="${mid}"></path>
-      <path class="wave-core" d="${core}"></path>
-      <path class="wave-secondary" d="${secondary}"></path>
+    <svg class="meter-wave-svg" viewBox="0 0 260 60" preserveAspectRatio="none" style="--wave-speed:${settings.speed};--wave-bounce:${settings.bounce}" aria-hidden="true">
+      <path class="wave-line" d="${path}"></path>
     </svg>
   `;
 }
