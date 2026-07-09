@@ -2,34 +2,27 @@
   "method": "free_local_semantic_grouping",
   "model": "",
   "raw_count": 2,
-  "group_count": 2,
+  "group_count": 1,
   "dropped_as_noise": 0,
   "groups": [
     {
-      "size": 1,
-      "representative": "성수동 신상 팝업 방문기",
-      "venue": "성수",
+      "size": 2,
+      "representative": "용산 팝업 점프샵 팝업 스토어 후기 JUMPSHOP IN SEOUL",
+      "venue": "용산",
       "items": [
         {
-          "title": "성수동 신상 팝업 방문기",
-          "venue": "성수",
-          "area": "성수",
-          "brand": "google_news",
-          "noiz": 62
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "성수 팝업 다녀왔어요",
-      "venue": "성수",
-      "items": [
+          "title": "용산 팝업 점프샵 팝업 스토어 후기 JUMPSHOP IN SEOUL",
+          "venue": "용산",
+          "area": "용산",
+          "brand": "Naver View",
+          "noiz": 80
+        },
         {
-          "title": "성수 팝업 다녀왔어요",
-          "venue": "성수",
-          "area": "성수",
-          "brand": "naver_view",
-          "noiz": 60
+          "title": "JUMPSHOP IN SEOUL",
+          "venue": "용산",
+          "area": "용산",
+          "brand": "Popga Magazine",
+          "noiz": 40
         }
       ]
     }

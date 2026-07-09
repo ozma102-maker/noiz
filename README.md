@@ -182,3 +182,15 @@ If the key is missing, the free tier is unavailable, the rate limit is hit, or t
 ### Troubleshooting
 
 If the GitHub Action shows `TypeError: sequence item 0: expected str instance, list found`, update to v89 or later. This was caused by a join bug in the candidate merge stage after grouping. v89 also chunks Gemini grouping requests so large daily candidate pools can still be processed with fallback safety.
+
+### Gemini refinement and freshness filter
+
+From v90, Gemini is used in two places when `GEMINI_API_KEY` is available:
+1. candidate grouping / obvious noise removal before scoring
+2. post-ranking display refinement, rewriting blog-style result titles into clean popup/exhibition/space names and generating a more natural `weekly_read`
+
+v90 also filters ended or stale candidates more aggressively. Items with an ended period, old standalone start date, or old month-specific blog/review markers are excluded from ranking, and previous JSON items are only reused when the fresh crawl is too thin.
+
+### Official/source-page links
+
+From v91, review posts and search-result pages are treated as evidence only. Card title links prefer official or event-information pages from source crawls such as Popga, Popply, Ddoing, GroundSeesaw, SeMA, MMCA, and ARTMAP. If a matching official/source page cannot be resolved safely, NOIZ! falls back to an official-page search instead of linking directly to a blog review.
