@@ -1,6 +1,6 @@
 {
   "site": "NOIZ",
-  "updated_at": "2026-07-09T10:11:30+09:00",
+  "updated_at": "2026-07-09T10:24:07+09:00",
   "theme": {
     "id": "legacy-lime-blue",
     "name": "Legacy Lime & Blue",
@@ -11,21 +11,21 @@
     "line": "rgba(63,93,127,.24)",
     "white": "#f4ffd8"
   },
-  "weekly_read": "이번 주 NOIZ는 서울/수도권·종로·여의도 중심으로 잡혀. Top 10는 팝업/브랜드 경험 2개, 전시/문화 경험 6개가 섞여 있고, 가장 강한 신호는 현대자동차, 더현대 서울에서 ‘현대 N 팝업스토어’ 진행 - ER 이코노믹리뷰 쪽이야. 관심이 모이는 이유는 검증된 작가명, 기관 전시, 명확한 관람 목적처럼 실패 확률이 낮은 문화 경험이 강하기 때문이야. 전체 환경은 대형 전시와 미술관 동선의 비중이 높고, 관객은 검증된 콘텐츠를 중심으로 주말 일정을 짜는 흐름이야. 다만 웨이팅·혼잡 신호도 같이 보여. 화제성은 높지만 방문 피로도는 꼭 같이 봐야 해!",
+  "weekly_read": "이번 주에는 더현대 서울과 성수에서 다양한 팝업 스토어가 주목받고 있습니다. 국립현대미술관과 서울시립미술관에서는 흥미로운 전시들이 열리고 있으며, 종로와 예술의전당에서도 놓칠 수 없는 전시들이 관람객을 기다립니다.",
   "items": [
     {
       "brand": "Popga Magazine",
-      "title": "현대자동차, 더현대 서울에서 ‘현대 N 팝업스토어’ 진행 - ER 이코노믹리뷰",
-      "owner": "공개 노출 6건 · 후기성 신호 13건",
+      "title": "2026년 7월 더현대 서울 팝업스토어 총정리 | 여의도 더현대 서울 놀거리",
+      "owner": "공개 노출 5건 · 후기성 신호 10건",
       "venue": "더현대 서울",
       "area": "여의도",
       "region": "여의도",
-      "mapQuery": "현대자동차, 더현대 서울에서 ‘현대 N 팝업스토어’ 진행 - ER 이코노믹리뷰 더현대 서울 서울/수도권",
+      "mapQuery": "2026년 7월 더현대 서울 팝업스토어 총정리 | 여의도 더현대 서울 놀거리 가볼만한곳 일정 팝업스토어 모음 2026.06.22 더현대 서울 여의도",
       "sourceUrl": "https://popga.co.kr/content/magazine/337",
       "sourceLabel": "공식/정보 페이지",
       "noiz": 99,
       "favorability": 55,
-      "description": "여의도권에서 반응이 포착된 팝업/브랜드 경험 후보. 굿즈, 체험 요소, 방문 후기의 강도를 함께 볼 만해.",
+      "description": "더현대 서울에서 열리는 팝업 스토어는 쇼핑과 즐길 거리를 동시에 제공합니다.",
       "signals": [
         "후기 반응",
         "복수 출처",
@@ -33,12 +33,12 @@
         "혼잡/피로 신호"
       ],
       "infoVolume": "high",
-      "evidenceCount": 6,
-      "reactionCount": 13,
+      "evidenceCount": 5,
+      "reactionCount": 10,
       "confidence": "high",
       "start": "",
       "end": "",
-      "rawTitle": "현대자동차, 더현대 서울에서 ‘현대 N 팝업스토어’ 진행 - ER 이코노믹리뷰",
+      "rawTitle": "2026년 7월 더현대 서울 팝업스토어 총정리 | 여의도 더현대 서울 놀거리 가볼만한곳 일정 팝업스토어 모음 2026.06.22",
       "hasOfficialSource": true,
       "searchOnlyEvidence": false,
       "officialSourceUrl": "https://popga.co.kr/content/magazine/337",
@@ -47,26 +47,62 @@
         "Google News"
       ],
       "rank": 1,
-      "aiRefined": false,
-      "linkResolved": true
+      "category": "팝업/브랜드 경험",
+      "aiRefined": true
     },
     {
-      "brand": "Popga Magazine / Naver View",
-      "title": "JUMPSHOP IN SEOUL",
+      "brand": "ARTMAP",
+      "title": "국립현대미술관 전시회 모음 지금",
+      "owner": "공개 노출 9건 · 후기성 신호 19건",
+      "venue": "국립현대미술관",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "국립현대미술관 전시회 모음 지금 국립현대미술관에서 만날 수 있는 전시는? 국립현대미술관 서울/수도권",
+      "sourceUrl": "https://art-map.co.kr/nows/8",
+      "sourceLabel": "공식/정보 페이지",
+      "noiz": 99,
+      "favorability": 68,
+      "description": "국립현대미술관에서 현재 진행 중인 전시는 예술 애호가들에게 풍성한 경험을 선사합니다.",
+      "signals": [
+        "후기 반응",
+        "복수 출처",
+        "긍정 신호"
+      ],
+      "infoVolume": "high",
+      "evidenceCount": 9,
+      "reactionCount": 19,
+      "confidence": "high",
+      "start": "",
+      "end": "",
+      "rawTitle": "국립현대미술관 전시회 모음 지금 국립현대미술관에서 만날 수 있는 전시는?",
+      "hasOfficialSource": true,
+      "searchOnlyEvidence": false,
+      "officialSourceUrl": "https://art-map.co.kr/nows/8",
+      "officialSourceName": "ARTMAP",
+      "evidenceSources": [
+        "Google News",
+        "Naver View"
+      ],
+      "rank": 2,
+      "category": "팝업/브랜드 경험",
+      "aiRefined": true
+    },
+    {
+      "brand": "Popga Magazine",
+      "title": "2026년 7월 용산 팝업스토어 총정리 | 용산 아이파크몰, 용산",
       "owner": "공개 노출 3건 · 후기성 신호 5건",
       "venue": "용산",
       "area": "용산",
       "region": "용산",
       "mapQuery": "용산 팝업 점프샵 팝업 스토어 후기 JUMPSHOP IN SEOUL 용산 용산",
-      "sourceUrl": "https://www.google.com/search?q=JUMPSHOP+IN+SEOUL+%EC%9A%A9%EC%82%B0+%EA%B3%B5%EC%8B%9D",
-      "sourceLabel": "공식 페이지 검색",
+      "sourceUrl": "https://popga.co.kr/content/magazine/336",
+      "sourceLabel": "공식/정보 페이지",
       "noiz": 99,
-      "favorability": 72,
-      "description": "용산권에서 공개 반응이 포착된 공간 경험 후보. 이번 주 벤치마크로 확인할 만한 신호가 있어.",
+      "favorability": 60,
+      "description": "용산 아이파크몰에서 열리는 팝업 스토어는 다양한 브랜드와 함께 특별한 경험을 제공합니다.",
       "signals": [
         "후기 반응",
-        "복수 출처",
-        "긍정 신호"
+        "복수 출처"
       ],
       "infoVolume": "high",
       "evidenceCount": 3,
@@ -82,23 +118,24 @@
       "evidenceSources": [
         "Naver View"
       ],
-      "rank": 2,
-      "aiRefined": false,
-      "linkResolved": false
+      "rank": 3,
+      "category": "팝업/브랜드 경험",
+      "aiRefined": true,
+      "linkResolved": true
     },
     {
-      "brand": "Popga Magazine / Naver View",
-      "title": "AMOUAGE 성수 팝업 방문 후기",
-      "owner": "공개 노출 9건 · 후기성 신호 19건",
+      "brand": "Popga Magazine",
+      "title": "2026년 7월 성수 팝업스토어 총정리 | 성수",
+      "owner": "공개 노출 11건 · 후기성 신호 24건",
       "venue": "성수",
       "area": "성수",
       "region": "성수",
       "mapQuery": "니치향수 좋아한다면 가볼 만한 AMOUAGE 성수 팝업 방문 후기 성수 성수",
-      "sourceUrl": "https://www.google.com/search?q=AMOUAGE+%EC%84%B1%EC%88%98+%ED%8C%9D%EC%97%85+%EB%B0%A9%EB%AC%B8+%ED%9B%84%EA%B8%B0+%EC%84%B1%EC%88%98+%EA%B3%B5%EC%8B%9D",
-      "sourceLabel": "공식 페이지 검색",
+      "sourceUrl": "https://popga.co.kr/content/magazine/334",
+      "sourceLabel": "공식/정보 페이지",
       "noiz": 99,
-      "favorability": 72,
-      "description": "성수권에서 반응이 포착된 팝업/브랜드 경험 후보. 굿즈, 체험 요소, 방문 후기의 강도를 함께 볼 만해.",
+      "favorability": 68,
+      "description": "성수동에서 열리는 팝업 스토어는 니치 향수 브랜드와 같은 특별한 경험을 제공합니다.",
       "signals": [
         "후기 반응",
         "복수 출처",
@@ -106,8 +143,8 @@
         "굿즈 신호"
       ],
       "infoVolume": "high",
-      "evidenceCount": 9,
-      "reactionCount": 19,
+      "evidenceCount": 11,
+      "reactionCount": 24,
       "confidence": "high",
       "start": "",
       "end": "",
@@ -117,15 +154,17 @@
       "officialSourceUrl": "https://popga.co.kr/content/magazine/334",
       "officialSourceName": "Popga Magazine",
       "evidenceSources": [
+        "Google News",
         "Naver View"
       ],
-      "rank": 3,
-      "aiRefined": false,
-      "linkResolved": false
+      "rank": 4,
+      "category": "팝업/브랜드 경험",
+      "aiRefined": true,
+      "linkResolved": true
     },
     {
       "brand": "Ddoing Exhibition Schedule",
-      "title": "유영국: 산은 내 안에 있다 서울시립미술관 서소문 본관 ~26.10.25",
+      "title": "유영국: 산은 내 안에 있다",
       "owner": "공개 노출 12건 · 후기성 신호 25건",
       "venue": "서울시립미술관",
       "area": "서울/수도권",
@@ -135,7 +174,7 @@
       "sourceLabel": "공식/정보 페이지",
       "noiz": 99,
       "favorability": 84,
-      "description": "서울/수도권권에서 관람 신호가 포착된 전시/문화 경험 후보. 작품·기관·방문 후기가 함께 잡히는지 확인할 만해.",
+      "description": "서울시립미술관에서 열리는 '유영국: 산은 내 안에 있다' 전시는 한국 근현대 미술의 정수를 보여줍니다.",
       "signals": [
         "후기 반응",
         "복수 출처",
@@ -157,12 +196,13 @@
         "Google News",
         "Naver View"
       ],
-      "rank": 4,
-      "aiRefined": false
+      "rank": 5,
+      "category": "팝업/브랜드 경험",
+      "aiRefined": true
     },
     {
       "brand": "Ddoing Exhibition Schedule",
-      "title": "기술의 저변: 경계에 선 장면들 서울시립미술관 서소문본관 ~26.11.22",
+      "title": "기술의 저변: 경계에 선 장면들",
       "owner": "공개 노출 10건 · 후기성 신호 21건",
       "venue": "서울시립미술관",
       "area": "서울/수도권",
@@ -172,7 +212,7 @@
       "sourceLabel": "공식/정보 페이지",
       "noiz": 99,
       "favorability": 84,
-      "description": "서울/수도권권에서 관람 신호가 포착된 전시/문화 경험 후보. 작품·기관·방문 후기가 함께 잡히는지 확인할 만해.",
+      "description": "서울시립미술관에서 열리는 '기술의 저변: 경계에 선 장면들' 전시는 현대 기술과 예술의 접점을 탐구합니다.",
       "signals": [
         "후기 반응",
         "복수 출처",
@@ -194,79 +234,9 @@
         "Google News",
         "Naver View"
       ],
-      "rank": 5,
-      "aiRefined": false
-    },
-    {
-      "brand": "ARTMAP",
-      "title": "국립현대미술관 전시회 모음 지금 국립현대미술관에서 만날 수 있는 전시는?",
-      "owner": "공개 노출 10건 · 후기성 신호 22건",
-      "venue": "국립현대미술관",
-      "area": "서울/수도권",
-      "region": "서울/수도권",
-      "mapQuery": "국립현대미술관 전시회 모음 지금 국립현대미술관에서 만날 수 있는 전시는? 국립현대미술관 서울/수도권",
-      "sourceUrl": "https://art-map.co.kr/nows/8",
-      "sourceLabel": "공식/정보 페이지",
-      "noiz": 99,
-      "favorability": 68,
-      "description": "서울/수도권권에서 관람 신호가 포착된 전시/문화 경험 후보. 작품·기관·방문 후기가 함께 잡히는지 확인할 만해.",
-      "signals": [
-        "후기 반응",
-        "복수 출처",
-        "긍정 신호"
-      ],
-      "infoVolume": "high",
-      "evidenceCount": 10,
-      "reactionCount": 22,
-      "confidence": "high",
-      "start": "",
-      "end": "",
-      "rawTitle": "국립현대미술관 전시회 모음 지금 국립현대미술관에서 만날 수 있는 전시는?",
-      "hasOfficialSource": true,
-      "searchOnlyEvidence": false,
-      "officialSourceUrl": "https://art-map.co.kr/nows/8",
-      "officialSourceName": "ARTMAP",
-      "evidenceSources": [
-        "Google News",
-        "Naver View"
-      ],
       "rank": 6,
-      "aiRefined": false
-    },
-    {
-      "brand": "Ddoing Exhibition Schedule",
-      "title": "페르난도 보테로전 예술의전당 한가람 디자인 미술관 ~26.08.30",
-      "owner": "공개 노출 3건 · 후기성 신호 5건",
-      "venue": "서울/수도권",
-      "area": "서울/수도권",
-      "region": "서울/수도권",
-      "mapQuery": "페르난도 보테로전 서울전시_예술의전당 한가람 디자인 미술관_~26.08.30 서울/수도권 서울/수도권",
-      "sourceUrl": "https://tickets.interpark.com/goods/26002594",
-      "sourceLabel": "공식/정보 페이지",
-      "noiz": 90,
-      "favorability": 68,
-      "description": "서울/수도권권에서 관람 신호가 포착된 전시/문화 경험 후보. 작품·기관·방문 후기가 함께 잡히는지 확인할 만해.",
-      "signals": [
-        "후기 반응",
-        "복수 출처",
-        "긍정 신호"
-      ],
-      "infoVolume": "high",
-      "evidenceCount": 3,
-      "reactionCount": 5,
-      "confidence": "high",
-      "start": "",
-      "end": "",
-      "rawTitle": "페르난도 보테로전 서울전시_예술의전당 한가람 디자인 미술관_~26.08.30",
-      "hasOfficialSource": true,
-      "searchOnlyEvidence": false,
-      "officialSourceUrl": "https://tickets.interpark.com/goods/26002594",
-      "officialSourceName": "Ddoing Exhibition Schedule",
-      "evidenceSources": [
-        "Naver View"
-      ],
-      "rank": 7,
-      "aiRefined": false
+      "category": "팝업/브랜드 경험",
+      "aiRefined": true
     },
     {
       "brand": "Ddoing Exhibition Schedule",
@@ -280,7 +250,7 @@
       "sourceLabel": "공식/정보 페이지",
       "noiz": 88,
       "favorability": 72,
-      "description": "종로권에서 공개 반응이 포착된 공간 경험 후보. 이번 주 벤치마크로 확인할 만한 신호가 있어.",
+      "description": "종로 갤러리 현대에서 열리는 캐서린 브래드포드 전시는 현대 미술의 독창적인 세계를 선보입니다.",
       "signals": [
         "후기 반응",
         "복수 출처",
@@ -301,43 +271,9 @@
       "evidenceSources": [
         "Naver View"
       ],
-      "rank": 8,
-      "aiRefined": false
-    },
-    {
-      "brand": "Ddoing Exhibition Schedule",
-      "title": "스페인의 거장 고야: 이성이 잠들 때, 괴물이 깨어난다 예술의전당 한가람미술관 ~26-09.30",
-      "owner": "공개 노출 2건 · 후기성 신호 3건",
-      "venue": "서울/수도권",
-      "area": "서울/수도권",
-      "region": "서울/수도권",
-      "mapQuery": "스페인의 거장 고야: 이성이 잠들 때, 괴물이 깨어난다 서울전시_예술의전당 한가람미술관_~26-09.30 서울/수도권 서울/수도권",
-      "sourceUrl": "https://tickets.interpark.com/goods/26006433",
-      "sourceLabel": "공식/정보 페이지",
-      "noiz": 79,
-      "favorability": 68,
-      "description": "서울/수도권권에서 관람 신호가 포착된 전시/문화 경험 후보. 작품·기관·방문 후기가 함께 잡히는지 확인할 만해.",
-      "signals": [
-        "후기 반응",
-        "복수 출처",
-        "긍정 신호"
-      ],
-      "infoVolume": "high",
-      "evidenceCount": 2,
-      "reactionCount": 3,
-      "confidence": "high",
-      "start": "",
-      "end": "",
-      "rawTitle": "스페인의 거장 고야: 이성이 잠들 때, 괴물이 깨어난다 서울전시_예술의전당 한가람미술관_~26-09.30",
-      "hasOfficialSource": true,
-      "searchOnlyEvidence": false,
-      "officialSourceUrl": "https://tickets.interpark.com/goods/26006433",
-      "officialSourceName": "Ddoing Exhibition Schedule",
-      "evidenceSources": [
-        "Naver View"
-      ],
-      "rank": 9,
-      "aiRefined": false
+      "rank": 7,
+      "category": "팝업/브랜드 경험",
+      "aiRefined": true
     },
     {
       "brand": "Ddoing Exhibition Schedule",
@@ -351,7 +287,7 @@
       "sourceLabel": "공식/정보 페이지",
       "noiz": 78,
       "favorability": 72,
-      "description": "종로권에서 관람 신호가 포착된 전시/문화 경험 후보. 작품·기관·방문 후기가 함께 잡히는지 확인할 만해.",
+      "description": "종로 성곡미술관에서 열리는 '파리 보이지 않는 파리' 사진전은 파리의 숨겨진 매력을 포착합니다.",
       "signals": [
         "후기 반응",
         "복수 출처",
@@ -372,8 +308,77 @@
       "evidenceSources": [
         "Naver View"
       ],
+      "rank": 8,
+      "category": "팝업/브랜드 경험",
+      "aiRefined": true
+    },
+    {
+      "brand": "Ddoing Exhibition Schedule",
+      "title": "페르난도 보테로전 예술의전당 한가람 디자인 미술관 ~26.08.30",
+      "owner": "공개 노출 2건 · 후기성 신호 2건",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "페르난도 보테로전 서울전시_예술의전당 한가람 디자인 미술관_~26.08.30 서울/수도권 서울/수도권",
+      "sourceUrl": "https://tickets.interpark.com/goods/26002594",
+      "sourceLabel": "공식/정보 페이지",
+      "noiz": 68,
+      "favorability": 60,
+      "description": "예술의전당에서 열리는 페르난도 보테로전은 독특한 화풍으로 유명한 작가의 작품을 만날 기회를 제공합니다.",
+      "signals": [
+        "후기 반응",
+        "복수 출처"
+      ],
+      "infoVolume": "medium",
+      "evidenceCount": 2,
+      "reactionCount": 2,
+      "confidence": "medium",
+      "start": "",
+      "end": "",
+      "rawTitle": "페르난도 보테로전 서울전시_예술의전당 한가람 디자인 미술관_~26.08.30",
+      "hasOfficialSource": true,
+      "searchOnlyEvidence": false,
+      "officialSourceUrl": "https://tickets.interpark.com/goods/26002594",
+      "officialSourceName": "Ddoing Exhibition Schedule",
+      "evidenceSources": [
+        "Naver View"
+      ],
+      "rank": 9,
+      "category": "팝업/브랜드 경험",
+      "aiRefined": true
+    },
+    {
+      "brand": "ARTMAP",
+      "title": "심미안을 채워줄 다양한 전시회 전시회 입문자에게",
+      "owner": "공개 노출 1건 · 후기성 신호 1건",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "심미안을 채워줄 다양한 전시회 전시회 입문자에게 추천하는 여러 장르의 전시회 서울/수도권 서울/수도권",
+      "sourceUrl": "https://art-map.co.kr/nows/81",
+      "sourceLabel": "공식/정보 페이지",
+      "noiz": 64,
+      "favorability": 51,
+      "description": "다양한 장르의 전시회는 전시 입문자들에게 폭넓은 예술 경험을 제공합니다.",
+      "signals": [
+        "후기 반응",
+        "긍정 신호",
+        "혼잡/피로 신호"
+      ],
+      "infoVolume": "medium",
+      "evidenceCount": 1,
+      "reactionCount": 1,
+      "confidence": "medium",
+      "start": "",
+      "end": "",
+      "rawTitle": "심미안을 채워줄 다양한 전시회 전시회 입문자에게 추천하는 여러 장르의 전시회",
+      "hasOfficialSource": true,
+      "searchOnlyEvidence": false,
+      "officialSourceUrl": "https://art-map.co.kr/nows/81",
+      "officialSourceName": "ARTMAP",
       "rank": 10,
-      "aiRefined": false
+      "category": "팝업/브랜드 경험",
+      "aiRefined": true
     }
   ],
   "creator": "이원준 시니어매니저",
