@@ -242,18 +242,20 @@ def extract_period_from_text(text: str) -> tuple[str, str]:
         return "", ""
 
     now_year = datetime.now(KST).year
-    dash = r"(?:~|–|—|-|부터|에서|to|TO|\\s+)"
-    year = r"(20\\d{2})"
+    dash = r"(?:~|–|—|-|부터|에서|to|TO|\s+)"
+    year = r"(20\d{2})"
     month = r"(1[0-2]|0?[1-9])"
-    day = r"(3[01]|[12]\\d|0?[1-9])"
+    day = r"(3[01]|[12]\d|0?[1-9])"
+    ym_sep = r"[.\-/년\s]+"
+    md_sep = r"[.\-/월\s]+"
 
     patterns = [
         # 2026.07.02 - 2026.09.13 / 2026-07-02 ~ 2026-09-13
-        rf"{year}[.\\-/년\\s]+{month}[.\\-/월\\s]+{day}\\s*(?:일)?\\s*{dash}\\s*{year}[.\\-/년\\s]+{month}[.\\-/월\\s]+{day}",
+        rf"{year}{ym_sep}{month}{md_sep}{day}\s*(?:일)?\s*{dash}\s*{year}{ym_sep}{month}{md_sep}{day}",
         # 2026.07.02 - 09.13 / 2026년 7월 2일 ~ 9월 13일
-        rf"{year}[.\\-/년\\s]+{month}[.\\-/월\\s]+{day}\\s*(?:일)?\\s*{dash}\\s*{month}[.\\-/월\\s]+{day}",
+        rf"{year}{ym_sep}{month}{md_sep}{day}\s*(?:일)?\s*{dash}\s*{month}{md_sep}{day}",
         # 7.2 - 9.13 / 7월 2일 ~ 9월 13일
-        rf"{month}[.\\-/월\\s]+{day}\\s*(?:일)?\\s*{dash}\\s*{month}[.\\-/월\\s]+{day}",
+        rf"{month}{md_sep}{day}\s*(?:일)?\s*{dash}\s*{month}{md_sep}{day}",
     ]
 
     for idx, pattern in enumerate(patterns):
@@ -280,8 +282,8 @@ def extract_period_from_text(text: str) -> tuple[str, str]:
 
     # Single explicit opening date, useful when only a start date is visible.
     single_patterns = [
-        rf"{year}[.\\-/년\\s]+{month}[.\\-/월\\s]+{day}\\s*(?:일)?\\s*(?:오픈|개막|시작|부터|open|opens)",
-        rf"{month}[.\\-/월\\s]+{day}\\s*(?:일)?\\s*(?:오픈|개막|시작|부터|open|opens)",
+        rf"{year}{ym_sep}{month}{md_sep}{day}\s*(?:일)?\s*(?:오픈|개막|시작|부터|open|opens)",
+        rf"{month}{md_sep}{day}\s*(?:일)?\s*(?:오픈|개막|시작|부터|open|opens)",
     ]
     for idx, pattern in enumerate(single_patterns):
         m = re.search(pattern, source, flags=re.I)
