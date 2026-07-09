@@ -204,3 +204,16 @@ Why:
 - v100 uses live official/source-page crawl first.
 - If the live crawl returns too few current cards, it fills the remaining slots from the recovered pre-Gemini stable data.
 - Seed fallback cards are still filtered by dates and search/review URL rules.
+
+## v101 Gemini curator inventory pipeline
+
+Dev-only automation experiment.
+
+Pipeline:
+1. crawl official/source pages
+2. Gemini judges whether each candidate is a single real-world popup/exhibition/space experience
+3. accepted candidates merge into `data/event-inventory.json`
+4. Google News/search evidence is used only as reaction signal
+5. Gemini performs final editorial curation for descriptions and weekly read
+6. hard validation rejects review/search/listing URLs and aggregate titles
+7. if fewer than 8 cards pass, `data/noiz-draft-review.json` is written and existing `data/noiz-data.json` is kept
