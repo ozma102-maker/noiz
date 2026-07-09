@@ -9,8 +9,7 @@ NOIZ updater — free MVP max mode.
 4. 전체 후보군에서 먼저 필터링한 뒤 NOIZ 점수순 Top 10을 만든다.
 
 주의
-- GEMINI_API_KEY가 있으면 매일 후보 그룹핑/노이즈 제거에 Gemini를 사용한다.
-- API 키가 없거나 Gemini 호출이 실패하면 무료 로컬 그룹핑으로 자동 폴백한다.
+- API key 없는 무료 MVP라서 검색 결과 HTML/RSS 구조 변경에 취약하다.
 - 네이버 플레이스/인스타그램 리뷰 전체 수집은 하지 않는다.
 - 결과는 "객관적 평점"이 아니라 공개 노출·후기성 신호 기반 레이더다.
 """
@@ -20,7 +19,6 @@ from __future__ import annotations
 import hashlib
 import html
 import json
-import os
 import random
 import re
 import time
@@ -41,11 +39,6 @@ THEME_HISTORY_PATH = ROOT / "data" / "noiz-theme-history.json"
 GROUPING_DEBUG_PATH = ROOT / "data" / "noiz-grouping-debug.json"
 SOURCES_PATH = ROOT / "scripts" / "sources.json"
 KST = timezone(timedelta(hours=9))
-
-# Optional daily AI grouping. Keep empty to use the free local fallback.
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash-lite").strip()
-GEMINI_ENDPOINT = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; NOIZBot/1.5; weekly-space-radar)",
@@ -100,8 +93,7 @@ REACTION_WORDS = [
 ]
 
 UPCOMING_WORDS = [
-    "오픈 예정", "공개 예정", "개최 예정", "전시 예정", "팝업 예정", "예정서울전시",
-    "coming soon", "pre-open", "preopen"
+    "오픈 예정", "공개 예정", "개최 예정", "coming soon", "pre-open", "preopen"
 ]
 
 CLOSED_WORDS = [
@@ -685,219 +677,6 @@ def candidates_same_event(a: Candidate, b: Candidate) -> bool:
     return False
 
 
-
-def truncate_for_ai(text: str, limit: int = 220) -> str:
-    text = clean_text(text)
-    return text if len(text) <= limit else text[:limit].rstrip() + "…"
-
-
-def normalize_ai_groups(raw_groups: Any, candidates_len: int, *, require_coverage: bool = False) -> list[list[int]] | None:
-    """Validate LLM group output and remove duplicate/out-of-range indices.
-
-    By default this is lenient because the model is allowed to exclude noise pages.
-    Missing non-noise candidates are handled by the caller as singleton groups.
-    """
-    if isinstance(raw_groups, dict):
-        raw_groups = raw_groups.get("groups")
-    if not isinstance(raw_groups, list):
-        return None
-
-    seen: set[int] = set()
-    groups: list[list[int]] = []
-    for raw_group in raw_groups:
-        if not isinstance(raw_group, list):
-            continue
-        group: list[int] = []
-        for value in raw_group:
-            try:
-                idx = int(value)
-            except Exception:
-                continue
-            if 0 <= idx < candidates_len and idx not in seen:
-                seen.add(idx)
-                group.append(idx)
-        if group:
-            # Very large groups usually mean over-merging. Keep them as singles.
-            if len(group) > 18:
-                groups.extend([[idx] for idx in group])
-            else:
-                groups.append(group)
-
-    if not groups:
-        return None
-
-    if require_coverage and candidates_len >= 20 and len(seen) < max(5, int(candidates_len * 0.18)):
-        return None
-
-    return groups
-
-def extract_json_from_model_text(text: str) -> Any:
-    text = clean_text(text)
-    text = text.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
-    try:
-        return json.loads(text)
-    except Exception:
-        pass
-
-    # Last-resort extraction if a model wraps JSON with a sentence.
-    m = re.search(r"(\{[\s\S]*\}|\[[\s\S]*\])", text)
-    if not m:
-        raise ValueError("No JSON found in model response")
-    return json.loads(m.group(1))
-
-
-def write_grouping_debug(method: str, candidates: list[Candidate], groups: list[list[Candidate]], dropped: int = 0) -> None:
-    try:
-        debug = {
-            "method": method,
-            "model": GEMINI_MODEL if method.startswith("gemini") else "",
-            "raw_count": len(candidates),
-            "group_count": len(groups),
-            "dropped_as_noise": dropped,
-            "groups": [
-                {
-                    "size": len(group),
-                    "representative": group[0].title,
-                    "venue": group[0].venue,
-                    "items": [
-                        {
-                            "title": item.title,
-                            "venue": item.venue,
-                            "area": item.area,
-                            "brand": item.brand,
-                            "noiz": item.noiz,
-                        }
-                        for item in group[:8]
-                    ],
-                }
-                for group in groups[:80]
-            ],
-        }
-        GROUPING_DEBUG_PATH.write_text(json.dumps(debug, ensure_ascii=False, indent=2), encoding="utf-8")
-    except Exception as e:
-        print(f"[WARN] grouping debug write failed: {e}")
-
-
-def request_gemini_group_indices(brief: list[dict[str, Any]], *, offset: int = 0) -> list[list[int]] | None:
-    prompt = (
-        "You are cleaning search results for NOIZ!, a CX/space planning radar in Korea.\n"
-        "Task: group search-result candidates that refer to the same real-world pop-up, exhibition, branded space, "
-        "retail activation, or cultural experience. Also exclude obvious noise pages.\n\n"
-        "Rules:\n"
-        "1. Return JSON only, no markdown.\n"
-        "2. Output shape: {\"groups\": [[0,4,12],[1],[2,7]]}.\n"
-        "3. Use the local integer indices shown in the data.\n"
-        "4. Exclude login pages, generic listing pages, category pages, unrelated news, and results that are not a real event/place.\n"
-        "5. Be conservative: do not merge different events just because they are in the same area.\n"
-        "6. If two candidates have clearly different specific venues and are not the same titled event, keep them separate.\n"
-        "7. Same event can be grouped even when blog-style titles differ, if title, venue, brand, description, or dates indicate the same place/event.\n"
-        "8. Include valid but uncertain candidates as singleton groups.\n\n"
-        f"Candidates JSON:\n{json.dumps(brief, ensure_ascii=False)}"
-    )
-
-    res = requests.post(
-        GEMINI_ENDPOINT,
-        params={"key": GEMINI_API_KEY},
-        headers={
-            "x-goog-api-key": GEMINI_API_KEY,
-            "Content-Type": "application/json",
-        },
-        json={
-            "contents": [
-                {
-                    "role": "user",
-                    "parts": [{"text": prompt}],
-                }
-            ],
-            "generationConfig": {
-                "temperature": 0.0,
-                "maxOutputTokens": 8192,
-                "responseMimeType": "application/json",
-            },
-        },
-        timeout=70,
-    )
-    res.raise_for_status()
-    payload = res.json()
-    parts = payload["candidates"][0]["content"]["parts"]
-    response_text = "\n".join(part.get("text", "") for part in parts).strip()
-    raw = extract_json_from_model_text(response_text)
-    return normalize_ai_groups(raw, len(brief), require_coverage=False)
-
-
-def gemini_group_candidates(candidates: list[Candidate]) -> list[list[Candidate]] | None:
-    """Use Gemini once per daily update to group same-event candidates and remove obvious noise.
-
-    This makes the live updater AI-assisted, but keeps ranking deterministic:
-    Gemini only groups duplicate search results and drops clear non-event pages.
-    NOIZ scoring/ranking still runs through the existing rule-based logic.
-    """
-    if not GEMINI_API_KEY or not candidates:
-        return None
-
-    try:
-        chunk_size = 80
-        all_index_groups: list[list[int]] = []
-        used_global_indices: set[int] = set()
-
-        for start_idx in range(0, len(candidates), chunk_size):
-            chunk = candidates[start_idx:start_idx + chunk_size]
-            brief = [
-                {
-                    "i": local_i,
-                    "title": truncate_for_ai(c.title, 110),
-                    "venue": truncate_for_ai(c.venue, 55),
-                    "area": truncate_for_ai(c.area, 35),
-                    "source": truncate_for_ai(c.brand or c.sourceLabel, 45),
-                    "description": truncate_for_ai(c.description, 140),
-                }
-                for local_i, c in enumerate(chunk)
-            ]
-
-            try:
-                local_groups = request_gemini_group_indices(brief, offset=start_idx)
-            except Exception as chunk_error:
-                print(f"[WARN] Gemini chunk failed at {start_idx}, using local singles for this chunk: {chunk_error}")
-                local_groups = None
-
-            if local_groups:
-                for group in local_groups:
-                    global_group = []
-                    for local_i in group:
-                        global_i = start_idx + local_i
-                        if 0 <= global_i < len(candidates) and global_i not in used_global_indices:
-                            used_global_indices.add(global_i)
-                            global_group.append(global_i)
-                    if global_group:
-                        all_index_groups.append(global_group)
-
-            # Add missing non-noise candidates as singleton groups.
-            for local_i, cand in enumerate(chunk):
-                global_i = start_idx + local_i
-                if global_i in used_global_indices:
-                    continue
-                if not looks_like_noise_candidate(cand):
-                    used_global_indices.add(global_i)
-                    all_index_groups.append([global_i])
-
-        if not all_index_groups:
-            raise ValueError("Gemini returned no usable groups")
-
-        groups = [[candidates[i] for i in group] for group in all_index_groups]
-        groups = [group for group in groups if group]
-
-        write_grouping_debug(
-            "gemini_api_chunked",
-            candidates,
-            groups,
-            dropped=len(candidates) - sum(len(g) for g in groups),
-        )
-        print(f"[INFO] Gemini grouping: raw={len(candidates)} groups={len(groups)}")
-        return groups
-    except Exception as e:
-        print(f"[WARN] Gemini grouping failed, fallback to free local grouping: {e}")
-        return None
-
 def free_group_candidates(candidates: list[Candidate]) -> list[list[Candidate]]:
     """Free local alternative to API-based semantic grouping.
 
@@ -939,410 +718,58 @@ def free_group_candidates(candidates: list[Candidate]) -> list[list[Candidate]]:
         else:
             groups.append([cand])
 
-    write_grouping_debug(
-        "free_local_semantic_grouping",
-        candidates,
-        groups,
-        dropped=len(candidates) - len(usable),
-    )
+    # Persist lightweight debug info for checking over/under-merge behavior.
+    try:
+        debug = {
+            "method": "free_local_semantic_grouping",
+            "raw_count": len(candidates),
+            "usable_count": len(usable),
+            "group_count": len(groups),
+            "dropped_as_noise": len(candidates) - len(usable),
+            "groups": [
+                {
+                    "size": len(group),
+                    "representative": group[0].title,
+                    "venue": group[0].venue,
+                    "items": [
+                        {
+                            "title": item.title,
+                            "venue": item.venue,
+                            "area": item.area,
+                            "brand": item.brand,
+                            "noiz": item.noiz,
+                        }
+                        for item in group[:8]
+                    ],
+                }
+                for group in groups[:80]
+            ],
+        }
+        GROUPING_DEBUG_PATH.write_text(json.dumps(debug, ensure_ascii=False, indent=2), encoding="utf-8")
+    except Exception as e:
+        print(f"[WARN] grouping debug write failed: {e}")
+
     print(f"[INFO] free grouping: raw={len(candidates)} usable={len(usable)} groups={len(groups)}")
     return groups
 
 
-
-SEARCH_SOURCE_NAMES = {"Naver View", "Google News", "Web Search"}
-
-
-def is_search_source_name(name: str) -> bool:
-    return clean_text(name) in SEARCH_SOURCE_NAMES
-
-
-def is_review_or_search_url(url: str) -> bool:
-    url = str(url or "").lower()
-    review_domains = [
-        "blog.naver.com",
-        "post.naver.com",
-        "cafe.naver.com",
-        "news.google.com",
-        "search.naver.com",
-        "html.duckduckgo.com",
-    ]
-    return any(domain in url for domain in review_domains)
-
-
-def candidate_is_official_source(c: Candidate) -> bool:
-    if not c.sourceUrl or not str(c.sourceUrl).startswith("http"):
-        return False
-    if is_search_source_name(c.brand):
-        return False
-    if is_review_or_search_url(c.sourceUrl):
-        return False
-    return True
-
-
-def preferred_official_candidate(group: list[Candidate]) -> Candidate | None:
-    official = [c for c in group if candidate_is_official_source(c)]
-    if not official:
-        return None
-
-    # Prefer source/detail pages with dates and specific venue, then higher base signal.
-    official.sort(
-        key=lambda c: (
-            1 if (c.start or c.end) else 0,
-            1 if meaningful_venue(c.venue) else 0,
-            c.noiz,
-            len(clean_text(c.title)),
-        ),
-        reverse=True,
-    )
-    return official[0]
-
-
-def group_has_current_period(group: list[Candidate]) -> bool:
-    for c in group:
-        if c.start or c.end:
-            return True
-    return False
-
-
-def source_labels_for_group(group: list[Candidate]) -> list[str]:
-    official_labels: list[str] = []
-    search_labels: list[str] = []
-    for g in group:
-        label = clean_text(g.brand)
-        if not label:
-            continue
-        target = search_labels if is_search_source_name(label) else official_labels
-        if label not in target:
-            target.append(label)
-    return official_labels + search_labels
-
-
-def item_link_is_non_official(item: dict[str, Any]) -> bool:
-    url = item.get("officialSourceUrl") or item.get("sourceUrl") or ""
-    if not url:
-        return True
-    if is_review_or_search_url(str(url)):
-        return True
-    brand = str(item.get("brand", ""))
-    if any(name in brand for name in SEARCH_SOURCE_NAMES):
-        return True
-    return False
-
-
-def official_match_score(item: dict[str, Any], c: Candidate) -> float:
-    item_title = " ".join([
-        str(item.get("title", "")),
-        str(item.get("rawTitle", "")),
-    ])
-    cand_title = c.title
-    title_sim = max(
-        title_similarity(item_title, cand_title),
-        title_similarity(str(item.get("title", "")), cand_title),
-        title_similarity(str(item.get("rawTitle", "")), cand_title),
-    )
-    item_tokens = group_tokens(" ".join([
-        str(item.get("title", "")),
-        str(item.get("rawTitle", "")),
-        str(item.get("venue", "")),
-        str(item.get("area", "")),
-    ]))
-    cand_tokens = group_tokens(" ".join([c.title, c.venue, c.area, c.brand]))
-    jac = token_jaccard(item_tokens, cand_tokens)
-
-    item_venue = meaningful_venue(str(item.get("venue", "")))
-    cand_venue = meaningful_venue(c.venue)
-    same_venue = bool(item_venue and cand_venue and item_venue == cand_venue)
-    same_area = bool(item.get("area") and c.area and item.get("area") == c.area)
-
-    score = title_sim * 0.58 + jac * 0.32
-    if same_venue:
-        score += 0.18
-    if same_area:
-        score += 0.08
-    if c.start or c.end:
-        score += 0.05
-    return score
-
-
-def assign_official_links(items: list[dict[str, Any]], candidates: list[Candidate]) -> list[dict[str, Any]]:
-    """Make card title links point to official/source-detail pages, not review posts.
-
-    Search/blog/news candidates are useful as evidence, but final card links should go
-    to official or event-information pages whenever a matching source candidate exists.
-    """
-    official_candidates = [c for c in candidates if candidate_is_official_source(c)]
-    if not official_candidates:
-        return items
-
-    for item in items:
-        current_url = item.get("officialSourceUrl") or item.get("sourceUrl")
-        if current_url and not item_link_is_non_official(item):
-            continue
-
-        best: Candidate | None = None
-        best_score = 0.0
-        for c in official_candidates:
-            score = official_match_score(item, c)
-            if score > best_score:
-                best_score = score
-                best = c
-
-        # Keep threshold conservative to avoid linking to the wrong official page.
-        if best and best_score >= 0.42:
-            item["sourceUrl"] = best.sourceUrl
-            item["officialSourceUrl"] = best.sourceUrl
-            item["sourceLabel"] = "공식/정보 페이지"
-            item["officialSourceName"] = best.brand
-            if item_link_is_non_official(item):
-                item["brand"] = best.brand
-            if best.venue and (not item.get("venue") or item.get("venue") == "서울/수도권"):
-                item["venue"] = best.venue
-            if best.area and (not item.get("area") or item.get("area") == "서울/수도권"):
-                item["area"] = best.area
-                item["region"] = best.area
-            for field in ["start", "end"]:
-                if getattr(best, field, "") and not item.get(field):
-                    item[field] = getattr(best, field)
-            item["linkResolved"] = True
-        else:
-            # Never leave a blog/review URL on the title. Fall back to a search for the official page.
-            query = quote_plus(" ".join([
-                str(item.get("title", "")),
-                str(item.get("venue", "")),
-                "공식",
-            ]).strip())
-            if item_link_is_non_official(item):
-                item["sourceUrl"] = f"https://www.google.com/search?q={query}"
-                item["sourceLabel"] = "공식 페이지 검색"
-                item["linkResolved"] = False
-
-    return items
-
-
-
-def strip_date_noise_from_title(title: str) -> str:
-    t = clean_text(str(title or "")).replace("_", " ")
-    # Remove explicit date ranges often embedded in source titles.
-    t = re.sub(r"\s*(?:20)?\d{2}[.\-/]\d{1,2}[.\-/]\d{1,2}\s*[-~–—]\s*(?:20)?\d{2}[.\-/]\d{1,2}[.\-/]\d{1,2}\s*$", "", t)
-    t = re.sub(r"\s*(?:20)?\d{2}[.\-/]\d{1,2}[.\-/]\d{1,2}\s*[-~–—]\s*\d{1,2}[.\-/]\d{1,2}\s*$", "", t)
-    t = re.sub(r"\s*\d{1,2}[.\-/]\d{1,2}\s*[-~–—]\s*\d{1,2}[.\-/]\d{1,2}\s*$", "", t)
-    t = re.sub(r"\s*20\d{2}\.\d{1,2}\.\d{1,2}.*$", "", t)
-    t = re.sub(r"\s*기간\s*[:：]?\s*.*$", "", t)
-    t = re.sub(r"\s+", " ", t).strip()
-    return t
-
-
-def clean_official_display_title(title: str) -> str:
-    """Keep the previous card format: actual event title, not source slug/date/search text."""
-    t = strip_date_noise_from_title(title)
-    t = t.replace("_", " ")
-    t = re.sub(r"예정\s*서울\s*전시", " ", t)
-    t = re.sub(r"서울\s*전시", " ", t)
-    t = re.sub(r"무료\s*입장|무료\s*전시", " ", t)
-    t = re.sub(r"\bALT\s*:\s*\d+\b", " ", t, flags=re.I)
-    t = re.sub(r"\bSEOUL\s*EXHIBITION\b", " ", t, flags=re.I)
-    # Drop trailing venue slugs often attached by listing pages.
-    t = re.sub(r"\s+(더현대\s*서울\s*현대백화점|더현대서울현대백화점|그라운드\s*시소\s*이스트|그라운드시소\s*이스트|서울시립미술관|국립현대미술관).*$", "", t)
-    # Drop review/search language if it leaked into display title.
-    t = re.sub(r"\s*(방문\s*)?후기.*$", "", t)
-    t = re.sub(r"\s*(추천|가볼\s*만한|가볼만한).*$", "", t)
-    t = re.sub(r"\s+", " ", t).strip(" -_·|")
-    return t or clean_text(title)
-
-
-def official_candidates_same_event(a: Candidate, b: Candidate) -> bool:
-    """Stricter rule for preventing Popga/Ddoing/GroundSeesaw pages from over-merging."""
-    title_sim = title_similarity(a.title, b.title)
-    ta = group_tokens(" ".join([a.title, a.venue, a.area]))
-    tb = group_tokens(" ".join([b.title, b.venue, b.area]))
-    jac = token_jaccard(ta, tb)
-    va = meaningful_venue(a.venue)
-    vb = meaningful_venue(b.venue)
-
-    if va and vb and va != vb and title_sim < 0.88:
-        return False
-    if title_sim >= 0.82:
-        return True
-    if va and vb and va == vb and title_sim >= 0.58 and jac >= 0.18:
-        return True
-    return False
-
-
-def candidate_to_official_score(candidate: Candidate, official: Candidate) -> float:
-    title_sim = title_similarity(candidate.title, official.title)
-    jac = token_jaccard(
-        group_tokens(" ".join([candidate.title, candidate.venue, candidate.area, candidate.brand])),
-        group_tokens(" ".join([official.title, official.venue, official.area, official.brand])),
-    )
-    same_venue = bool(meaningful_venue(candidate.venue) and meaningful_venue(candidate.venue) == meaningful_venue(official.venue))
-    same_area = bool(candidate.area and official.area and candidate.area == official.area)
-    score = title_sim * 0.62 + jac * 0.30
-    if same_venue:
-        score += 0.18
-    if same_area:
-        score += 0.05
-    return score
-
-
-def split_overmerged_groups(groups: list[list[Candidate]]) -> list[list[Candidate]]:
-    """Split AI/local groups when unrelated official source pages were merged together."""
-    fixed: list[list[Candidate]] = []
-
-    for group in groups:
-        official = [c for c in group if candidate_is_official_source(c)]
-        non_official = [c for c in group if not candidate_is_official_source(c)]
-
-        if len(official) <= 1:
-            fixed.append(group)
-            continue
-
-        clusters: list[list[Candidate]] = []
-        for cand in official:
-            placed = False
-            for cluster in clusters:
-                if official_candidates_same_event(cand, cluster[0]):
-                    cluster.append(cand)
-                    placed = True
-                    break
-            if not placed:
-                clusters.append([cand])
-
-        # Attach review/search evidence to the best matching official cluster.
-        loose: list[Candidate] = []
-        for cand in non_official:
-            best_idx = -1
-            best_score = 0.0
-            for idx, cluster in enumerate(clusters):
-                score = max(candidate_to_official_score(cand, official_c) for official_c in cluster)
-                if score > best_score:
-                    best_score = score
-                    best_idx = idx
-            if best_idx >= 0 and best_score >= 0.36:
-                clusters[best_idx].append(cand)
-            else:
-                loose.append(cand)
-
-        fixed.extend(clusters)
-        fixed.extend([[cand] for cand in loose])
-
-    if len(fixed) != len(groups):
-        print(f"[INFO] split overmerged groups: {len(groups)} -> {len(fixed)}")
-    return fixed
-
-
-
-def enrich_official_items_with_search_evidence(items: list[dict[str, Any]], candidates: list[Candidate]) -> list[dict[str, Any]]:
-    """Attach review/search/news evidence to official/source-page cards.
-
-    This preserves the old good format: the card is the real exhibition/popup page,
-    while blog/news/search results only raise DECIBEL and reaction confidence.
-    """
-    search_candidates = [c for c in candidates if not candidate_is_official_source(c)]
-    if not search_candidates:
-        return items
-
-    for item in items:
-        if not item.get("hasOfficialSource"):
-            continue
-
-        matches: list[Candidate] = []
-        for cand in search_candidates:
-            score = official_match_score(item, cand)
-            if score >= 0.34:
-                matches.append(cand)
-
-        if not matches:
-            continue
-
-        evidence_count = int(item.get("evidenceCount", 1)) + sum(max(1, c.evidenceCount) for c in matches)
-        reaction_count = int(item.get("reactionCount", 0)) + sum(max(0, c.reactionCount) for c in matches)
-        text_blob = " ".join(
-            [
-                str(item.get("title", "")),
-                str(item.get("rawTitle", "")),
-                str(item.get("description", "")),
-                " ".join(str(s) for s in item.get("signals", [])),
-            ]
-            + [
-                " ".join([
-                    c.title,
-                    c.description,
-                    " ".join(str(s) for s in c.signals),
-                    c.brand,
-                    c.area,
-                ])
-                for c in matches
-            ]
-        )
-
-        base_score = max(35, min(86, int(item.get("noiz", 45)) - 6))
-        noiz, favor, signals, info_volume, confidence = text_score(
-            text_blob,
-            base=base_score,
-            evidence_count=evidence_count,
-            reaction_count=reaction_count,
-        )
-
-        item["noiz"] = noiz
-        item["favorability"] = favor
-        item["signals"] = signals[:4]
-        item["infoVolume"] = info_volume
-        item["evidenceCount"] = evidence_count
-        item["reactionCount"] = reaction_count
-        item["confidence"] = confidence
-        item["owner"] = f"공개 노출 {evidence_count}건 · 후기성 신호 {reaction_count}건"
-        item["evidenceSources"] = sorted({c.brand for c in matches if c.brand})[:4]
-        item["description"] = make_description(
-            str(item.get("title", "")),
-            evidence_count,
-            reaction_count,
-            str(item.get("area") or item.get("region") or "서울/수도권"),
-        )
-
-    return items
-
-
 def merge_candidates(candidates: list[Candidate]) -> list[dict[str, Any]]:
-    # Gemini is optional. If no key is configured or the API fails, use the free local fallback.
+    # Free local semantic grouping: no external AI API key required.
+    # Falls back to title-key grouping only if the local grouping stage itself fails.
     try:
-        groups = gemini_group_candidates(candidates)
-        if groups is None:
-            groups = free_group_candidates(candidates)
+        groups = free_group_candidates(candidates)
     except Exception as e:
-        print(f"[WARN] grouping failed, fallback to candidate_key grouping: {e}")
+        print(f"[WARN] free grouping failed, fallback to candidate_key grouping: {e}")
         grouped: dict[str, list[Candidate]] = {}
         for c in candidates:
             key = candidate_key(c.title)
             grouped.setdefault(key, []).append(c)
         groups = list(grouped.values())
 
-    groups = split_overmerged_groups(groups)
-
     merged: list[dict[str, Any]] = []
     for group in groups:
         group = sorted(group, key=lambda c: c.noiz, reverse=True)
-        official_source = preferred_official_candidate(group)
         best = asdict(group[0])
-        best["rawTitle"] = best.get("title", "")
-        best["hasOfficialSource"] = bool(official_source)
-        best["searchOnlyEvidence"] = not bool(official_source) and not group_has_current_period(group)
-
-        if official_source:
-            best["title"] = clean_official_display_title(official_source.title)
-            best["sourceUrl"] = official_source.sourceUrl
-            best["officialSourceUrl"] = official_source.sourceUrl
-            best["officialSourceName"] = official_source.brand
-            best["sourceLabel"] = "공식/정보 페이지"
-            if official_source.venue:
-                best["venue"] = official_source.venue
-            if official_source.area:
-                best["area"] = official_source.area
-                best["region"] = official_source.area
-            if official_source.start and not best.get("start"):
-                best["start"] = official_source.start
-            if official_source.end and not best.get("end"):
-                best["end"] = official_source.end
 
         evidence_count = sum(max(1, g.evidenceCount) for g in group)
         reaction_count = sum(max(0, g.reactionCount) for g in group)
@@ -1364,7 +791,10 @@ def merge_candidates(candidates: list[Candidate]) -> list[dict[str, Any]]:
             reaction_count=reaction_count,
         )
 
-        source_labels = source_labels_for_group(group)
+        source_labels = []
+        for g in group:
+            if g.brand not in source_labels:
+                source_labels.append(g.brand)
 
         best["noiz"] = noiz
         best["favorability"] = favor
@@ -1390,92 +820,6 @@ def merge_candidates(candidates: list[Candidate]) -> list[dict[str, Any]]:
     return merged
 
 
-
-def parse_iso_date(value: Any) -> datetime | None:
-    if not value:
-        return None
-    try:
-        return datetime.fromisoformat(str(value)[:10]).replace(tzinfo=KST)
-    except Exception:
-        return None
-
-
-def item_text_for_filter(item: dict[str, Any]) -> str:
-    return " ".join([
-        str(item.get("rawTitle", "")),
-        str(item.get("title", "")),
-        str(item.get("description", "")),
-        str(item.get("venue", "")),
-        str(item.get("area", "")),
-        str(item.get("region", "")),
-        " ".join(str(s) for s in item.get("signals", [])),
-    ])
-
-
-def has_stale_month_marker(text: str, now_dt: datetime | None = None) -> bool:
-    """Detect old month-specific blog/search results when no full end date is available.
-
-    This catches cases like old January popup reviews resurfacing in July search results.
-    It intentionally avoids filtering texts that explicitly say ongoing/current/permanent.
-    """
-    now_dt = now_dt or datetime.now(KST)
-    source = clean_text(text)
-    if not source:
-        return False
-
-    ongoing_words = ["상설", "진행중", "진행 중", "현재", "ongoing", "until", "까지", "연장"]
-    if any(word.lower() in source.lower() for word in ongoing_words):
-        return False
-
-    # Explicit year-month mentions: 2026년 1월 / 2026.01 / 2026-01
-    explicit_patterns = [
-        r"(20\d{2})\s*년\s*(1[0-2]|0?[1-9])\s*월",
-        r"(20\d{2})[.\-/](1[0-2]|0?[1-9])(?:[.\-/월\s]|$)",
-    ]
-    for pattern in explicit_patterns:
-        for m in re.finditer(pattern, source):
-            year = int(m.group(1))
-            month = int(m.group(2))
-            if year < now_dt.year:
-                return True
-            if year == now_dt.year and month <= now_dt.month - 2:
-                return True
-
-    # Month-only blog titles like "1월 성수 팝업 후기" are stale in July unless current-context words are present.
-    if "후기" in source or "다녀" in source or "방문" in source:
-        for m in re.finditer(r"(?<!\d)(1[0-2]|0?[1-9])\s*월", source):
-            month = int(m.group(1))
-            if month <= now_dt.month - 3:
-                return True
-
-    return False
-
-
-def is_temporally_rankable_item(item: dict[str, Any], now_dt: datetime | None = None) -> bool:
-    now_dt = now_dt or datetime.now(KST)
-    today = now_dt.date()
-    start = parse_iso_date(item.get("start") or item.get("startDate") or item.get("openDate"))
-    end = parse_iso_date(item.get("end") or item.get("endDate") or item.get("closeDate"))
-    text = item_text_for_filter(item)
-
-    if end and end.date() < today:
-        return False
-
-    # Future-only items are not this week's public reaction yet.
-    # NOIZ ranks currently open/ongoing spaces; upcoming items can be picked up after opening.
-    if start and start.date() > today:
-        return False
-
-    # If only an opening/start date is visible and it is very old, avoid ranking stale blog reviews.
-    if start and not end and start.date() < today - timedelta(days=120):
-        return False
-
-    if not start and not end and has_stale_month_marker(text, now_dt=now_dt):
-        return False
-
-    return True
-
-
 def is_rankable_item(item: dict[str, Any]) -> bool:
     signals = " ".join(item.get("signals", []))
     status = str(item.get("status", item.get("openStatus", ""))).lower()
@@ -1493,14 +837,6 @@ def is_rankable_item(item: dict[str, Any]) -> bool:
     if any(x in status for x in ["upcoming", "preopen", "pre-open"]):
         return False
     if is_upcoming_or_closed(text):
-        return False
-    # Search/blog/news-only items are evidence signals, not primary NOIZ cards.
-    # Cards should represent actual popup/exhibition/source pages, not review posts.
-    if item.get("searchOnlyEvidence") is True:
-        return False
-    if item_link_is_non_official(item) and not item.get("hasOfficialSource"):
-        return False
-    if not is_temporally_rankable_item(item):
         return False
     return True
 
@@ -1524,16 +860,14 @@ def merge_with_existing(new_items: list[dict[str, Any]], existing_items: list[di
             by_key[k] = item
 
     # Existing payload is only a safety fallback when the fresh crawl is too thin.
-    # Do not let old ended popups/exhibitions keep ranking just because they were in yesterday's JSON.
-    if len(new_items) < 12:
+    # This avoids preserving malformed data from the Gemini experiment.
+    if len(new_items) < 8:
         for old in existing_items:
             old.setdefault("infoVolume", "medium")
             signals_text = " ".join(old.get("signals", []))
             old.setdefault("reactionCount", 0 if ("후기 축적 전" in signals_text or "후기 부족" in signals_text) else 1)
             old.setdefault("evidenceCount", 2 if old.get("reactionCount", 0) else 1)
             old.setdefault("confidence", "medium" if old.get("reactionCount", 0) else "low")
-            if not is_temporally_rankable_item(old):
-                continue
             k = candidate_key(old.get("title", ""))
             if k not in by_key:
                 by_key[k] = old
@@ -1586,193 +920,6 @@ def classify_experience_type(item: dict[str, Any]) -> str:
     if any(w in all_text for w in ["전시", "미술", "관람", "작품", "작가", "회화", "사진", "조각"]):
         return "전시/문화 경험"
     return "공간 경험"
-
-
-
-REVIEW_TITLE_PATTERNS = [
-    r"\s*방문\s*후기.*$",
-    r"\s*관람\s*후기.*$",
-    r"\s*다녀왔(?:어요|다).*$",
-    r"\s*후기.*$",
-    r"\s*추천.*$",
-    r"\s*가볼\s*만한.*$",
-    r"\s*가볼만한.*$",
-]
-
-
-def fallback_clean_display_title(title: str) -> str:
-    """Local fallback for blog-style titles when Gemini refinement is unavailable."""
-    original = clean_official_display_title(title)
-    t = original
-
-    # Prefer strong all-caps English event/brand phrase near the end.
-    caps = re.findall(r"\b[A-Z][A-Z0-9&+.'-]*(?:\s+[A-Z][A-Z0-9&+.'-]*){0,5}\b", t)
-    if caps:
-        pick = caps[-1].strip()
-        if 3 <= len(pick) <= 48:
-            # Include obvious place/type suffix when present after the caps phrase.
-            suffix_match = re.search(re.escape(pick) + r"\s*((?:성수|용산|한남|더현대|서울|팝업|전시|스토어|매장|공간)[가-힣A-Za-z0-9\s]{0,18})", t)
-            if suffix_match:
-                suffix = clean_text(suffix_match.group(1))
-                if suffix:
-                    return clean_text(f"{pick} {suffix}")
-            return pick
-
-    # Remove common review/blog tail language.
-    for pattern in REVIEW_TITLE_PATTERNS:
-        t = re.sub(pattern, "", t, flags=re.I).strip()
-
-    # Remove common lead-in expressions while keeping the place/event phrase.
-    t = re.sub(r"^(나처럼|직접|요즘|이번\s*주|서울|성수|한남|용산|더현대|홍대|삼청)\s+", "", t).strip()
-    t = re.sub(r"(좋아한다면|좋아하면|관심있다면|가볼\s*만한|가볼만한)\s+", "", t).strip()
-    t = re.sub(r"\s+", " ", t).strip()
-
-    return t if 3 <= len(t) <= 55 else original
-
-
-def fallback_refine_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    for item in items:
-        raw_title = item.get("rawTitle") or item.get("title", "")
-        cleaned = fallback_clean_display_title(raw_title)
-        if cleaned:
-            item["title"] = cleaned
-
-        area = item.get("area") or item.get("region") or "서울/수도권"
-        kind = classify_experience_type(item)
-        if kind == "전시/문화 경험":
-            item["description"] = f"{area}권에서 관람 신호가 포착된 전시/문화 경험 후보. 작품·기관·방문 후기가 함께 잡히는지 확인할 만해."
-        elif kind == "팝업/브랜드 경험":
-            item["description"] = f"{area}권에서 반응이 포착된 팝업/브랜드 경험 후보. 굿즈, 체험 요소, 방문 후기의 강도를 함께 볼 만해."
-        else:
-            item["description"] = f"{area}권에서 공개 반응이 포착된 공간 경험 후보. 이번 주 벤치마크로 확인할 만한 신호가 있어."
-        item["aiRefined"] = False
-    return items
-
-
-def gemini_refine_items_and_summary(items: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], str | None]:
-    """Use Gemini for descriptions and a natural weekly read.
-
-    Card identity must remain deterministic:
-    - title comes from official/source-page title
-    - sourceUrl comes from official/source-page URL
-    - Gemini must not rewrite card titles or ranking
-    """
-    if not GEMINI_API_KEY or not items:
-        return fallback_refine_items(items), None
-
-    brief = []
-    for item in items[:10]:
-        brief.append({
-            "rank": item.get("rank"),
-            "rawTitle": truncate_for_ai(item.get("rawTitle") or item.get("title", ""), 150),
-            "title": truncate_for_ai(item.get("title", ""), 150),
-            "venue": truncate_for_ai(item.get("venue", ""), 70),
-            "area": truncate_for_ai(item.get("area") or item.get("region", ""), 50),
-            "source": truncate_for_ai(item.get("brand", ""), 70),
-            "signals": item.get("signals", []),
-            "decibel": item.get("noiz"),
-            "evidenceCount": item.get("evidenceCount", 0),
-            "reactionCount": item.get("reactionCount", 0),
-            "start": item.get("start", ""),
-            "end": item.get("end", ""),
-            "description": truncate_for_ai(item.get("description", ""), 180),
-        })
-
-    prompt = (
-        "NOIZ!는 CX·스페이스 기획자를 위한 팝업/전시/브랜드 공간 리서치 레이더다.\n"
-        "아래 Top 10 후보는 공개 검색/블로그/뉴스 신호에서 잡힌 항목이라 제목이 블로그 후기처럼 지저분할 수 있다.\n\n"
-        "해야 할 일:\n"
-        "1. title은 절대 바꾸지 마라. 입력 title을 그대로 유지한다고 생각해라.\n"
-        "2. description은 '공개 노출 4건' 같은 시스템 설명이 아니라, 공간/전시/팝업이 무엇인지 설명하는 1문장으로 써라.\n"
-        "3. weekly_read는 키워드 나열이 아니라, 이번 주 현재 열려 있는 공간 신호를 사람이 쓴 에디토리얼 톤으로 2~3문장 요약해라.\n"
-        "4. 시작 전/종료된 전시처럼 보이는 항목을 현재 화제처럼 과장하지 마라.\n"
-        "5. 점수, 순위, DECIBEL 숫자, title, URL은 바꾸지 마라.\n"
-        "6. JSON만 출력해라.\n\n"
-        "출력 형식:\n"
-        "{\n"
-        "  \"weekly_read\": \"...\",\n"
-        "  \"items\": [\n"
-        "    {\"rank\": 1, \"venue\": \"...\", \"area\": \"...\", \"description\": \"...\", \"category\": \"팝업/브랜드 경험\"}\n"
-        "  ]\n"
-        "}\n\n"
-        f"입력 후보:\n{json.dumps(brief, ensure_ascii=False)}"
-    )
-
-    try:
-        res = requests.post(
-            GEMINI_ENDPOINT,
-            params={"key": GEMINI_API_KEY},
-            headers={
-                "x-goog-api-key": GEMINI_API_KEY,
-                "Content-Type": "application/json",
-            },
-            json={
-                "contents": [
-                    {
-                        "role": "user",
-                        "parts": [{"text": prompt}],
-                    }
-                ],
-                "generationConfig": {
-                    "temperature": 0.2,
-                    "maxOutputTokens": 4096,
-                    "responseMimeType": "application/json",
-                },
-            },
-            timeout=70,
-        )
-        res.raise_for_status()
-        payload = res.json()
-        parts = payload["candidates"][0]["content"]["parts"]
-        response_text = "\n".join(part.get("text", "") for part in parts).strip()
-        parsed = extract_json_from_model_text(response_text)
-        if not isinstance(parsed, dict):
-            raise ValueError("Gemini refinement output is not an object")
-
-        refined_by_rank: dict[int, dict[str, Any]] = {}
-        for refined in parsed.get("items", []):
-            if not isinstance(refined, dict):
-                continue
-            try:
-                rank = int(refined.get("rank"))
-            except Exception:
-                continue
-            refined_by_rank[rank] = refined
-
-        for item in items:
-            try:
-                rank = int(item.get("rank"))
-            except Exception:
-                continue
-            refined = refined_by_rank.get(rank)
-            if not refined:
-                continue
-
-            title = clean_text(refined.get("title", ""))
-            description = clean_text(refined.get("description", ""))
-            venue = clean_text(refined.get("venue", ""))
-            area = clean_text(refined.get("area", ""))
-            category = clean_text(refined.get("category", ""))
-
-            # Keep official/source title. Gemini may refine description/category only.
-            item["title"] = clean_official_display_title(item.get("title", ""))
-            if description:
-                item["description"] = description
-            if venue:
-                item["venue"] = venue
-            if area:
-                item["area"] = area
-                item["region"] = area
-            if category:
-                item["category"] = category
-            item["aiRefined"] = True
-
-        weekly_read = clean_text(parsed.get("weekly_read", ""))
-        print("[INFO] Gemini refinement: card titles/descriptions and weekly_read updated")
-        return items, weekly_read or None
-    except Exception as e:
-        print(f"[WARN] Gemini refinement failed, using local display cleanup: {e}")
-        return fallback_refine_items(items), None
 
 
 def make_weekly_read(items: list[dict[str, Any]]) -> str:
@@ -1951,52 +1098,6 @@ def archive_payload(payload: dict[str, Any], *, now_dt: datetime | None = None) 
     }
     ARCHIVE_INDEX_PATH.write_text(json.dumps(archive_index, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[OK] archived previous weekly NOIZ snapshot: {archive_file}")
-
-def finalize_current_week_items(items: list[dict[str, Any]], candidates: list[Candidate]) -> list[dict[str, Any]]:
-    """Final guardrail before writing noiz-data.json.
-
-    Restores the intended card contract:
-    - current/open only
-    - official/source-page card only
-    - clean official title format
-    - review/search evidence affects DECIBEL but does not become card identity
-    """
-    finalized: list[dict[str, Any]] = []
-    seen: set[str] = set()
-
-    items = assign_official_links(items, candidates)
-
-    for item in items:
-        item["title"] = clean_official_display_title(item.get("title", ""))
-
-        # Never publish blog/search/news result cards.
-        if item_link_is_non_official(item) and not item.get("hasOfficialSource"):
-            continue
-
-        if not is_temporally_rankable_item(item):
-            continue
-
-        # Explicitly remove future 예정 items even if other signals made them medium/high.
-        if is_upcoming_or_closed(item_text_for_filter(item)):
-            continue
-
-        # Avoid duplicate same-title cards.
-        key = candidate_key(item.get("title", ""))
-        if not key or key in seen:
-            continue
-        seen.add(key)
-
-        finalized.append(item)
-
-    finalized.sort(key=lambda x: int(x.get("noiz", 0)), reverse=True)
-    finalized = finalized[:10]
-    for i, item in enumerate(finalized, 1):
-        item["rank"] = i
-        item["title"] = clean_official_display_title(item.get("title", ""))
-
-    return finalized
-
-
 def main() -> None:
     existing = load_existing()
     now_dt = datetime.now(KST)
@@ -2013,17 +1114,14 @@ def main() -> None:
     candidates.extend(discover_search_candidates())
 
     merged_new = merge_candidates(candidates)
-    merged_new = enrich_official_items_with_search_evidence(merged_new, candidates)
     items = merge_with_existing(merged_new, existing.get("items", []))
-    items, ai_weekly_read = gemini_refine_items_and_summary(items)
-    items = finalize_current_week_items(items, candidates)
     theme = existing.get("theme") or LEGACY_THEME
 
     payload = {
         "site": "NOIZ",
         "updated_at": now_dt.isoformat(timespec="seconds"),
         "theme": theme,
-        "weekly_read": ai_weekly_read if items and ai_weekly_read else make_weekly_read(items),
+        "weekly_read": make_weekly_read(items),
         "items": items,
         "creator": "이원준 시니어매니저",
         "method_note": "무료 공개 소스, 검색 결과, 뉴스 RSS, 블로그/후기성 스니펫을 바탕으로 본 주간 신호 레이더야. 객관적 평점이라기보다는 지금 어디가 시끄러운지 읽는 용도야!",
