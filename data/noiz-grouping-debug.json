@@ -1,12 +1,12 @@
 {
   "method": "gemini_api_chunked",
   "model": "gemini-2.5-flash-lite",
-  "raw_count": 239,
-  "group_count": 214,
+  "raw_count": 240,
+  "group_count": 130,
   "dropped_as_noise": 0,
   "groups": [
     {
-      "size": 1,
+      "size": 15,
       "representative": "2026년 7월 더현대 서울 팝업스토어 총정리 | 여의도 더현대 서울 놀거리 가볼만한곳 일정 팝업스토어 모음 2026.06.22",
       "venue": "더현대 서울",
       "items": [
@@ -16,252 +16,49 @@
           "area": "여의도",
           "brand": "Popga Magazine",
           "noiz": 38
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "POPUP 팝업발견",
-      "venue": "서울/수도권",
-      "items": [
+        },
         {
           "title": "POPUP 팝업발견",
           "venue": "서울/수도권",
           "area": "서울/수도권",
           "brand": "Popply",
           "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "HEY, HERE 팝업제보",
-      "venue": "서울/수도권",
-      "items": [
+        },
         {
           "title": "HEY, HERE 팝업제보",
           "venue": "서울/수도권",
           "area": "서울/수도권",
           "brand": "Popply",
           "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "Summer Sparks 무료입장서울전시_프리즈하우스_~26.07.22",
-      "venue": "서울/수도권",
-      "items": [
+        },
         {
           "title": "Summer Sparks 무료입장서울전시_프리즈하우스_~26.07.22",
           "venue": "서울/수도권",
           "area": "서울/수도권",
           "brand": "Ddoing Exhibition Schedule",
           "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "Exhibitions",
-      "venue": "서울/수도권",
-      "items": [
+        },
         {
           "title": "Exhibitions",
           "venue": "서울/수도권",
           "area": "서울/수도권",
           "brand": "GroundSeesaw",
           "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "Now on Central 26.03.27금 ~ 26.08.30일 #F9423A 맥스 시덴토프 개인전",
-      "venue": "서울/수도권",
-      "items": [
+        },
         {
           "title": "Now on Central 26.03.27금 ~ 26.08.30일 #F9423A 맥스 시덴토프 개인전",
           "venue": "서울/수도권",
           "area": "서울/수도권",
           "brand": "GroundSeesaw",
           "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "Now on Central 26.03.27금 ~ 26.08.30일 #F9423A 문화가 있는 날 맥스 시덴토프 개인전",
-      "venue": "서울/수도권",
-      "items": [
+        },
         {
           "title": "Now on Central 26.03.27금 ~ 26.08.30일 #F9423A 문화가 있는 날 맥스 시덴토프 개인전",
           "venue": "서울/수도권",
           "area": "서울/수도권",
           "brand": "GroundSeesaw",
           "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "EXHIBITION",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "EXHIBITION",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "ARTMAP",
-          "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "작가가 추천하는 전시회 현업 작가가 추천하는 전시회에는 어떤 것이 있을까요?",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "작가가 추천하는 전시회 현업 작가가 추천하는 전시회에는 어떤 것이 있을까요?",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "ARTMAP",
-          "noiz": 40
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "심미안을 채워줄 다양한 전시회 전시회 입문자에게 추천하는 여러 장르의 전시회",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "심미안을 채워줄 다양한 전시회 전시회 입문자에게 추천하는 여러 장르의 전시회",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "ARTMAP",
-          "noiz": 42
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "놓치지 않아야 할 특별 전시회 2026년 상반기 놓치지 않아야 하는 전시회",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "놓치지 않아야 할 특별 전시회 2026년 상반기 놓치지 않아야 하는 전시회",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "ARTMAP",
-          "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "인생샷 찍기 좋은 전시회 핫플 전시회 인증샷은 필수!",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "인생샷 찍기 좋은 전시회 핫플 전시회 인증샷은 필수!",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "ARTMAP",
-          "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "데이트하기 좋은 전시회 모음 지금 제일 핫한 전시회만 모아왔어요",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "데이트하기 좋은 전시회 모음 지금 제일 핫한 전시회만 모아왔어요",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "ARTMAP",
-          "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "어린이를 위한 전시회 모음 어린이와 함께 가기 좋은 전시회 모음",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "어린이를 위한 전시회 모음 어린이와 함께 가기 좋은 전시회 모음",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "ARTMAP",
-          "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "전국의 특이한 갤러리 모음 교회부터 여관까지, 두 눈 휘둥그레지는 전시관들",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "전국의 특이한 갤러리 모음 교회부터 여관까지, 두 눈 휘둥그레지는 전시관들",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "ARTMAP",
-          "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "명품 하이엔드, 브랜드와 함께 운영하는 전시관 패션 브랜드와 예술의 만남!",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "명품 하이엔드, 브랜드와 함께 운영하는 전시관 패션 브랜드와 예술의 만남!",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "ARTMAP",
-          "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "경기/인천 추천 전시회 지금 경기/인천에서는 어떤 전시가 열리고 있을까요?",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "경기/인천 추천 전시회 지금 경기/인천에서는 어떤 전시가 열리고 있을까요?",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "ARTMAP",
-          "noiz": 40
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "국립현대미술관 전시회 모음 지금 국립현대미술관에서 만날 수 있는 전시는?",
-      "venue": "국립현대미술관",
-      "items": [
-        {
-          "title": "국립현대미술관 전시회 모음 지금 국립현대미술관에서 만날 수 있는 전시는?",
-          "venue": "국립현대미술관",
-          "area": "서울/수도권",
-          "brand": "ARTMAP",
-          "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "국내 최대 규모, 우고 론디노네 개인전 《BURN TO SHINE》",
-      "venue": "서울/수도권",
-      "items": [
+        },
         {
           "title": "국내 최대 규모, 우고 론디노네 개인전 《BURN TO SHINE》",
           "venue": "서울/수도권",
@@ -272,105 +69,7 @@
       ]
     },
     {
-      "size": 1,
-      "representative": "예화랑/ 베니스비엔날레 한국관 건립 30주년 기획전 《30 Years: Passages》",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "예화랑/ 베니스비엔날레 한국관 건립 30주년 기획전 《30 Years: Passages》",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "ARTMAP",
-          "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "스부 SUBU 패딩 신발 겨울 메리제인슈즈 ETC SEOUL 팝업 후기",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "스부 SUBU 패딩 신발 겨울 메리제인슈즈 ETC SEOUL 팝업 후기",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "Naver View",
-          "noiz": 47
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "‘김밥대장’ 두 번째 팝업, 오픈런 후기 전합니다 - heyPOP",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "‘김밥대장’ 두 번째 팝업, 오픈런 후기 전합니다 - heyPOP",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "Google News",
-          "noiz": 48
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "지나치는 곳에서 머무는 곳으로 재탄생! '서울갤러리' 구석구석 탐방기 - 서울특별시",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "지나치는 곳에서 머무는 곳으로 재탄생! '서울갤러리' 구석구석 탐방기 - 서울특별시",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "Google News",
-          "noiz": 43
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "5월 서울 팝업 스토어 프로 덕질러를 위한 핫플 가이드 - 시크릿 서울",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "5월 서울 팝업 스토어 프로 덕질러를 위한 핫플 가이드 - 시크릿 서울",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "Google News",
-          "noiz": 45
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "현대자동차, 더현대 서울에서 ‘현대 N 팝업스토어’ 진행 - ER 이코노믹리뷰",
-      "venue": "더현대 서울",
-      "items": [
-        {
-          "title": "현대자동차, 더현대 서울에서 ‘현대 N 팝업스토어’ 진행 - ER 이코노믹리뷰",
-          "venue": "더현대 서울",
-          "area": "서울/수도권",
-          "brand": "Google News",
-          "noiz": 55
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "TREASURE 커뮤니티 포스트 - 🤓 트레저 팝업 방문 후기 ✏️ - Weverse",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "TREASURE 커뮤니티 포스트 - 🤓 트레저 팝업 방문 후기 ✏️ - Weverse",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "Google News",
-          "noiz": 52
-        }
-      ]
-    },
-    {
-      "size": 4,
+      "size": 2,
       "representative": "2026년 7월 용산 팝업스토어 총정리 | 용산 아이파크몰, 용산 가볼만한곳 추천 팝업스토어 모음 2026.06.22",
       "venue": "용산",
       "items": [
@@ -380,20 +79,6 @@
           "area": "용산",
           "brand": "Popga Magazine",
           "noiz": 46
-        },
-        {
-          "title": "메리코켑 베르하누 개인전 무료입장서울전시_에스더쉬퍼 갤러리용산구_~26.08.14",
-          "venue": "용산",
-          "area": "용산",
-          "brand": "Ddoing Exhibition Schedule",
-          "noiz": 36
-        },
-        {
-          "title": "무료입장박대성: 고요가 머무는 곳 무료입장서울전시_가나아트 남산용산구_~26.08.17",
-          "venue": "용산",
-          "area": "용산",
-          "brand": "Ddoing Exhibition Schedule",
-          "noiz": 35
         },
         {
           "title": "용산 팝업 점프샵 팝업 스토어 후기 JUMPSHOP IN SEOUL",
@@ -426,7 +111,7 @@
       ]
     },
     {
-      "size": 9,
+      "size": 8,
       "representative": "2026년 7월 성수 팝업스토어 총정리 | 성수 가볼만한곳 성수팝업 일정 모음 팝업스토어 모음 2026.06.22",
       "venue": "성수",
       "items": [
@@ -489,7 +174,7 @@
       ]
     },
     {
-      "size": 3,
+      "size": 1,
       "representative": "뱅크시: Still here 예정서울전시_ALT.1 더현대서울현대백화점_26.07.22-11.03",
       "venue": "서울/수도권",
       "items": [
@@ -499,25 +184,11 @@
           "area": "서울/수도권",
           "brand": "Ddoing Exhibition Schedule",
           "noiz": 35
-        },
-        {
-          "title": "유영국: 산은 내 안에 있다 서울전시_서울시립미술관 서소문 본관_~26.10.25",
-          "venue": "서울시립미술관",
-          "area": "서울/수도권",
-          "brand": "Ddoing Exhibition Schedule",
-          "noiz": 35
-        },
-        {
-          "title": "기술의 저변: 경계에 선 장면들 무료입장서울전시_서울시립미술관 서소문본관_~26.11.22",
-          "venue": "서울시립미술관",
-          "area": "서울/수도권",
-          "brand": "Ddoing Exhibition Schedule",
-          "noiz": 35
         }
       ]
     },
     {
-      "size": 5,
+      "size": 2,
       "representative": "조은 원화전: 오늘의 정원 예정 서울전시_그라운드시소 이스트_26.07.17-11.19",
       "venue": "그라운드시소",
       "items": [
@@ -534,44 +205,37 @@
           "area": "서울/수도권",
           "brand": "Ddoing Exhibition Schedule",
           "noiz": 35
-        },
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "글짓, 쓰는 예술 서울전시_서울시립 북서울미술관_~26.07.12",
+      "venue": "서울/수도권",
+      "items": [
         {
-          "title": "성률: 여름을 닮은 우리 서울전시_그라운드시소 한남_~26.08.31",
-          "venue": "그라운드시소",
-          "area": "한남",
+          "title": "글짓, 쓰는 예술 서울전시_서울시립 북서울미술관_~26.07.12",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
           "brand": "Ddoing Exhibition Schedule",
-          "noiz": 35
-        },
-        {
-          "title": "Now on Hannam 26.04.30목 ~ 26.09.27일 #137CF4 성률 기획전 여름을 닮은 우리",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "GroundSeesaw",
-          "noiz": 35
-        },
-        {
-          "title": "Now on Hannam 26.04.30목 ~ 26.09.27일 #137CF4 문화가 있는 날 성률 기획전 여름을 닮은 우리",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "GroundSeesaw",
           "noiz": 35
         }
       ]
     },
     {
       "size": 2,
-      "representative": "파리 보이지 않는 파리 사진전 서울전시_성곡미술관종로구_~26.07.26",
+      "representative": "캐서린 브래드포드 무료입장서울전시_갤러리 현대종로구_~26.07.12",
       "venue": "종로",
       "items": [
         {
-          "title": "파리 보이지 않는 파리 사진전 서울전시_성곡미술관종로구_~26.07.26",
+          "title": "캐서린 브래드포드 무료입장서울전시_갤러리 현대종로구_~26.07.12",
           "venue": "종로",
           "area": "종로",
           "brand": "Ddoing Exhibition Schedule",
           "noiz": 35
         },
         {
-          "title": "캐서린 브래드포드 무료입장서울전시_갤러리 현대종로구_~26.07.12",
+          "title": "파리 보이지 않는 파리 사진전 서울전시_성곡미술관종로구_~26.07.26",
           "venue": "종로",
           "area": "종로",
           "brand": "Ddoing Exhibition Schedule",
@@ -609,20 +273,6 @@
     },
     {
       "size": 1,
-      "representative": "글짓, 쓰는 예술 서울전시_서울시립 북서울미술관_~26.07.12",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "글짓, 쓰는 예술 서울전시_서울시립 북서울미술관_~26.07.12",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "Ddoing Exhibition Schedule",
-          "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
       "representative": "뱀보다 두려운 것은 무료입장서울전시_서리풀청년아트갤러리서초구_~26.07.18",
       "venue": "서울/수도권",
       "items": [
@@ -636,12 +286,19 @@
       ]
     },
     {
-      "size": 1,
+      "size": 2,
       "representative": "이승택: 조각의 바깥에서 서울전시_소마미술관송파구_~26.07.26",
       "venue": "서울/수도권",
       "items": [
         {
           "title": "이승택: 조각의 바깥에서 서울전시_소마미술관송파구_~26.07.26",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Ddoing Exhibition Schedule",
+          "noiz": 35
+        },
+        {
+          "title": "그림책이 살아있다 서울전시_소마미술관송파구_~26.09.06",
           "venue": "서울/수도권",
           "area": "서울/수도권",
           "brand": "Ddoing Exhibition Schedule",
@@ -664,7 +321,7 @@
       ]
     },
     {
-      "size": 1,
+      "size": 2,
       "representative": "사유의 두 축 과천전시_ K&L 뮤지엄과천동_~26.08.02",
       "venue": "서울/수도권",
       "items": [
@@ -674,11 +331,18 @@
           "area": "서울/수도권",
           "brand": "Ddoing Exhibition Schedule",
           "noiz": 35
+        },
+        {
+          "title": "과천-전시 제목노출영역 제목노출영역 제목노출영역 제목노출영역",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "MMCA Exhibitions",
+          "noiz": 35
         }
       ]
     },
     {
-      "size": 1,
+      "size": 2,
       "representative": "우리 이토록 작은 존재들 제주도 전시_포도뮤지엄서귀포시_-26.08.08",
       "venue": "서울/수도권",
       "items": [
@@ -686,6 +350,41 @@
           "title": "우리 이토록 작은 존재들 제주도 전시_포도뮤지엄서귀포시_-26.08.08",
           "venue": "서울/수도권",
           "area": "서울/수도권",
+          "brand": "Ddoing Exhibition Schedule",
+          "noiz": 35
+        },
+        {
+          "title": "전이수: 우리 함께 제주도 전시_전이수 갤러리제주시_~26.12.31",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Ddoing Exhibition Schedule",
+          "noiz": 35
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "메리코켑 베르하누 개인전 무료입장서울전시_에스더쉬퍼 갤러리용산구_~26.08.14",
+      "venue": "용산",
+      "items": [
+        {
+          "title": "메리코켑 베르하누 개인전 무료입장서울전시_에스더쉬퍼 갤러리용산구_~26.08.14",
+          "venue": "용산",
+          "area": "용산",
+          "brand": "Ddoing Exhibition Schedule",
+          "noiz": 36
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "무료입장박대성: 고요가 머무는 곳 무료입장서울전시_가나아트 남산용산구_~26.08.17",
+      "venue": "용산",
+      "items": [
+        {
+          "title": "무료입장박대성: 고요가 머무는 곳 무료입장서울전시_가나아트 남산용산구_~26.08.17",
+          "venue": "용산",
+          "area": "용산",
           "brand": "Ddoing Exhibition Schedule",
           "noiz": 35
         }
@@ -720,12 +419,19 @@
       ]
     },
     {
-      "size": 1,
+      "size": 2,
       "representative": "인상주의를 넘어 서울전시_세종문화회관 미술관_~26.08.23",
       "venue": "서울/수도권",
       "items": [
         {
           "title": "인상주의를 넘어 서울전시_세종문화회관 미술관_~26.08.23",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Ddoing Exhibition Schedule",
+          "noiz": 35
+        },
+        {
+          "title": "스페인의 거장 고야: 이성이 잠들 때, 괴물이 깨어난다 서울전시_예술의전당 한가람미술관_~26-09.30",
           "venue": "서울/수도권",
           "area": "서울/수도권",
           "brand": "Ddoing Exhibition Schedule",
@@ -790,6 +496,34 @@
       ]
     },
     {
+      "size": 3,
+      "representative": "성률: 여름을 닮은 우리 서울전시_그라운드시소 한남_~26.08.31",
+      "venue": "그라운드시소",
+      "items": [
+        {
+          "title": "성률: 여름을 닮은 우리 서울전시_그라운드시소 한남_~26.08.31",
+          "venue": "그라운드시소",
+          "area": "한남",
+          "brand": "Ddoing Exhibition Schedule",
+          "noiz": 35
+        },
+        {
+          "title": "Now on Hannam 26.04.30목 ~ 26.09.27일 #137CF4 성률 기획전 여름을 닮은 우리",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "GroundSeesaw",
+          "noiz": 35
+        },
+        {
+          "title": "Now on Hannam 26.04.30목 ~ 26.09.27일 #137CF4 문화가 있는 날 성률 기획전 여름을 닮은 우리",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "GroundSeesaw",
+          "noiz": 35
+        }
+      ]
+    },
+    {
       "size": 1,
       "representative": "온 세상 만들기의 비밀을 찾아서 서울전시_피크닉중구_~26.09.06",
       "venue": "중구",
@@ -819,34 +553,6 @@
     },
     {
       "size": 1,
-      "representative": "그림책이 살아있다 서울전시_소마미술관송파구_~26.09.06",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "그림책이 살아있다 서울전시_소마미술관송파구_~26.09.06",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "Ddoing Exhibition Schedule",
-          "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "스페인의 거장 고야: 이성이 잠들 때, 괴물이 깨어난다 서울전시_예술의전당 한가람미술관_~26-09.30",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "스페인의 거장 고야: 이성이 잠들 때, 괴물이 깨어난다 서울전시_예술의전당 한가람미술관_~26-09.30",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "Ddoing Exhibition Schedule",
-          "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
       "representative": "큐비스트: 시각의 혁신가들 예정서울전시_퐁피두센터 한화_~26.10.04",
       "venue": "서울/수도권",
       "items": [
@@ -867,6 +573,27 @@
         {
           "title": "브라이언 와일드 스미스 전 서울전시_한가람미술관 서예박물관_~26.10.16",
           "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Ddoing Exhibition Schedule",
+          "noiz": 35
+        }
+      ]
+    },
+    {
+      "size": 2,
+      "representative": "유영국: 산은 내 안에 있다 서울전시_서울시립미술관 서소문 본관_~26.10.25",
+      "venue": "서울시립미술관",
+      "items": [
+        {
+          "title": "유영국: 산은 내 안에 있다 서울전시_서울시립미술관 서소문 본관_~26.10.25",
+          "venue": "서울시립미술관",
+          "area": "서울/수도권",
+          "brand": "Ddoing Exhibition Schedule",
+          "noiz": 35
+        },
+        {
+          "title": "기술의 저변: 경계에 선 장면들 무료입장서울전시_서울시립미술관 서소문본관_~26.11.22",
+          "venue": "서울시립미술관",
           "area": "서울/수도권",
           "brand": "Ddoing Exhibition Schedule",
           "noiz": 35
@@ -931,20 +658,6 @@
     },
     {
       "size": 1,
-      "representative": "전이수: 우리 함께 제주도 전시_전이수 갤러리제주시_~26.12.31",
-      "venue": "서울/수도권",
-      "items": [
-        {
-          "title": "전이수: 우리 함께 제주도 전시_전이수 갤러리제주시_~26.12.31",
-          "venue": "서울/수도권",
-          "area": "서울/수도권",
-          "brand": "Ddoing Exhibition Schedule",
-          "noiz": 35
-        }
-      ]
-    },
-    {
-      "size": 1,
       "representative": "정음: 소리의 여정 무료입장서울 전시_오디움 박물관",
       "venue": "서울/수도권",
       "items": [
@@ -953,6 +666,69 @@
           "venue": "서울/수도권",
           "area": "서울/수도권",
           "brand": "Ddoing Exhibition Schedule",
+          "noiz": 35
+        }
+      ]
+    },
+    {
+      "size": 11,
+      "representative": "EXHIBITION",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "EXHIBITION",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "ARTMAP",
+          "noiz": 35
+        },
+        {
+          "title": "작가가 추천하는 전시회 현업 작가가 추천하는 전시회에는 어떤 것이 있을까요?",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "ARTMAP",
+          "noiz": 40
+        },
+        {
+          "title": "심미안을 채워줄 다양한 전시회 전시회 입문자에게 추천하는 여러 장르의 전시회",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "ARTMAP",
+          "noiz": 42
+        },
+        {
+          "title": "놓치지 않아야 할 특별 전시회 2026년 상반기 놓치지 않아야 하는 전시회",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "ARTMAP",
+          "noiz": 35
+        },
+        {
+          "title": "인생샷 찍기 좋은 전시회 핫플 전시회 인증샷은 필수!",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "ARTMAP",
+          "noiz": 35
+        },
+        {
+          "title": "데이트하기 좋은 전시회 모음 지금 제일 핫한 전시회만 모아왔어요",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "ARTMAP",
+          "noiz": 35
+        },
+        {
+          "title": "어린이를 위한 전시회 모음 어린이와 함께 가기 좋은 전시회 모음",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "ARTMAP",
+          "noiz": 35
+        },
+        {
+          "title": "전국의 특이한 갤러리 모음 교회부터 여관까지, 두 눈 휘둥그레지는 전시관들",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "ARTMAP",
           "noiz": 35
         }
       ]
@@ -972,22 +748,15 @@
       ]
     },
     {
-      "size": 4,
-      "representative": "새해에도 계속되는 '뷰티 팝업' 열풍 언제까지 - 녹색경제신문",
+      "size": 3,
+      "representative": "T1 암행천문 성수 팝업 후기 임무첩 들고 미션 완료하고 온 티원 팝업",
       "venue": "성수",
       "items": [
         {
-          "title": "새해에도 계속되는 '뷰티 팝업' 열풍 언제까지 - 녹색경제신문",
+          "title": "T1 암행천문 성수 팝업 후기 임무첩 들고 미션 완료하고 온 티원 팝업",
           "venue": "성수",
           "area": "성수",
-          "brand": "Google News",
-          "noiz": 46
-        },
-        {
-          "title": "“공기를 새롭게, 향기로 채우다”… 위프 성수 팝업 ‘Whiff House’, 후기로 증명된 인기 - ABC뉴스",
-          "venue": "성수",
-          "area": "성수",
-          "brand": "Google News",
+          "brand": "Naver View",
           "noiz": 50
         },
         {
@@ -1003,6 +772,34 @@
           "area": "성수",
           "brand": "Naver View",
           "noiz": 64
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "새해에도 계속되는 '뷰티 팝업' 열풍 언제까지 - 녹색경제신문",
+      "venue": "성수",
+      "items": [
+        {
+          "title": "새해에도 계속되는 '뷰티 팝업' 열풍 언제까지 - 녹색경제신문",
+          "venue": "성수",
+          "area": "성수",
+          "brand": "Google News",
+          "noiz": 46
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "“공기를 새롭게, 향기로 채우다”… 위프 성수 팝업 ‘Whiff House’, 후기로 증명된 인기 - ABC뉴스",
+      "venue": "성수",
+      "items": [
+        {
+          "title": "“공기를 새롭게, 향기로 채우다”… 위프 성수 팝업 ‘Whiff House’, 후기로 증명된 인기 - ABC뉴스",
+          "venue": "성수",
+          "area": "성수",
+          "brand": "Google News",
+          "noiz": 50
         }
       ]
     },
@@ -1045,20 +842,6 @@
           "area": "서울/수도권",
           "brand": "Naver View",
           "noiz": 52
-        }
-      ]
-    },
-    {
-      "size": 1,
-      "representative": "다이렉트 결혼준비",
-      "venue": "더현대 서울",
-      "items": [
-        {
-          "title": "다이렉트 결혼준비",
-          "venue": "더현대 서울",
-          "area": "서울/수도권",
-          "brand": "Naver View",
-          "noiz": 50
         }
       ]
     },
@@ -1283,6 +1066,314 @@
           "area": "서울/수도권",
           "brand": "Naver View",
           "noiz": 50
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "향수사랑",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "향수사랑",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 50
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "'내 친구 서울 서울갤러리' 개관! 3일간 팝업 이벤트 - 서울특별시",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "'내 친구 서울 서울갤러리' 개관! 3일간 팝업 이벤트 - 서울특별시",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Google News",
+          "noiz": 46
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "서울 서촌에서 시작한 K-주얼리 '어고'… 더현대 대구서 첫 지방 ‘팝업스토어’ 운영 - 비욘드포스트",
+      "venue": "서촌",
+      "items": [
+        {
+          "title": "서울 서촌에서 시작한 K-주얼리 '어고'… 더현대 대구서 첫 지방 ‘팝업스토어’ 운영 - 비욘드포스트",
+          "venue": "서촌",
+          "area": "서촌",
+          "brand": "Google News",
+          "noiz": 49
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "내 동영상 촬영 금지) #바스키아 전시 #바스키아ddp # 서울전시후기",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "내 동영상 촬영 금지) #바스키아 전시 #바스키아ddp # 서울전시후기",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 47
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "서울 역문화역 # 서울전시후기 # 서울 가볼만한곳 # 전시 덕후...",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "서울 역문화역 # 서울전시후기 # 서울 가볼만한곳 # 전시 덕후...",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 49
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "서울 도서관을 포함한... 공연 ✔ 전시 ✔ 체험... 우수 후기 50명에게...",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "서울 도서관을 포함한... 공연 ✔ 전시 ✔ 체험... 우수 후기 50명에게...",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 52
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "서울시 1일 전 조회 231",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "서울시 1일 전 조회 231",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 52
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "키아프 2024 서울 아트페어 가장 비싼 작품은? + 추천 동선과 꿀팁 후기 Kiaf SEOUL 2024 코엑스 전시 회",
+      "venue": "코엑스",
+      "items": [
+        {
+          "title": "키아프 2024 서울 아트페어 가장 비싼 작품은? + 추천 동선과 꿀팁 후기 Kiaf SEOUL 2024 코엑스 전시 회",
+          "venue": "코엑스",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 58
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "예술의전당 전시 라울 뒤피 : 색채의 선율 한가람미술관 서울 전시 회 후기",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "예술의전당 전시 라울 뒤피 : 색채의 선율 한가람미술관 서울 전시 회 후기",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 47
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "여섯살 아이와 데미안 허스트 서울 전시 방문 후기",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "여섯살 아이와 데미안 허스트 서울 전시 방문 후기",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Google News",
+          "noiz": 52
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "무료전시 서울에 생긴 NEW 시립미술관 구석구석 가봤는데..윤슬처럼 찬란한 건축에 반함! 서서울미술관 개관특별전 리뷰 #도슨트 #전시추천 #전시리뷰 #서울전시 #",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "무료전시 서울에 생긴 NEW 시립미술관 구석구석 가봤는데..윤슬처럼 찬란한 건축에 반함! 서서울미술관 개관특별전 리뷰 #도슨트 #전시추천 #전시리뷰 #서울전시 #",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Google News",
+          "noiz": 73
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "건축물의 장례식, 힐튼서울이 남긴 이야기 - BRIQUE MAGAZINE",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "건축물의 장례식, 힐튼서울이 남긴 이야기 - BRIQUE MAGAZINE",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Google News",
+          "noiz": 43
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "전시 리뷰 상하이 한복판에 열린 서울의 집 《같음과 다름: 서울의 주거문화》 - 리뷰타임스",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "전시 리뷰 상하이 한복판에 열린 서울의 집 《같음과 다름: 서울의 주거문화》 - 리뷰타임스",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Google News",
+          "noiz": 52
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "전시리뷰무라카미 다카시, 귀여움의 미소에 겹겹이 숨겨진 것 - 한국미술신문",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "전시리뷰무라카미 다카시, 귀여움의 미소에 겹겹이 숨겨진 것 - 한국미술신문",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Google News",
+          "noiz": 52
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "아트프렌즈 ArtFriends 미술관 갤러리 박물관 아트버스 전시추천",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "아트프렌즈 ArtFriends 미술관 갤러리 박물관 아트버스 전시추천",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 61
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "먹능고 조아해요",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "먹능고 조아해요",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 50
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "민토하우스",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "민토하우스",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 50
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "~",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "~",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 50
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "다이렉트 결혼준비",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "다이렉트 결혼준비",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 50
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "4",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "4",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 59
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "맘살림회관 - 맘카페 임신 출산 육아 교육 부부싸움 산후조리",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "맘살림회관 - 맘카페 임신 출산 육아 교육 부부싸움 산후조리",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 50
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "국내1위 다이어트 커뮤니티 씨씨앙식단,운동,후기,헬스,체험단",
+      "venue": "서울/수도권",
+      "items": [
+        {
+          "title": "국내1위 다이어트 커뮤니티 씨씨앙식단,운동,후기,헬스,체험단",
+          "venue": "서울/수도권",
+          "area": "서울/수도권",
+          "brand": "Naver View",
+          "noiz": 55
         }
       ]
     }
