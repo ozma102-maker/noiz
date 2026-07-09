@@ -1134,15 +1134,20 @@ def strip_date_noise_from_title(title: str) -> str:
 
 
 def clean_official_display_title(title: str) -> str:
-    """Keep the previous card format: actual event title, not source slug or date-heavy text."""
+    """Keep the previous card format: actual event title, not source slug/date/search text."""
     t = strip_date_noise_from_title(title)
-    t = t.replace("예정서울전시", " ").replace("예정 서울전시", " ")
-    t = t.replace("서울전시", " ").replace("무료입장", " ").replace("무료 전시", " ")
+    t = t.replace("_", " ")
+    t = re.sub(r"예정\s*서울\s*전시", " ", t)
+    t = re.sub(r"서울\s*전시", " ", t)
+    t = re.sub(r"무료\s*입장|무료\s*전시", " ", t)
     t = re.sub(r"\bALT\s*:\s*\d+\b", " ", t, flags=re.I)
+    t = re.sub(r"\bSEOUL\s*EXHIBITION\b", " ", t, flags=re.I)
+    # Drop trailing venue slugs often attached by listing pages.
+    t = re.sub(r"\s+(더현대\s*서울\s*현대백화점|더현대서울현대백화점|그라운드\s*시소\s*이스트|그라운드시소\s*이스트|서울시립미술관|국립현대미술관).*$", "", t)
+    # Drop review/search language if it leaked into display title.
+    t = re.sub(r"\s*(방문\s*)?후기.*$", "", t)
+    t = re.sub(r"\s*(추천|가볼\s*만한|가볼만한).*$", "", t)
     t = re.sub(r"\s+", " ", t).strip(" -_·|")
-    # Remove duplicated trailing venue chunks only when the title is too long.
-    if len(t) > 55:
-        t = re.sub(r"\s+(더현대서울현대백화점|그라운드시소\s*이스트|서울시립미술관|국립현대미술관).*$", "", t).strip()
     return t or clean_text(title)
 
 
@@ -1645,12 +1650,12 @@ def fallback_refine_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def gemini_refine_items_and_summary(items: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], str | None]:
-    """Use Gemini to turn raw search/blog titles into clean event cards and a natural weekly read.
+    """Use Gemini for descriptions and a natural weekly read.
 
-    Gemini does not change DECIBEL scoring/ranking here. It only rewrites:
-    - display title: actual popup/exhibition/space name, not blog-review title
-    - description: what the space/event seems to be
-    - weekly_read: natural editorial summary
+    Card identity must remain deterministic:
+    - title comes from official/source-page title
+    - sourceUrl comes from official/source-page URL
+    - Gemini must not rewrite card titles or ranking
     """
     if not GEMINI_API_KEY or not items:
         return fallback_refine_items(items), None
@@ -1677,21 +1682,17 @@ def gemini_refine_items_and_summary(items: list[dict[str, Any]]) -> tuple[list[d
         "NOIZ!는 CX·스페이스 기획자를 위한 팝업/전시/브랜드 공간 리서치 레이더다.\n"
         "아래 Top 10 후보는 공개 검색/블로그/뉴스 신호에서 잡힌 항목이라 제목이 블로그 후기처럼 지저분할 수 있다.\n\n"
         "해야 할 일:\n"
-        "1. 각 후보의 display title을 실제 팝업, 전시, 브랜드 공간 이름처럼 정리해라.\n"
-        "   - '후기', '방문 후기', '다녀왔어요', '추천', '가볼만한' 같은 블로그 문구는 제거.\n"
-        "   - 확실한 브랜드/전시명이 보이면 그것을 우선 사용.\n"
-        "   - 모호하면 과하게 창작하지 말고 원제목을 조금만 정리.\n"
+        "1. title은 절대 바꾸지 마라. 입력 title을 그대로 유지한다고 생각해라.\n"
         "2. description은 '공개 노출 4건' 같은 시스템 설명이 아니라, 공간/전시/팝업이 무엇인지 설명하는 1문장으로 써라.\n"
-        "3. weekly_read는 키워드 나열이 아니라, 이번 주 공간 신호를 사람이 쓴 에디토리얼 톤으로 2~3문장 요약해라.\n"
-        "4. 끝난 1월/과거 팝업처럼 보이는 항목은 title/description에서 과거 후기처럼 보이지 않게 과장하지 마라.\n"
-        "5. 점수, 순위, DECIBEL 숫자는 바꾸지 마라.\n"
-        "6. 링크는 후기 글이 아니라 공식/정보 페이지를 우선 사용한다. URL은 입력에 없으면 만들지 마라.\n"
-        "7. JSON만 출력해라.\n\n"
+        "3. weekly_read는 키워드 나열이 아니라, 이번 주 현재 열려 있는 공간 신호를 사람이 쓴 에디토리얼 톤으로 2~3문장 요약해라.\n"
+        "4. 시작 전/종료된 전시처럼 보이는 항목을 현재 화제처럼 과장하지 마라.\n"
+        "5. 점수, 순위, DECIBEL 숫자, title, URL은 바꾸지 마라.\n"
+        "6. JSON만 출력해라.\n\n"
         "출력 형식:\n"
         "{\n"
         "  \"weekly_read\": \"...\",\n"
         "  \"items\": [\n"
-        "    {\"rank\": 1, \"title\": \"...\", \"venue\": \"...\", \"area\": \"...\", \"description\": \"...\", \"category\": \"팝업/브랜드 경험\"}\n"
+        "    {\"rank\": 1, \"venue\": \"...\", \"area\": \"...\", \"description\": \"...\", \"category\": \"팝업/브랜드 경험\"}\n"
         "  ]\n"
         "}\n\n"
         f"입력 후보:\n{json.dumps(brief, ensure_ascii=False)}"
@@ -1753,10 +1754,8 @@ def gemini_refine_items_and_summary(items: list[dict[str, Any]]) -> tuple[list[d
             area = clean_text(refined.get("area", ""))
             category = clean_text(refined.get("category", ""))
 
-            if title:
-                item["title"] = clean_official_display_title(fallback_clean_display_title(title))
-            else:
-                item["title"] = clean_official_display_title(item.get("title", ""))
+            # Keep official/source title. Gemini may refine description/category only.
+            item["title"] = clean_official_display_title(item.get("title", ""))
             if description:
                 item["description"] = description
             if venue:
@@ -1952,6 +1951,52 @@ def archive_payload(payload: dict[str, Any], *, now_dt: datetime | None = None) 
     }
     ARCHIVE_INDEX_PATH.write_text(json.dumps(archive_index, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[OK] archived previous weekly NOIZ snapshot: {archive_file}")
+
+def finalize_current_week_items(items: list[dict[str, Any]], candidates: list[Candidate]) -> list[dict[str, Any]]:
+    """Final guardrail before writing noiz-data.json.
+
+    Restores the intended card contract:
+    - current/open only
+    - official/source-page card only
+    - clean official title format
+    - review/search evidence affects DECIBEL but does not become card identity
+    """
+    finalized: list[dict[str, Any]] = []
+    seen: set[str] = set()
+
+    items = assign_official_links(items, candidates)
+
+    for item in items:
+        item["title"] = clean_official_display_title(item.get("title", ""))
+
+        # Never publish blog/search/news result cards.
+        if item_link_is_non_official(item) and not item.get("hasOfficialSource"):
+            continue
+
+        if not is_temporally_rankable_item(item):
+            continue
+
+        # Explicitly remove future 예정 items even if other signals made them medium/high.
+        if is_upcoming_or_closed(item_text_for_filter(item)):
+            continue
+
+        # Avoid duplicate same-title cards.
+        key = candidate_key(item.get("title", ""))
+        if not key or key in seen:
+            continue
+        seen.add(key)
+
+        finalized.append(item)
+
+    finalized.sort(key=lambda x: int(x.get("noiz", 0)), reverse=True)
+    finalized = finalized[:10]
+    for i, item in enumerate(finalized, 1):
+        item["rank"] = i
+        item["title"] = clean_official_display_title(item.get("title", ""))
+
+    return finalized
+
+
 def main() -> None:
     existing = load_existing()
     now_dt = datetime.now(KST)
@@ -1971,19 +2016,14 @@ def main() -> None:
     merged_new = enrich_official_items_with_search_evidence(merged_new, candidates)
     items = merge_with_existing(merged_new, existing.get("items", []))
     items, ai_weekly_read = gemini_refine_items_and_summary(items)
-    items = assign_official_links(items, candidates)
-    items = [item for item in items if is_rankable_item(item)]
-    for i, item in enumerate(items[:10], 1):
-        item["rank"] = i
-        item["title"] = clean_official_display_title(item.get("title", ""))
-    items = items[:10]
+    items = finalize_current_week_items(items, candidates)
     theme = existing.get("theme") or LEGACY_THEME
 
     payload = {
         "site": "NOIZ",
         "updated_at": now_dt.isoformat(timespec="seconds"),
         "theme": theme,
-        "weekly_read": ai_weekly_read or make_weekly_read(items),
+        "weekly_read": ai_weekly_read if items and ai_weekly_read else make_weekly_read(items),
         "items": items,
         "creator": "이원준 시니어매니저",
         "method_note": "무료 공개 소스, 검색 결과, 뉴스 RSS, 블로그/후기성 스니펫을 바탕으로 본 주간 신호 레이더야. 객관적 평점이라기보다는 지금 어디가 시끄러운지 읽는 용도야!",
