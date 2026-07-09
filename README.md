@@ -164,33 +164,25 @@ ART NOIZ 데이터에서 개인 취향·사용자 컬렉션 관련 문구를 제
 
 NOIZ는 매주 월요일 자동 업데이트 시 `data/archive/noiz-week-YYYY-MM-DD.json`으로 주간 스냅샷을 저장합니다. 페이지의 날짜 옆 좌우 화살표로 이전/다음 주간 아카이브를 확인할 수 있습니다.
 
-## Product positioning
+## Clean stable reset
 
-NOIZ! is an AI-powered CX radar for tracking public signals around pop-ups, exhibitions, branded spaces, and cultural experiences. It is designed to support space planning research, benchmarking, and proposal preparation through daily updates, DECIBEL attention signals, reaction tone labels, location data, operating periods, and archive snapshots.
+This package is a static, pre-Gemini rollback build for recovery.
 
-## Data grouping
+- Gemini update pipeline removed
+- GitHub Actions removed
+- `scripts/` removed
+- stable `data/noiz-data.json` and `data/art-noiz-data.json` preserved
+- latest accepted UI files kept
 
-NOIZ! can use Gemini once per daily update to group duplicate search candidates and remove obvious noise pages before the existing DECIBEL scoring logic runs.
+Use this as a fresh GitHub Pages repository or as a full wipe-and-reupload baseline. Do not run the previous daily update workflow against this package.
 
-Setup:
-1. Create a Gemini API key in Google AI Studio.
-2. Add it to GitHub repository secrets as `GEMINI_API_KEY`.
-3. The GitHub Action passes `GEMINI_API_KEY` and `GEMINI_MODEL=gemini-2.5-flash-lite` to `scripts/update_noiz.py`.
+## Stable daily update restored without AI
 
-If the key is missing, the free tier is unavailable, the rate limit is hit, or the API call fails, NOIZ! automatically falls back to the local free grouping method. Final ranking still uses the existing rule-based NOIZ scoring logic; Gemini only handles candidate grouping and obvious noise removal.
+This v98 stable package restores the original pre-Gemini daily update pipeline.
 
-### Troubleshooting
-
-If the GitHub Action shows `TypeError: sequence item 0: expected str instance, list found`, update to v89 or later. This was caused by a join bug in the candidate merge stage after grouping. v89 also chunks Gemini grouping requests so large daily candidate pools can still be processed with fallback safety.
-
-### Gemini refinement and freshness filter
-
-From v90, Gemini is used in two places when `GEMINI_API_KEY` is available:
-1. candidate grouping / obvious noise removal before scoring
-2. post-ranking display refinement, rewriting blog-style result titles into clean popup/exhibition/space names and generating a more natural `weekly_read`
-
-v90 also filters ended or stale candidates more aggressively. Items with an ended period, old standalone start date, or old month-specific blog/review markers are excluded from ranking, and previous JSON items are only reused when the fresh crawl is too thin.
-
-### Official/source-page links
-
-From v91, review posts and search-result pages are treated as evidence only. Card title links prefer official or event-information pages from source crawls such as Popga, Popply, Ddoing, GroundSeesaw, SeMA, MMCA, and ARTMAP. If a matching official/source page cannot be resolved safely, NOIZ! falls back to an official-page search instead of linking directly to a blog review.
+Included fixes:
+- fixed date extraction regex runtime error
+- fixed `merge_candidates` string-join TypeError
+- limited reuse of existing JSON data so malformed experimental data is not preserved
+- no Gemini / no external AI API
+- no `GEMINI_API_KEY` required

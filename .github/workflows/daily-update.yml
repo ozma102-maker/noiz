@@ -34,6 +34,6 @@ jobs:
         run: |
           git config user.name "noiz-bot"
           git config user.email "noiz-bot@users.noreply.github.com"
-          git add data/noiz-data.json data/art-noiz-data.json data/noiz-archive-index.json data/noiz-theme-history.json data/noiz-grouping-debug.json data/archive/ data/noiz-archive-index.json data/noiz-theme-history.json data/noiz-grouping-debug.json data/archive/
+          git add data/noiz-data.json data/art-noiz-data.json data/noiz-archive-index.json data/noiz-theme-history.json data/archive/ data/noiz-archive-index.json data/noiz-theme-history.json data/archive/
           git commit -m "Daily NOIZ update" || echo "No changes to commit"
           git push

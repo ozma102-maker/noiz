@@ -36,7 +36,6 @@ DATA_PATH = ROOT / "data" / "noiz-data.json"
 ARCHIVE_DIR = ROOT / "data" / "archive"
 ARCHIVE_INDEX_PATH = ROOT / "data" / "noiz-archive-index.json"
 THEME_HISTORY_PATH = ROOT / "data" / "noiz-theme-history.json"
-GROUPING_DEBUG_PATH = ROOT / "data" / "noiz-grouping-debug.json"
 SOURCES_PATH = ROOT / "scripts" / "sources.json"
 KST = timezone(timedelta(hours=9))
 
@@ -580,194 +579,15 @@ def discover_search_candidates() -> list[Candidate]:
     return candidates
 
 
-
-STOPWORDS = {
-    "서울", "수도권", "전시", "전시회", "팝업", "팝업스토어", "스토어", "행사", "후기", "방문",
-    "가볼만한곳", "가볼만한", "추천", "일정", "정보", "예약", "오픈", "무료", "관람", "개인전",
-    "기획전", "브랜드", "공간", "성수", "여의도", "한남", "청담", "삼청", "중구", "강남", "송파",
-    "popup", "pop", "up", "store", "exhibition", "review", "seoul", "visit", "event", "official"
-}
-
-NOISE_PAGE_WORDS = [
-    "로그인", "회원가입", "개인정보", "이용약관", "공지사항", "전체보기", "더보기",
-    "목록", "검색결과", "카테고리", "이벤트 전체", "지난 전시", "사이트맵"
-]
-
-
-def normalize_group_text(text: str) -> str:
-    text = clean_text(text).lower()
-    text = re.sub(r"https?://\S+", " ", text)
-    text = re.sub(r"[\[\](){},./|_<>:;!?\"'“”‘’·•]", " ", text)
-    text = re.sub(r"\b(20\d{2})[.\-/년\s]*(\d{1,2})[.\-/월\s]*(\d{1,2})\s*(?:일)?\b", " ", text)
-    text = re.sub(r"\b\d{1,2}[.\-/월\s]+\d{1,2}\s*(?:일)?\b", " ", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return text
-
-
-def group_tokens(text: str) -> set[str]:
-    normalized = normalize_group_text(text)
-    tokens = re.findall(r"[a-z0-9]{2,}|[가-힣]{2,}", normalized)
-    return {
-        token for token in tokens
-        if token not in STOPWORDS and len(token) >= 2 and not token.isdigit()
-    }
-
-
-def compact_key_text(text: str) -> str:
-    normalized = normalize_group_text(text)
-    return re.sub(r"[^0-9a-z가-힣]+", "", normalized)
-
-
-def title_similarity(a: str, b: str) -> float:
-    from difflib import SequenceMatcher
-    return SequenceMatcher(None, compact_key_text(a), compact_key_text(b)).ratio()
-
-
-def token_jaccard(a: set[str], b: set[str]) -> float:
-    if not a or not b:
-        return 0.0
-    return len(a & b) / max(1, len(a | b))
-
-
-def meaningful_venue(venue: str) -> str:
-    venue = clean_text(venue)
-    generic = {"서울", "서울/수도권", "수도권", "성수", "여의도", "한남", "청담", "삼청", "중구", "강남", "송파", ""}
-    return "" if venue in generic else venue
-
-
-def looks_like_noise_candidate(c: Candidate) -> bool:
-    text = " ".join([c.title, c.venue, c.area, c.brand, c.description])
-    if any(word in text for word in NOISE_PAGE_WORDS):
-        return True
-    tokens = group_tokens(text)
-    # Too little content and no meaningful venue usually means a generic result page.
-    if len(tokens) <= 1 and not meaningful_venue(c.venue):
-        return True
-    return False
-
-
-def candidates_same_event(a: Candidate, b: Candidate) -> bool:
-    va = meaningful_venue(a.venue)
-    vb = meaningful_venue(b.venue)
-
-    # Strong venue conflict guard: don't merge if both have different specific venues
-    # and the titles are not extremely similar.
-    title_sim = title_similarity(a.title, b.title)
-    if va and vb and va != vb and title_sim < 0.86:
-        return False
-
-    ta = group_tokens(" ".join([a.title, a.venue, a.area, a.brand]))
-    tb = group_tokens(" ".join([b.title, b.venue, b.area, b.brand]))
-    jac = token_jaccard(ta, tb)
-
-    same_specific_venue = bool(va and vb and va == vb)
-    same_area = bool(a.area and b.area and a.area == b.area)
-
-    if title_sim >= 0.86:
-        return True
-    if same_specific_venue and jac >= 0.18:
-        return True
-    if same_specific_venue and title_sim >= 0.54:
-        return True
-    if same_area and jac >= 0.42:
-        return True
-    if jac >= 0.52:
-        return True
-
-    return False
-
-
-def free_group_candidates(candidates: list[Candidate]) -> list[list[Candidate]]:
-    """Free local alternative to API-based semantic grouping.
-
-    This is not an LLM. It uses deterministic normalization, token overlap,
-    fuzzy title matching, venue/area guards, and noise-page filtering.
-    Purpose: merge obvious duplicate signals for the same real-world popup/exhibition
-    without requiring a paid API key.
-    """
-    usable = [c for c in candidates if not looks_like_noise_candidate(c)]
-    groups: list[list[Candidate]] = []
-
-    # High-signal candidates first so weaker snippets attach to a clearer representative.
-    usable = sorted(
-        usable,
-        key=lambda c: (c.noiz, c.evidenceCount, c.reactionCount, len(group_tokens(c.title))),
-        reverse=True,
-    )
-
-    for cand in usable:
-        best_idx = -1
-        best_score = 0.0
-        for idx, group in enumerate(groups):
-            representative = group[0]
-            if not candidates_same_event(cand, representative):
-                continue
-            score = (
-                title_similarity(cand.title, representative.title) * 0.55 +
-                token_jaccard(
-                    group_tokens(" ".join([cand.title, cand.venue, cand.area, cand.brand])),
-                    group_tokens(" ".join([representative.title, representative.venue, representative.area, representative.brand])),
-                ) * 0.45
-            )
-            if score > best_score:
-                best_score = score
-                best_idx = idx
-
-        if best_idx >= 0:
-            groups[best_idx].append(cand)
-        else:
-            groups.append([cand])
-
-    # Persist lightweight debug info for checking over/under-merge behavior.
-    try:
-        debug = {
-            "method": "free_local_semantic_grouping",
-            "raw_count": len(candidates),
-            "usable_count": len(usable),
-            "group_count": len(groups),
-            "dropped_as_noise": len(candidates) - len(usable),
-            "groups": [
-                {
-                    "size": len(group),
-                    "representative": group[0].title,
-                    "venue": group[0].venue,
-                    "items": [
-                        {
-                            "title": item.title,
-                            "venue": item.venue,
-                            "area": item.area,
-                            "brand": item.brand,
-                            "noiz": item.noiz,
-                        }
-                        for item in group[:8]
-                    ],
-                }
-                for group in groups[:80]
-            ],
-        }
-        GROUPING_DEBUG_PATH.write_text(json.dumps(debug, ensure_ascii=False, indent=2), encoding="utf-8")
-    except Exception as e:
-        print(f"[WARN] grouping debug write failed: {e}")
-
-    print(f"[INFO] free grouping: raw={len(candidates)} usable={len(usable)} groups={len(groups)}")
-    return groups
-
-
 def merge_candidates(candidates: list[Candidate]) -> list[dict[str, Any]]:
-    # Free local semantic grouping: no external AI API key required.
-    # Falls back to title-key grouping only if the local grouping stage itself fails.
-    try:
-        groups = free_group_candidates(candidates)
-    except Exception as e:
-        print(f"[WARN] free grouping failed, fallback to candidate_key grouping: {e}")
-        grouped: dict[str, list[Candidate]] = {}
-        for c in candidates:
-            key = candidate_key(c.title)
-            grouped.setdefault(key, []).append(c)
-        groups = list(grouped.values())
+    grouped: dict[str, list[Candidate]] = {}
+    for c in candidates:
+        # 검색 결과 제목이 블로그식으로 길 수 있어 venue보다 title 중심으로 묶는다.
+        key = candidate_key(c.title)
+        grouped.setdefault(key, []).append(c)
 
     merged: list[dict[str, Any]] = []
-    for group in groups:
+    for group in grouped.values():
         group = sorted(group, key=lambda c: c.noiz, reverse=True)
         best = asdict(group[0])
 
@@ -859,8 +679,8 @@ def merge_with_existing(new_items: list[dict[str, Any]], existing_items: list[di
         if k not in by_key or int(item.get("noiz", 0)) > int(by_key[k].get("noiz", 0)):
             by_key[k] = item
 
-    # Existing payload is only a safety fallback when the fresh crawl is too thin.
-    # This avoids preserving malformed data from the Gemini experiment.
+    # Existing payload is only a fallback if the fresh crawl is too thin.
+    # This prevents accidentally carrying over malformed experimental data.
     if len(new_items) < 8:
         for old in existing_items:
             old.setdefault("infoVolume", "medium")
@@ -1124,7 +944,7 @@ def main() -> None:
         "weekly_read": make_weekly_read(items),
         "items": items,
         "creator": "이원준 시니어매니저",
-        "method_note": "무료 공개 소스, 검색 결과, 뉴스 RSS, 블로그/후기성 스니펫을 바탕으로 본 주간 신호 레이더야. 객관적 평점이라기보다는 지금 어디가 시끄러운지 읽는 용도야!",
+        "method_note": "AI 없이 무료 공개 소스, 검색 결과, 뉴스 RSS, 블로그/후기성 스니펫을 바탕으로 본 일간 신호 레이더야. 객관적 평점이라기보다는 지금 어디가 시끄러운지 읽는 용도야!",
     }
 
     DATA_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
