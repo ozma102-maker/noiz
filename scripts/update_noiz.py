@@ -100,7 +100,8 @@ REACTION_WORDS = [
 ]
 
 UPCOMING_WORDS = [
-    "오픈 예정", "공개 예정", "개최 예정", "coming soon", "pre-open", "preopen"
+    "오픈 예정", "공개 예정", "개최 예정", "전시 예정", "팝업 예정", "예정서울전시",
+    "coming soon", "pre-open", "preopen"
 ]
 
 CLOSED_WORDS = [
@@ -1119,6 +1120,184 @@ def assign_official_links(items: list[dict[str, Any]], candidates: list[Candidat
     return items
 
 
+
+def strip_date_noise_from_title(title: str) -> str:
+    t = clean_text(str(title or "")).replace("_", " ")
+    # Remove explicit date ranges often embedded in source titles.
+    t = re.sub(r"\s*(?:20)?\d{2}[.\-/]\d{1,2}[.\-/]\d{1,2}\s*[-~–—]\s*(?:20)?\d{2}[.\-/]\d{1,2}[.\-/]\d{1,2}\s*$", "", t)
+    t = re.sub(r"\s*(?:20)?\d{2}[.\-/]\d{1,2}[.\-/]\d{1,2}\s*[-~–—]\s*\d{1,2}[.\-/]\d{1,2}\s*$", "", t)
+    t = re.sub(r"\s*\d{1,2}[.\-/]\d{1,2}\s*[-~–—]\s*\d{1,2}[.\-/]\d{1,2}\s*$", "", t)
+    t = re.sub(r"\s*20\d{2}\.\d{1,2}\.\d{1,2}.*$", "", t)
+    t = re.sub(r"\s*기간\s*[:：]?\s*.*$", "", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    return t
+
+
+def clean_official_display_title(title: str) -> str:
+    """Keep the previous card format: actual event title, not source slug or date-heavy text."""
+    t = strip_date_noise_from_title(title)
+    t = t.replace("예정서울전시", " ").replace("예정 서울전시", " ")
+    t = t.replace("서울전시", " ").replace("무료입장", " ").replace("무료 전시", " ")
+    t = re.sub(r"\bALT\s*:\s*\d+\b", " ", t, flags=re.I)
+    t = re.sub(r"\s+", " ", t).strip(" -_·|")
+    # Remove duplicated trailing venue chunks only when the title is too long.
+    if len(t) > 55:
+        t = re.sub(r"\s+(더현대서울현대백화점|그라운드시소\s*이스트|서울시립미술관|국립현대미술관).*$", "", t).strip()
+    return t or clean_text(title)
+
+
+def official_candidates_same_event(a: Candidate, b: Candidate) -> bool:
+    """Stricter rule for preventing Popga/Ddoing/GroundSeesaw pages from over-merging."""
+    title_sim = title_similarity(a.title, b.title)
+    ta = group_tokens(" ".join([a.title, a.venue, a.area]))
+    tb = group_tokens(" ".join([b.title, b.venue, b.area]))
+    jac = token_jaccard(ta, tb)
+    va = meaningful_venue(a.venue)
+    vb = meaningful_venue(b.venue)
+
+    if va and vb and va != vb and title_sim < 0.88:
+        return False
+    if title_sim >= 0.82:
+        return True
+    if va and vb and va == vb and title_sim >= 0.58 and jac >= 0.18:
+        return True
+    return False
+
+
+def candidate_to_official_score(candidate: Candidate, official: Candidate) -> float:
+    title_sim = title_similarity(candidate.title, official.title)
+    jac = token_jaccard(
+        group_tokens(" ".join([candidate.title, candidate.venue, candidate.area, candidate.brand])),
+        group_tokens(" ".join([official.title, official.venue, official.area, official.brand])),
+    )
+    same_venue = bool(meaningful_venue(candidate.venue) and meaningful_venue(candidate.venue) == meaningful_venue(official.venue))
+    same_area = bool(candidate.area and official.area and candidate.area == official.area)
+    score = title_sim * 0.62 + jac * 0.30
+    if same_venue:
+        score += 0.18
+    if same_area:
+        score += 0.05
+    return score
+
+
+def split_overmerged_groups(groups: list[list[Candidate]]) -> list[list[Candidate]]:
+    """Split AI/local groups when unrelated official source pages were merged together."""
+    fixed: list[list[Candidate]] = []
+
+    for group in groups:
+        official = [c for c in group if candidate_is_official_source(c)]
+        non_official = [c for c in group if not candidate_is_official_source(c)]
+
+        if len(official) <= 1:
+            fixed.append(group)
+            continue
+
+        clusters: list[list[Candidate]] = []
+        for cand in official:
+            placed = False
+            for cluster in clusters:
+                if official_candidates_same_event(cand, cluster[0]):
+                    cluster.append(cand)
+                    placed = True
+                    break
+            if not placed:
+                clusters.append([cand])
+
+        # Attach review/search evidence to the best matching official cluster.
+        loose: list[Candidate] = []
+        for cand in non_official:
+            best_idx = -1
+            best_score = 0.0
+            for idx, cluster in enumerate(clusters):
+                score = max(candidate_to_official_score(cand, official_c) for official_c in cluster)
+                if score > best_score:
+                    best_score = score
+                    best_idx = idx
+            if best_idx >= 0 and best_score >= 0.36:
+                clusters[best_idx].append(cand)
+            else:
+                loose.append(cand)
+
+        fixed.extend(clusters)
+        fixed.extend([[cand] for cand in loose])
+
+    if len(fixed) != len(groups):
+        print(f"[INFO] split overmerged groups: {len(groups)} -> {len(fixed)}")
+    return fixed
+
+
+
+def enrich_official_items_with_search_evidence(items: list[dict[str, Any]], candidates: list[Candidate]) -> list[dict[str, Any]]:
+    """Attach review/search/news evidence to official/source-page cards.
+
+    This preserves the old good format: the card is the real exhibition/popup page,
+    while blog/news/search results only raise DECIBEL and reaction confidence.
+    """
+    search_candidates = [c for c in candidates if not candidate_is_official_source(c)]
+    if not search_candidates:
+        return items
+
+    for item in items:
+        if not item.get("hasOfficialSource"):
+            continue
+
+        matches: list[Candidate] = []
+        for cand in search_candidates:
+            score = official_match_score(item, cand)
+            if score >= 0.34:
+                matches.append(cand)
+
+        if not matches:
+            continue
+
+        evidence_count = int(item.get("evidenceCount", 1)) + sum(max(1, c.evidenceCount) for c in matches)
+        reaction_count = int(item.get("reactionCount", 0)) + sum(max(0, c.reactionCount) for c in matches)
+        text_blob = " ".join(
+            [
+                str(item.get("title", "")),
+                str(item.get("rawTitle", "")),
+                str(item.get("description", "")),
+                " ".join(str(s) for s in item.get("signals", [])),
+            ]
+            + [
+                " ".join([
+                    c.title,
+                    c.description,
+                    " ".join(str(s) for s in c.signals),
+                    c.brand,
+                    c.area,
+                ])
+                for c in matches
+            ]
+        )
+
+        base_score = max(35, min(86, int(item.get("noiz", 45)) - 6))
+        noiz, favor, signals, info_volume, confidence = text_score(
+            text_blob,
+            base=base_score,
+            evidence_count=evidence_count,
+            reaction_count=reaction_count,
+        )
+
+        item["noiz"] = noiz
+        item["favorability"] = favor
+        item["signals"] = signals[:4]
+        item["infoVolume"] = info_volume
+        item["evidenceCount"] = evidence_count
+        item["reactionCount"] = reaction_count
+        item["confidence"] = confidence
+        item["owner"] = f"공개 노출 {evidence_count}건 · 후기성 신호 {reaction_count}건"
+        item["evidenceSources"] = sorted({c.brand for c in matches if c.brand})[:4]
+        item["description"] = make_description(
+            str(item.get("title", "")),
+            evidence_count,
+            reaction_count,
+            str(item.get("area") or item.get("region") or "서울/수도권"),
+        )
+
+    return items
+
+
 def merge_candidates(candidates: list[Candidate]) -> list[dict[str, Any]]:
     # Gemini is optional. If no key is configured or the API fails, use the free local fallback.
     try:
@@ -1133,6 +1312,8 @@ def merge_candidates(candidates: list[Candidate]) -> list[dict[str, Any]]:
             grouped.setdefault(key, []).append(c)
         groups = list(grouped.values())
 
+    groups = split_overmerged_groups(groups)
+
     merged: list[dict[str, Any]] = []
     for group in groups:
         group = sorted(group, key=lambda c: c.noiz, reverse=True)
@@ -1143,6 +1324,7 @@ def merge_candidates(candidates: list[Candidate]) -> list[dict[str, Any]]:
         best["searchOnlyEvidence"] = not bool(official_source) and not group_has_current_period(group)
 
         if official_source:
+            best["title"] = clean_official_display_title(official_source.title)
             best["sourceUrl"] = official_source.sourceUrl
             best["officialSourceUrl"] = official_source.sourceUrl
             best["officialSourceName"] = official_source.brand
@@ -1275,7 +1457,8 @@ def is_temporally_rankable_item(item: dict[str, Any], now_dt: datetime | None = 
         return False
 
     # Future-only items are not this week's public reaction yet.
-    if start and start.date() > today + timedelta(days=21):
+    # NOIZ ranks currently open/ongoing spaces; upcoming items can be picked up after opening.
+    if start and start.date() > today:
         return False
 
     # If only an opening/start date is visible and it is very old, avoid ranking stale blog reviews.
@@ -1306,11 +1489,11 @@ def is_rankable_item(item: dict[str, Any]) -> bool:
         return False
     if is_upcoming_or_closed(text):
         return False
-    # Search/blog/news-only items are evidence signals, not primary NOIZ cards,
-    # unless they include a reliable current period.
-    if item.get("searchOnlyEvidence") is True and not any(item.get(f) for f in PERIOD_FIELDS):
+    # Search/blog/news-only items are evidence signals, not primary NOIZ cards.
+    # Cards should represent actual popup/exhibition/source pages, not review posts.
+    if item.get("searchOnlyEvidence") is True:
         return False
-    if item_link_is_non_official(item) and not any(item.get(f) for f in PERIOD_FIELDS):
+    if item_link_is_non_official(item) and not item.get("hasOfficialSource"):
         return False
     if not is_temporally_rankable_item(item):
         return False
@@ -1414,7 +1597,7 @@ REVIEW_TITLE_PATTERNS = [
 
 def fallback_clean_display_title(title: str) -> str:
     """Local fallback for blog-style titles when Gemini refinement is unavailable."""
-    original = clean_text(title)
+    original = clean_official_display_title(title)
     t = original
 
     # Prefer strong all-caps English event/brand phrase near the end.
@@ -1571,7 +1754,9 @@ def gemini_refine_items_and_summary(items: list[dict[str, Any]]) -> tuple[list[d
             category = clean_text(refined.get("category", ""))
 
             if title:
-                item["title"] = fallback_clean_display_title(title)
+                item["title"] = clean_official_display_title(fallback_clean_display_title(title))
+            else:
+                item["title"] = clean_official_display_title(item.get("title", ""))
             if description:
                 item["description"] = description
             if venue:
@@ -1783,9 +1968,15 @@ def main() -> None:
     candidates.extend(discover_search_candidates())
 
     merged_new = merge_candidates(candidates)
+    merged_new = enrich_official_items_with_search_evidence(merged_new, candidates)
     items = merge_with_existing(merged_new, existing.get("items", []))
     items, ai_weekly_read = gemini_refine_items_and_summary(items)
     items = assign_official_links(items, candidates)
+    items = [item for item in items if is_rankable_item(item)]
+    for i, item in enumerate(items[:10], 1):
+        item["rank"] = i
+        item["title"] = clean_official_display_title(item.get("title", ""))
+    items = items[:10]
     theme = existing.get("theme") or LEGACY_THEME
 
     payload = {
