@@ -186,3 +186,11 @@ Included fixes:
 - limited reuse of existing JSON data so malformed experimental data is not preserved
 - no Gemini / no external AI API
 - no `GEMINI_API_KEY` required
+
+## v99 official-card daily update
+
+v99 keeps the no-AI daily update approach but fixes the main quality issue:
+- Naver View / Google News / Web Search are evidence only
+- blog/search/news titles cannot become cards
+- roundup/listing pages such as "총정리", "놀거리", "추천", "모음" are excluded as primary cards
+- card owner/description are experience overview copy, not signal-count system text

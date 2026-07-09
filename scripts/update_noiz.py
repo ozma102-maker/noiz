@@ -379,7 +379,11 @@ def make_candidate(
     source_type: str = "event",
     base: int = 18,
 ) -> Candidate | None:
-    text = clean_text(f"{title} {text}")
+    raw_text = clean_text(f"{title} {text}")
+    if is_aggregate_or_listing_candidate(title, raw_text, url=url, source_name=source_name):
+        return None
+
+    text = raw_text
     title = normalize_title(title)
     if not looks_like_candidate(text) or not title:
         return None
@@ -579,6 +583,256 @@ def discover_search_candidates() -> list[Candidate]:
     return candidates
 
 
+
+SEARCH_SOURCE_NAMES = {"Naver View", "Google News", "Web Search"}
+
+AGGREGATE_PAGE_WORDS = [
+    "총정리", "놀거리", "가볼만한", "가볼 만한", "추천", "모음", "리스트", "한눈에",
+    "캘린더", "일정 정리", "전시 추천", "전시회 추천", "팝업 추천", "팝업스토어 추천",
+    "팝업스토어 총정리", "데이트코스", "데이트 코스", "핫플", "이번 주 뭐", "이번주 뭐",
+    "new ", "신상", "오픈일 팝업 방문 후기", "방문 후기",
+]
+
+BAD_PRIMARY_URL_PARTS = [
+    "blog.naver.com",
+    "post.naver.com",
+    "cafe.naver.com",
+    "news.google.com",
+    "search.naver.com",
+    "html.duckduckgo.com",
+]
+
+
+def is_review_or_search_url(url: str) -> bool:
+    url = str(url or "").lower()
+    return any(part in url for part in BAD_PRIMARY_URL_PARTS)
+
+
+def is_search_source_name(name: str) -> bool:
+    return clean_text(name) in SEARCH_SOURCE_NAMES
+
+
+def clean_display_title(title: str) -> str:
+    t = clean_text(str(title or "")).replace("_", " ")
+    t = re.sub(r"\s*(?:방문\s*)?후기.*$", "", t)
+    t = re.sub(r"\s*(추천|가볼\s*만한|가볼만한).*$", "", t)
+    t = re.sub(r"예정\s*서울\s*전시", " ", t)
+    t = re.sub(r"서울\s*전시", " ", t)
+    t = re.sub(r"\bALT\s*:\s*\d+\b", " ", t, flags=re.I)
+    t = re.sub(r"\s*(?:20)?\d{2}[.\-/]\d{1,2}[.\-/]\d{1,2}\s*[-~–—]\s*(?:20)?\d{2}[.\-/]\d{1,2}[.\-/]\d{1,2}\s*$", "", t)
+    t = re.sub(r"\s*(?:20)?\d{2}[.\-/]\d{1,2}[.\-/]\d{1,2}\s*[-~–—]\s*\d{1,2}[.\-/]\d{1,2}\s*$", "", t)
+    t = re.sub(r"\s*\d{1,2}[.\-/]\d{1,2}\s*[-~–—]\s*\d{1,2}[.\-/]\d{1,2}\s*$", "", t)
+    t = re.sub(r"\s+(더현대\s*서울\s*현대백화점|더현대서울현대백화점|그라운드\s*시소\s*이스트|그라운드시소\s*이스트|서울시립미술관|국립현대미술관).*$", "", t)
+    t = re.sub(r"\s+", " ", t).strip(" -_·|")
+    return t or clean_text(title)
+
+
+def is_aggregate_or_listing_candidate(title: str, text: str = "", url: str = "", source_name: str = "") -> bool:
+    title_clean = clean_text(str(title or ""))
+    full = clean_text(" ".join([title_clean, str(text or ""), str(url or ""), str(source_name or "")])).lower()
+
+    if "#" in title_clean:
+        return True
+    if any(word.lower() in full for word in AGGREGATE_PAGE_WORDS):
+        return True
+
+    # "2026년 7월 더현대서울 팝업스토어 총정리" style pages
+    if re.search(r"20\d{2}\s*년\s*\d{1,2}\s*월", title_clean) and any(w in title_clean for w in ["팝업", "전시", "놀거리", "추천"]):
+        if not any(mark in title_clean for mark in [":", "：", "〈", "《", "POP UP", "IN ", " x ", " X "]):
+            return True
+
+    tokens = re.findall(r"[A-Za-z0-9]{2,}|[가-힣]{2,}", title_clean)
+    generic_hits = sum(1 for t in tokens if t in {"서울", "더현대", "여의도", "잠실", "성수", "팝업", "팝업스토어", "전시", "전시회", "놀거리", "추천", "총정리", "오픈"})
+    if len(tokens) >= 5 and generic_hits / max(1, len(tokens)) >= 0.55:
+        return True
+
+    return False
+
+
+def parse_iso_date_safe(value: Any) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(str(value)[:10]).replace(tzinfo=KST)
+    except Exception:
+        return None
+
+
+def item_full_text(item: dict[str, Any]) -> str:
+    return " ".join([
+        str(item.get("title", "")),
+        str(item.get("description", "")),
+        str(item.get("venue", "")),
+        str(item.get("area", "")),
+        str(item.get("region", "")),
+        " ".join(str(s) for s in item.get("signals", [])),
+    ])
+
+
+def is_current_or_undated_official_item(item: dict[str, Any], now_dt: datetime | None = None) -> bool:
+    now_dt = now_dt or datetime.now(KST)
+    today = now_dt.date()
+    start = parse_iso_date_safe(item.get("start") or item.get("startDate") or item.get("openDate"))
+    end = parse_iso_date_safe(item.get("end") or item.get("endDate") or item.get("closeDate"))
+
+    if end and end.date() < today:
+        return False
+    if start and start.date() > today:
+        return False
+    if is_upcoming_or_closed(item_full_text(item)):
+        return False
+    if is_review_or_search_url(str(item.get("sourceUrl", ""))):
+        return False
+    if is_aggregate_or_listing_candidate(item.get("title", ""), item_full_text(item), url=str(item.get("sourceUrl", "")), source_name=str(item.get("brand", ""))):
+        return False
+    return True
+
+
+GROUP_STOPWORDS = {
+    "서울", "수도권", "전시", "전시회", "팝업", "팝업스토어", "스토어", "행사", "후기", "방문",
+    "가볼만한곳", "가볼만한", "추천", "일정", "정보", "예약", "오픈", "무료", "관람", "개인전",
+    "기획전", "브랜드", "공간", "성수", "여의도", "한남", "청담", "삼청", "중구", "강남", "송파", "잠실",
+    "popup", "pop", "up", "store", "exhibition", "review", "seoul", "visit", "event", "official"
+}
+
+
+def group_tokens(text: str) -> set[str]:
+    normalized = clean_text(text).lower()
+    normalized = re.sub(r"https?://\S+", " ", normalized)
+    normalized = re.sub(r"[\[\](){},./|_<>:;!?\"'“”‘’·•#]", " ", normalized)
+    normalized = re.sub(r"\b(20\d{2})[.\-/년\s]*(\d{1,2})[.\-/월\s]*(\d{1,2})\s*(?:일)?\b", " ", normalized)
+    normalized = re.sub(r"\b\d{1,2}[.\-/월\s]+\d{1,2}\s*(?:일)?\b", " ", normalized)
+    tokens = re.findall(r"[a-z0-9]{2,}|[가-힣]{2,}", normalized)
+    return {t for t in tokens if t not in GROUP_STOPWORDS and len(t) >= 2 and not t.isdigit()}
+
+
+def token_jaccard(a: set[str], b: set[str]) -> float:
+    if not a or not b:
+        return 0.0
+    return len(a & b) / max(1, len(a | b))
+
+
+def compact_key_text(text: str) -> str:
+    return re.sub(r"[^0-9a-z가-힣]+", "", clean_text(text).lower())
+
+
+def title_similarity(a: str, b: str) -> float:
+    from difflib import SequenceMatcher
+    return SequenceMatcher(None, compact_key_text(a), compact_key_text(b)).ratio()
+
+
+def meaningful_venue(venue: str) -> str:
+    venue = clean_text(venue)
+    generic = {"서울", "서울/수도권", "수도권", "성수", "여의도", "한남", "청담", "삼청", "중구", "강남", "송파", "잠실", ""}
+    return "" if venue in generic else venue
+
+
+def candidate_match_score(item: dict[str, Any], c: Candidate) -> float:
+    item_title = str(item.get("title", ""))
+    title_sim = title_similarity(item_title, c.title)
+    jac = token_jaccard(
+        group_tokens(" ".join([item_title, str(item.get("venue", "")), str(item.get("area", ""))])),
+        group_tokens(" ".join([c.title, c.venue, c.area, c.brand])),
+    )
+    same_venue = bool(meaningful_venue(str(item.get("venue", ""))) and meaningful_venue(str(item.get("venue", ""))) == meaningful_venue(c.venue))
+    same_area = bool(item.get("area") and c.area and item.get("area") == c.area)
+    score = title_sim * 0.58 + jac * 0.34
+    if same_venue:
+        score += 0.18
+    if same_area:
+        score += 0.06
+    return score
+
+
+def local_overview_sentence(item: dict[str, Any]) -> str:
+    title = clean_display_title(str(item.get("title", "")))
+    venue = clean_text(str(item.get("venue", "")))
+    area = clean_text(str(item.get("area") or item.get("region") or "서울/수도권"))
+    category = classify_experience_type(item)
+    signals = " ".join(str(s) for s in item.get("signals", []))
+
+    if category == "전시/문화 경험":
+        if venue and venue not in {"서울", "서울/수도권", area}:
+            return f"{venue}에서 열리는 전시/문화 경험으로, 작품·공간 구성과 관람 동선을 함께 확인할 만해."
+        return f"{title}은 {area}권에서 열리는 전시/문화 경험으로, 작품과 관람 동선의 완성도를 확인할 만해."
+
+    if "굿즈" in signals or "무료" in signals or "체험" in signals:
+        return f"{title}은 {area}권에서 진행 중인 팝업/브랜드 경험으로, 굿즈·체험 요소와 방문 동선을 함께 볼 만해."
+
+    if venue and venue not in {"서울", "서울/수도권", area}:
+        return f"{venue}에서 진행 중인 팝업/브랜드 경험으로, 브랜드 연출과 현장 반응을 벤치마크할 만해."
+
+    return f"{title}은 {area}권에서 포착된 공간 경험으로, 현장 구성과 방문 반응을 함께 확인할 만해."
+
+
+def enrich_official_items_with_search_evidence(items: list[dict[str, Any]], search_candidates: list[Candidate]) -> list[dict[str, Any]]:
+    """Naver/Google/Web results raise DECIBEL only; they never become cards."""
+    for item in items:
+        if is_review_or_search_url(str(item.get("sourceUrl", ""))):
+            continue
+
+        matches = [c for c in search_candidates if candidate_match_score(item, c) >= 0.35]
+        if not matches:
+            item["owner"] = local_overview_sentence(item)
+            item["description"] = local_overview_sentence(item)
+            continue
+
+        evidence_count = int(item.get("evidenceCount", 1)) + sum(max(1, c.evidenceCount) for c in matches)
+        reaction_count = int(item.get("reactionCount", 0)) + sum(max(0, c.reactionCount) for c in matches)
+        text_blob = " ".join(
+            [item_full_text(item)] + [
+                " ".join([c.title, c.description, " ".join(c.signals), c.brand, c.area])
+                for c in matches
+            ]
+        )
+
+        base = max(35, min(86, int(item.get("noiz", 45)) - 4))
+        noiz, favor, signals, info_volume, confidence = text_score(
+            text_blob,
+            base=base,
+            evidence_count=evidence_count,
+            reaction_count=reaction_count,
+        )
+
+        item["noiz"] = noiz
+        item["favorability"] = favor
+        item["signals"] = signals[:4]
+        item["infoVolume"] = info_volume
+        item["evidenceCount"] = evidence_count
+        item["reactionCount"] = reaction_count
+        item["confidence"] = confidence
+        item["signalSummary"] = f"공개 노출 {evidence_count}건 · 후기성 신호 {reaction_count}건"
+        item["owner"] = local_overview_sentence(item)
+        item["description"] = local_overview_sentence(item)
+        item["evidenceSources"] = sorted({c.brand for c in matches if c.brand})[:4]
+
+    return items
+
+
+def finalize_items(items: list[dict[str, Any]], now_dt: datetime | None = None) -> list[dict[str, Any]]:
+    finalized = []
+    seen = set()
+
+    for item in items:
+        if not is_current_or_undated_official_item(item, now_dt=now_dt):
+            continue
+        item["title"] = clean_display_title(item.get("title", ""))
+        item["owner"] = local_overview_sentence(item)
+        item["description"] = local_overview_sentence(item)
+
+        key = candidate_key(item.get("title", ""))
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        finalized.append(item)
+
+    finalized.sort(key=lambda x: int(x.get("noiz", 0)), reverse=True)
+    finalized = finalized[:10]
+    for i, item in enumerate(finalized, 1):
+        item["rank"] = i
+    return finalized
+
+
 def merge_candidates(candidates: list[Candidate]) -> list[dict[str, Any]]:
     grouped: dict[str, list[Candidate]] = {}
     for c in candidates:
@@ -624,8 +878,10 @@ def merge_candidates(candidates: list[Candidate]) -> list[dict[str, Any]]:
         best["reactionCount"] = reaction_count
         best["confidence"] = confidence
         best["brand"] = " / ".join(source_labels[:2])
-        best["owner"] = f"공개 노출 {evidence_count}건 · 후기성 신호 {reaction_count}건"
-        best["description"] = make_description(best["title"], evidence_count, reaction_count, best.get("area", "서울/수도권"))
+        best["title"] = clean_display_title(best.get("title", ""))
+        best["signalSummary"] = f"공개 노출 {evidence_count}건 · 후기성 신호 {reaction_count}건"
+        best["owner"] = local_overview_sentence(best)
+        best["description"] = local_overview_sentence(best)
         if not best.get("start") or not best.get("end"):
             for g in group:
                 if g.start and not best.get("start"):
@@ -924,17 +1180,24 @@ def main() -> None:
     archive_payload(existing, now_dt=now_dt)
     sources = json.loads(SOURCES_PATH.read_text(encoding="utf-8"))
 
-    candidates: list[Candidate] = []
+    official_candidates: list[Candidate] = []
 
     for source in sources:
         print(f"[INFO] scanning source: {source['name']}")
-        candidates.extend(extract_candidates_from_source(source))
+        official_candidates.extend(extract_candidates_from_source(source))
 
-    print("[INFO] scanning free public search signals")
-    candidates.extend(discover_search_candidates())
+    print("[INFO] scanning free public search signals as evidence only")
+    search_candidates = discover_search_candidates()
 
-    merged_new = merge_candidates(candidates)
+    # Cards are official/source-page candidates only.
+    # Search/blog/news results are evidence signals only and never become primary cards.
+    merged_new = merge_candidates(official_candidates)
+    merged_new = enrich_official_items_with_search_evidence(merged_new, search_candidates)
+    merged_new = finalize_items(merged_new, now_dt=now_dt)
+
     items = merge_with_existing(merged_new, existing.get("items", []))
+    items = finalize_items(items, now_dt=now_dt)
+
     theme = existing.get("theme") or LEGACY_THEME
 
     payload = {
@@ -944,11 +1207,11 @@ def main() -> None:
         "weekly_read": make_weekly_read(items),
         "items": items,
         "creator": "이원준 시니어매니저",
-        "method_note": "AI 없이 무료 공개 소스, 검색 결과, 뉴스 RSS, 블로그/후기성 스니펫을 바탕으로 본 일간 신호 레이더야. 객관적 평점이라기보다는 지금 어디가 시끄러운지 읽는 용도야!",
+        "method_note": "AI 없이 공식/정보 페이지를 카드 기준으로 삼고, 공개 검색·뉴스·후기성 스니펫은 DECIBEL 반응 신호로만 반영하는 일간 CX 레이더야.",
     }
 
     DATA_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"[OK] wrote {DATA_PATH} with {len(items)} rankable items")
+    print(f"[OK] wrote {DATA_PATH} with {len(items)} rankable official/source-page items")
 
 
 if __name__ == "__main__":
