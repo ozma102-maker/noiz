@@ -20,6 +20,7 @@ DATA_DIR = ROOT / "data"
 DATA_PATH = DATA_DIR / "noiz-data.json"
 INVENTORY_PATH = DATA_DIR / "event-inventory.json"
 DRAFT_REVIEW_PATH = DATA_DIR / "noiz-draft-review.json"
+CURATION_SEED_PATH = DATA_DIR / "noiz-curation-seed.json"
 SOURCES_PATH = ROOT / "scripts" / "sources.json"
 ARCHIVE_INDEX_PATH = DATA_DIR / "noiz-archive-index.json"
 ARCHIVE_DIR = DATA_DIR / "archive"
@@ -651,6 +652,50 @@ def current_inventory_items(inventory: list[dict[str, Any]], now_dt: datetime) -
     return out
 
 
+
+def seed_inventory_items(now_dt: datetime) -> list[dict[str, Any]]:
+    """Load stable manually curated events as a hard safety net for dev automation."""
+    seed_payload = load_json(CURATION_SEED_PATH, {"items": []})
+    seed_items = []
+    for item in seed_payload.get("items", []):
+        if not isinstance(item, dict):
+            continue
+        copy = dict(item)
+        copy["seed"] = True
+        copy.setdefault("lastSeen", now_dt.isoformat(timespec="seconds"))
+        if is_current_or_week_event(copy, now_dt=now_dt):
+            seed_items.append(copy)
+    return seed_items
+
+
+def ensure_minimum_inventory(active_events: list[dict[str, Any]], now_dt: datetime, *, min_count: int = 8) -> tuple[list[dict[str, Any]], list[str]]:
+    """Fill active inventory from curated seed if Gemini/live crawl is too sparse."""
+    warnings: list[str] = []
+    out = list(active_events)
+    seen = {key(item.get("title", "")) for item in out}
+
+    if len(out) >= min_count:
+        return out, warnings
+
+    seed_items = seed_inventory_items(now_dt)
+    for item in seed_items:
+        k = key(item.get("title", ""))
+        if not k or k in seen:
+            continue
+        out.append(item)
+        seen.add(k)
+        if len(out) >= 10:
+            break
+
+    if len(active_events) < min_count:
+        warnings.append(
+            f"Active live inventory was sparse ({len(active_events)}). "
+            f"Filled to {len(out)} with curated seed fallback."
+        )
+
+    return out, warnings
+
+
 def gemini_final_curation(cards: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], str | None, list[str]]:
     warnings = []
     if not GEMINI_API_KEY or not cards:
@@ -791,8 +836,11 @@ def main() -> None:
 
     active_events = current_inventory_items(inventory_items, now_dt)
     draft_warnings = []
+    active_events, seed_warnings = ensure_minimum_inventory(active_events, now_dt, min_count=8)
+    draft_warnings.extend(seed_warnings)
+
     if len(active_events) < 8:
-        draft_warnings.append(f"Only {len(active_events)} active inventory events passed validation; publication still uses available inventory but needs review.")
+        draft_warnings.append(f"Only {len(active_events)} active inventory events passed validation after seed fallback.")
 
     pre_cards = []
     for event in active_events:
@@ -823,6 +871,7 @@ def main() -> None:
         "candidate_count": len(raw_candidates),
         "fresh_accepted_count": len(fresh_events),
         "final_card_count": len(cards),
+        "seed_fallback_available": CURATION_SEED_PATH.exists(),
         "warnings": draft_warnings,
         "rejected_examples": (pre_rejected + judged_rejected)[:40],
         "items": cards,

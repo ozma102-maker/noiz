@@ -217,3 +217,9 @@ Pipeline:
 5. Gemini performs final editorial curation for descriptions and weekly read
 6. hard validation rejects review/search/listing URLs and aggregate titles
 7. if fewer than 8 cards pass, `data/noiz-draft-review.json` is written and existing `data/noiz-data.json` is kept
+
+## v102 Gemini curator seed guard
+
+v102 fixes the sparse-output problem seen in v101.
+
+If live/Gemini-curated inventory returns too few active events, the updater fills the list from `data/noiz-curation-seed.json`, which is based on the manually curated weekly set. This keeps dev from publishing a 1–2 card page while still allowing Gemini to add newly accepted events into the inventory over time.
