@@ -170,4 +170,11 @@ NOIZ! is an AI-powered CX radar for tracking public signals around pop-ups, exhi
 
 ## Data grouping
 
-NOIZ! uses a free local grouping step during daily updates. Instead of requiring a paid AI API, the updater normalizes titles, venues, areas, and source snippets, then uses fuzzy matching and token overlap to merge obvious duplicate signals for the same real-world popup or exhibition. If this step fails, the updater falls back to the original title-key grouping.
+NOIZ! can use Gemini once per daily update to group duplicate search candidates and remove obvious noise pages before the existing DECIBEL scoring logic runs.
+
+Setup:
+1. Create a Gemini API key in Google AI Studio.
+2. Add it to GitHub repository secrets as `GEMINI_API_KEY`.
+3. The GitHub Action passes `GEMINI_API_KEY` and `GEMINI_MODEL=gemini-2.5-flash-lite` to `scripts/update_noiz.py`.
+
+If the key is missing, the free tier is unavailable, the rate limit is hit, or the API call fails, NOIZ! automatically falls back to the local free grouping method. Final ranking still uses the existing rule-based NOIZ scoring logic; Gemini only handles candidate grouping and obvious noise removal.

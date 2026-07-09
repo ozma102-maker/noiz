@@ -9,7 +9,8 @@ NOIZ updater — free MVP max mode.
 4. 전체 후보군에서 먼저 필터링한 뒤 NOIZ 점수순 Top 10을 만든다.
 
 주의
-- API key 없는 무료 MVP라서 검색 결과 HTML/RSS 구조 변경에 취약하다.
+- GEMINI_API_KEY가 있으면 매일 후보 그룹핑/노이즈 제거에 Gemini를 사용한다.
+- API 키가 없거나 Gemini 호출이 실패하면 무료 로컬 그룹핑으로 자동 폴백한다.
 - 네이버 플레이스/인스타그램 리뷰 전체 수집은 하지 않는다.
 - 결과는 "객관적 평점"이 아니라 공개 노출·후기성 신호 기반 레이더다.
 """
@@ -19,6 +20,7 @@ from __future__ import annotations
 import hashlib
 import html
 import json
+import os
 import random
 import re
 import time
@@ -39,6 +41,11 @@ THEME_HISTORY_PATH = ROOT / "data" / "noiz-theme-history.json"
 GROUPING_DEBUG_PATH = ROOT / "data" / "noiz-grouping-debug.json"
 SOURCES_PATH = ROOT / "scripts" / "sources.json"
 KST = timezone(timedelta(hours=9))
+
+# Optional daily AI grouping. Keep empty to use the free local fallback.
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash-lite").strip()
+GEMINI_ENDPOINT = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; NOIZBot/1.5; weekly-space-radar)",
@@ -675,6 +682,173 @@ def candidates_same_event(a: Candidate, b: Candidate) -> bool:
     return False
 
 
+
+def truncate_for_ai(text: str, limit: int = 220) -> str:
+    text = clean_text(text)
+    return text if len(text) <= limit else text[:limit].rstrip() + "…"
+
+
+def normalize_ai_groups(raw_groups: Any, candidates_len: int) -> list[list[int]] | None:
+    """Validate LLM group output and remove duplicate/out-of-range indices."""
+    if isinstance(raw_groups, dict):
+        raw_groups = raw_groups.get("groups")
+    if not isinstance(raw_groups, list):
+        return None
+
+    seen: set[int] = set()
+    groups: list[list[int]] = []
+    for raw_group in raw_groups:
+        if not isinstance(raw_group, list):
+            continue
+        group: list[int] = []
+        for value in raw_group:
+            try:
+                idx = int(value)
+            except Exception:
+                continue
+            if 0 <= idx < candidates_len and idx not in seen:
+                seen.add(idx)
+                group.append(idx)
+        if group:
+            groups.append(group)
+
+    # If the model dropped almost everything, treat it as unreliable and fall back.
+    if candidates_len >= 20 and len(seen) < max(5, int(candidates_len * 0.18)):
+        return None
+
+    # Very large groups are often over-merged. Keep the pipeline safe by falling back.
+    if any(len(group) > 18 for group in groups):
+        return None
+
+    return groups
+
+
+def extract_json_from_model_text(text: str) -> Any:
+    text = clean_text(text)
+    text = text.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+    try:
+        return json.loads(text)
+    except Exception:
+        pass
+
+    # Last-resort extraction if a model wraps JSON with a sentence.
+    m = re.search(r"(\{[\s\S]*\}|\[[\s\S]*\])", text)
+    if not m:
+        raise ValueError("No JSON found in model response")
+    return json.loads(m.group(1))
+
+
+def write_grouping_debug(method: str, candidates: list[Candidate], groups: list[list[Candidate]], dropped: int = 0) -> None:
+    try:
+        debug = {
+            "method": method,
+            "model": GEMINI_MODEL if method.startswith("gemini") else "",
+            "raw_count": len(candidates),
+            "group_count": len(groups),
+            "dropped_as_noise": dropped,
+            "groups": [
+                {
+                    "size": len(group),
+                    "representative": group[0].title,
+                    "venue": group[0].venue,
+                    "items": [
+                        {
+                            "title": item.title,
+                            "venue": item.venue,
+                            "area": item.area,
+                            "brand": item.brand,
+                            "noiz": item.noiz,
+                        }
+                        for item in group[:8]
+                    ],
+                }
+                for group in groups[:80]
+            ],
+        }
+        GROUPING_DEBUG_PATH.write_text(json.dumps(debug, ensure_ascii=False, indent=2), encoding="utf-8")
+    except Exception as e:
+        print(f"[WARN] grouping debug write failed: {e}")
+
+
+def gemini_group_candidates(candidates: list[Candidate]) -> list[list[Candidate]] | None:
+    """Use Gemini once per daily update to group same-event candidates and remove obvious noise.
+
+    This makes the live updater AI-assisted, but keeps ranking deterministic:
+    Gemini only groups duplicate search results and drops clear non-event pages.
+    NOIZ scoring/ranking still runs through the existing rule-based logic.
+    """
+    if not GEMINI_API_KEY or not candidates:
+        return None
+
+    brief = [
+        {
+            "i": i,
+            "title": truncate_for_ai(c.title, 120),
+            "venue": truncate_for_ai(c.venue, 60),
+            "area": truncate_for_ai(c.area, 40),
+            "source": truncate_for_ai(c.brand or c.sourceLabel, 50),
+            "description": truncate_for_ai(c.description, 180),
+        }
+        for i, c in enumerate(candidates)
+    ]
+
+    prompt = (
+        "You are cleaning search results for NOIZ!, a CX/space planning radar in Korea.\n"
+        "Task: group search-result candidates that refer to the same real-world pop-up, exhibition, branded space, "
+        "retail activation, or cultural experience. Also exclude obvious noise pages.\n\n"
+        "Rules:\n"
+        "1. Return JSON only, no markdown.\n"
+        "2. Output shape: {\"groups\": [[0,4,12],[1],[2,7]]}.\n"
+        "3. Include only original integer indices.\n"
+        "4. Exclude login pages, generic listing pages, category pages, unrelated news, and results that are not a real event/place.\n"
+        "5. Be conservative: do not merge different events just because they are in the same area.\n"
+        "6. If two candidates have clearly different specific venues and are not the same titled event, keep them separate.\n"
+        "7. Same event can be grouped even when blog-style titles differ, if title, venue, brand, description, or dates indicate the same place/event.\n\n"
+        f"Candidates JSON:\n{json.dumps(brief, ensure_ascii=False)}"
+    )
+
+    try:
+        res = requests.post(
+            GEMINI_ENDPOINT,
+            params={"key": GEMINI_API_KEY},
+            headers={
+                "x-goog-api-key": GEMINI_API_KEY,
+                "Content-Type": "application/json",
+            },
+            json={
+                "contents": [
+                    {
+                        "role": "user",
+                        "parts": [{"text": prompt}],
+                    }
+                ],
+                "generationConfig": {
+                    "temperature": 0.1,
+                    "maxOutputTokens": 4096,
+                    "responseMimeType": "application/json",
+                },
+            },
+            timeout=70,
+        )
+        res.raise_for_status()
+        payload = res.json()
+        parts = payload["candidates"][0]["content"]["parts"]
+        response_text = "\n".join(part.get("text", "") for part in parts).strip()
+        raw = extract_json_from_model_text(response_text)
+        index_groups = normalize_ai_groups(raw, len(candidates))
+        if index_groups is None:
+            raise ValueError("Gemini grouping output failed validation")
+
+        groups = [[candidates[i] for i in group] for group in index_groups]
+        groups = [group for group in groups if group]
+        write_grouping_debug("gemini_api", candidates, groups, dropped=len(candidates) - sum(len(g) for g in groups))
+        print(f"[INFO] Gemini grouping: raw={len(candidates)} groups={len(groups)}")
+        return groups
+    except Exception as e:
+        print(f"[WARN] Gemini grouping failed, fallback to free local grouping: {e}")
+        return None
+
+
 def free_group_candidates(candidates: list[Candidate]) -> list[list[Candidate]]:
     """Free local alternative to API-based semantic grouping.
 
@@ -716,48 +890,24 @@ def free_group_candidates(candidates: list[Candidate]) -> list[list[Candidate]]:
         else:
             groups.append([cand])
 
-    # Persist lightweight debug info for checking over/under-merge behavior.
-    try:
-        debug = {
-            "method": "free_local_semantic_grouping",
-            "raw_count": len(candidates),
-            "usable_count": len(usable),
-            "group_count": len(groups),
-            "dropped_as_noise": len(candidates) - len(usable),
-            "groups": [
-                {
-                    "size": len(group),
-                    "representative": group[0].title,
-                    "venue": group[0].venue,
-                    "items": [
-                        {
-                            "title": item.title,
-                            "venue": item.venue,
-                            "area": item.area,
-                            "brand": item.brand,
-                            "noiz": item.noiz,
-                        }
-                        for item in group[:8]
-                    ],
-                }
-                for group in groups[:80]
-            ],
-        }
-        GROUPING_DEBUG_PATH.write_text(json.dumps(debug, ensure_ascii=False, indent=2), encoding="utf-8")
-    except Exception as e:
-        print(f"[WARN] grouping debug write failed: {e}")
-
+    write_grouping_debug(
+        "free_local_semantic_grouping",
+        candidates,
+        groups,
+        dropped=len(candidates) - len(usable),
+    )
     print(f"[INFO] free grouping: raw={len(candidates)} usable={len(usable)} groups={len(groups)}")
     return groups
 
 
 def merge_candidates(candidates: list[Candidate]) -> list[dict[str, Any]]:
-    # Free local semantic grouping: no external AI API key required.
-    # Falls back to title-key grouping only if the local grouping stage itself fails.
+    # Gemini is optional. If no key is configured or the API fails, use the free local fallback.
     try:
-        groups = free_group_candidates(candidates)
+        groups = gemini_group_candidates(candidates)
+        if groups is None:
+            groups = free_group_candidates(candidates)
     except Exception as e:
-        print(f"[WARN] free grouping failed, fallback to candidate_key grouping: {e}")
+        print(f"[WARN] grouping failed, fallback to candidate_key grouping: {e}")
         grouped: dict[str, list[Candidate]] = {}
         for c in candidates:
             key = candidate_key(c.title)
