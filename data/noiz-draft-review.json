@@ -1,7 +1,446 @@
 {
   "site": "NOIZ",
-  "updated_at": "2026-07-09T13:00:00+09:00",
+  "updated_at": "2026-07-09T15:57:25+09:00",
   "published": true,
-  "notes": "Initial draft review placeholder for Gemini curator pipeline.",
-  "items": []
+  "active_inventory_count": 94,
+  "candidate_count": 86,
+  "fresh_accepted_count": 86,
+  "final_card_count": 10,
+  "seed_fallback_available": true,
+  "warnings": [],
+  "rejected_examples": [
+    {
+      "title": "🚨 팝가픽! 놓치면 후회해요",
+      "url": "https://popga.co.kr/content/magazine/list?ids=343,350,352,353&title=%F0%9F%9A%A8%20%ED%8C%9D%EA%B0%80%ED%94%BD!%20%EB%86%93%EC%B9%98%EB%A9%B4%20%ED%9B%84%ED%9A%8C%ED%95%B4%EC%9A%94",
+      "sourceName": "Popga Magazine",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "매거진 보러가기",
+      "url": "https://popga.co.kr/content/magazine/343",
+      "sourceName": "Popga Magazine",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "매거진 보러가기",
+      "url": "https://popga.co.kr/content/magazine/350",
+      "sourceName": "Popga Magazine",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "매거진 보러가기",
+      "url": "https://popga.co.kr/content/magazine/352",
+      "sourceName": "Popga Magazine",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "매거진 보러가기",
+      "url": "https://popga.co.kr/content/magazine/353",
+      "sourceName": "Popga Magazine",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "🛒 지역별 팝업모음집",
+      "url": "https://popga.co.kr/content/magazine/list?ids=337,336,335,334&title=%F0%9F%9B%92%20%EC%A7%80%EC%97%AD%EB%B3%84%20%ED%8C%9D%EC%97%85%EB%AA%A8%EC%9D%8C%EC%A7%91",
+      "sourceName": "Popga Magazine",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "2026년 7월 더현대 서울 팝업스토어 총정리 | 여의도 더현대 서울 놀거리 가볼만한곳 일정 팝업스토어 모음 2026.06.22",
+      "url": "https://popga.co.kr/content/magazine/337",
+      "sourceName": "Popga Magazine",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "2026년 7월 용산 팝업스토어 총정리 | 용산 아이파크몰, 용산 가볼만한곳 추천 팝업스토어 모음 2026.06.22",
+      "url": "https://popga.co.kr/content/magazine/336",
+      "sourceName": "Popga Magazine",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "2026년 7월 홍대 팝업스토어 총정리 | ak플라자 팝업 가볼만한 곳, 홍대 애니 팝업모음 팝업스토어 모음 2026.06.22",
+      "url": "https://popga.co.kr/content/magazine/335",
+      "sourceName": "Popga Magazine",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "2026년 7월 성수 팝업스토어 총정리 | 성수 가볼만한곳 성수팝업 일정 모음 팝업스토어 모음 2026.06.22",
+      "url": "https://popga.co.kr/content/magazine/334",
+      "sourceName": "Popga Magazine",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "상세 검색",
+      "url": "https://popply.co.kr/popup",
+      "sourceName": "Popply",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "회원가입",
+      "url": "https://popply.co.kr/member/signup",
+      "sourceName": "Popply",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "로그인",
+      "url": "https://popply.co.kr/member/login",
+      "sourceName": "Popply",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "마이페이지",
+      "url": "https://popply.co.kr/member",
+      "sourceName": "Popply",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "캘린더",
+      "url": "https://popply.co.kr/popupcalendar",
+      "sourceName": "Popply",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "관심팝업",
+      "url": "https://popply.co.kr/user/save-store",
+      "sourceName": "Popply",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "Now on Central 26.03.27(금) ~ 26.08.30(일) #F9423A 맥스 시덴토프 개인전",
+      "url": "https://groundseesaw.co.kr/product/detail.html?product_no=1323&cate_no=1&display_group=2",
+      "sourceName": "GroundSeesaw",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "Now on Hannam 26.04.30(목) ~ 26.09.27(일) #137CF4 성률 기획전 여름을 닮은 우리",
+      "url": "https://groundseesaw.co.kr/product/detail.html?product_no=1327&cate_no=1&display_group=2",
+      "sourceName": "GroundSeesaw",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "Now on Central 26.03.27(금) ~ 26.08.30(일) #F9423A [문화가 있는 날] 맥스 시덴토프 개인전",
+      "url": "https://groundseesaw.co.kr/product/detail.html?product_no=1325&cate_no=1&display_group=2",
+      "sourceName": "GroundSeesaw",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "Now on Hannam 26.04.30(목) ~ 26.09.27(일) #137CF4 [문화가 있는 날] 성률 기획전 여름을 닮은 우리",
+      "url": "https://groundseesaw.co.kr/product/detail.html?product_no=1329&cate_no=1&display_group=2",
+      "sourceName": "GroundSeesaw",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "작가가 추천하는 전시회 현업 작가가 추천하는 전시회에는 어떤 것이 있을까요?",
+      "url": "https://art-map.co.kr/nows/28",
+      "sourceName": "ARTMAP",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "심미안을 채워줄 다양한 전시회 전시회 입문자에게 추천하는 여러 장르의 전시회",
+      "url": "https://art-map.co.kr/nows/81",
+      "sourceName": "ARTMAP",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "인생샷 찍기 좋은 전시회 핫플 전시회 인증샷은 필수!",
+      "url": "https://art-map.co.kr/nows/10",
+      "sourceName": "ARTMAP",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "데이트하기 좋은 전시회 모음 지금 제일 핫한 전시회만 모아왔어요",
+      "url": "https://art-map.co.kr/nows/29",
+      "sourceName": "ARTMAP",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "어린이를 위한 전시회 모음 어린이와 함께 가기 좋은 전시회 모음",
+      "url": "https://art-map.co.kr/nows/20",
+      "sourceName": "ARTMAP",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "전국의 특이한 갤러리 모음 교회부터 여관까지, 두 눈 휘둥그레지는 전시관들",
+      "url": "https://art-map.co.kr/nows/9",
+      "sourceName": "ARTMAP",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "경기/인천 추천 전시회 지금 경기/인천에서는 어떤 전시가 열리고 있을까요?",
+      "url": "https://art-map.co.kr/nows/11",
+      "sourceName": "ARTMAP",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "국립현대미술관 전시회 모음 지금 국립현대미술관에서 만날 수 있는 전시는?",
+      "url": "https://art-map.co.kr/nows/8",
+      "sourceName": "ARTMAP",
+      "reason": "aggregate/listing/review-like title"
+    }
+  ],
+  "items": [
+    {
+      "rank": 1,
+      "brand": "빤쮸토끼",
+      "title": "빤쮸토끼 POP UP in 더현대 서울",
+      "owner": "더현대 서울 지하 팝업존에서 진행되는 캐릭터 IP 기반 캔디 공장 콘셉트 팝업",
+      "venue": "더현대 서울",
+      "area": "여의도",
+      "region": "영등포구",
+      "mapQuery": "빤쮸토끼 POP UP in 더현대 서울 더현대 서울 여의도",
+      "sourceUrl": "https://x.com/opanchu_kr/status/2071519044239507787",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 99,
+      "favorability": 72,
+      "description": "더현대 서울 지하 팝업존에서 진행되는 캐릭터 IP 기반 캔디 공장 콘셉트 팝업",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응",
+        "팬덤/굿즈"
+      ],
+      "category": "popup_brand",
+      "start": "2026-07-02",
+      "end": "2026-07-15",
+      "evidenceCount": 9,
+      "reactionCount": 3,
+      "confidence": "high",
+      "seedFallback": true
+    },
+    {
+      "rank": 2,
+      "brand": "T1 × SK텔레콤",
+      "title": "암행천문 : 별을 헤다",
+      "owner": "T1의 우승 서사와 팬덤형 체험을 T Factory 성수 공간에 묶은 대형 브랜드 전시",
+      "venue": "T Factory 성수",
+      "area": "성수",
+      "region": "성동구",
+      "mapQuery": "암행천문 : 별을 헤다 T Factory 성수 성수",
+      "sourceUrl": "https://news.sktelecom.com/227286",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 96,
+      "favorability": 72,
+      "description": "T1의 우승 서사와 팬덤형 체험을 T Factory 성수 공간에 묶은 대형 브랜드 전시",
+      "signals": [
+        "공식/정보 출처",
+        "팬덤/굿즈"
+      ],
+      "category": "popup_brand",
+      "start": "2026-07-02",
+      "end": "2026-09-13",
+      "evidenceCount": 9,
+      "reactionCount": 0,
+      "confidence": "high",
+      "seedFallback": true
+    },
+    {
+      "rank": 3,
+      "brand": "ARTMAP",
+      "title": "GALLERY",
+      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "GALLERY 서울/수도권 서울/수도권",
+      "sourceUrl": "https://art-map.co.kr/gallery/new_list.php",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 94,
+      "favorability": 68,
+      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 3,
+      "confidence": "high",
+      "seedFallback": false
+    },
+    {
+      "rank": 4,
+      "brand": "MMCA Exhibitions",
+      "title": "관람·참여",
+      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "관람·참여 서울/수도권 서울/수도권",
+      "sourceUrl": "javascript:fn_menuChange('/visitingInfo/seoulInfo.do', '01A000100000000', '1');",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 91,
+      "favorability": 70,
+      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응",
+        "무료/체험"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 2,
+      "confidence": "high",
+      "seedFallback": false
+    },
+    {
+      "rank": 5,
+      "brand": "Ddoing Exhibition Schedule",
+      "title": "전시일정",
+      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "전시일정 서울/수도권 서울/수도권",
+      "sourceUrl": "https://ddoing.co.kr/ddoing_exhibition_schedule",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 89,
+      "favorability": 68,
+      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 2,
+      "confidence": "high",
+      "seedFallback": false
+    },
+    {
+      "rank": 6,
+      "brand": "MMCA Exhibitions",
+      "title": "어린이미술관",
+      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "어린이미술관 서울/수도권 서울/수도권",
+      "sourceUrl": "javascript:fn_menuChange('/visitingInfo/childArtMuseumInfo.do', '01A000107000000', '2');",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 88,
+      "favorability": 72,
+      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응",
+        "무료/체험"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 1,
+      "confidence": "high",
+      "seedFallback": false
+    },
+    {
+      "rank": 7,
+      "brand": "Ddoing Exhibition Schedule",
+      "title": "유영국: 산은 내 안에 있다 서울시립미술관 서소문 본관 ~26.10.25",
+      "owner": "서울시립미술관에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울시립미술관",
+      "area": "중구",
+      "region": "중구",
+      "mapQuery": "유영국: 산은 내 안에 있다 서울시립미술관 서소문 본관 ~26.10.25 서울시립미술관 중구",
+      "sourceUrl": "https://naver.me/GPdQtB11",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 88,
+      "favorability": 72,
+      "description": "서울시립미술관에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 8,
+      "reactionCount": 1,
+      "confidence": "high",
+      "seedFallback": false
+    },
+    {
+      "rank": 8,
+      "brand": "서울시립미술관",
+      "title": "유영국: 산은 내 안에 있다",
+      "owner": "서울시립미술관 서소문본관에서 열리는 한국 추상미술 거장 유영국의 대형 회고전",
+      "venue": "서울시립미술관 서소문본관",
+      "area": "중구",
+      "region": "중구",
+      "mapQuery": "유영국: 산은 내 안에 있다 서울시립미술관 서소문본관 중구",
+      "sourceUrl": "https://culture.seoul.go.kr/culture/culture/cultureEvent/view.do?cultcode=157686&menuNo=200110",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 87,
+      "favorability": 72,
+      "description": "서울시립미술관 서소문본관에서 열리는 한국 추상미술 거장 유영국의 대형 회고전",
+      "signals": [
+        "공식/정보 출처",
+        "공간 경험"
+      ],
+      "category": "exhibition_culture",
+      "start": "2026-05-19",
+      "end": "2026-10-25",
+      "evidenceCount": 9,
+      "reactionCount": 0,
+      "confidence": "high",
+      "seedFallback": true
+    },
+    {
+      "rank": 9,
+      "brand": "ARTMAP",
+      "title": "ARTIST",
+      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "ARTIST 서울/수도권 서울/수도권",
+      "sourceUrl": "https://art-map.co.kr/artists/list.php",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 86,
+      "favorability": 70,
+      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 1,
+      "confidence": "high",
+      "seedFallback": false
+    },
+    {
+      "rank": 10,
+      "brand": "MMCA Exhibitions",
+      "title": "미술관 소개",
+      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "미술관 소개 서울/수도권 서울/수도권",
+      "sourceUrl": "https://www.mmca.go.kr/about/introduction.do",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 86,
+      "favorability": 70,
+      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 1,
+      "confidence": "high",
+      "seedFallback": false
+    }
+  ]
 }
