@@ -178,3 +178,7 @@ Setup:
 3. The GitHub Action passes `GEMINI_API_KEY` and `GEMINI_MODEL=gemini-2.5-flash-lite` to `scripts/update_noiz.py`.
 
 If the key is missing, the free tier is unavailable, the rate limit is hit, or the API call fails, NOIZ! automatically falls back to the local free grouping method. Final ranking still uses the existing rule-based NOIZ scoring logic; Gemini only handles candidate grouping and obvious noise removal.
+
+### Troubleshooting
+
+If the GitHub Action shows `TypeError: sequence item 0: expected str instance, list found`, update to v89 or later. This was caused by a join bug in the candidate merge stage after grouping. v89 also chunks Gemini grouping requests so large daily candidate pools can still be processed with fallback safety.

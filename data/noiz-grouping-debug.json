@@ -1,0 +1,37 @@
+{
+  "method": "free_local_semantic_grouping",
+  "model": "",
+  "raw_count": 2,
+  "group_count": 2,
+  "dropped_as_noise": 0,
+  "groups": [
+    {
+      "size": 1,
+      "representative": "성수동 신상 팝업 방문기",
+      "venue": "성수",
+      "items": [
+        {
+          "title": "성수동 신상 팝업 방문기",
+          "venue": "성수",
+          "area": "성수",
+          "brand": "google_news",
+          "noiz": 62
+        }
+      ]
+    },
+    {
+      "size": 1,
+      "representative": "성수 팝업 다녀왔어요",
+      "venue": "성수",
+      "items": [
+        {
+          "title": "성수 팝업 다녀왔어요",
+          "venue": "성수",
+          "area": "성수",
+          "brand": "naver_view",
+          "noiz": 60
+        }
+      ]
+    }
+  ]
+}

@@ -690,8 +690,12 @@ def truncate_for_ai(text: str, limit: int = 220) -> str:
     return text if len(text) <= limit else text[:limit].rstrip() + "…"
 
 
-def normalize_ai_groups(raw_groups: Any, candidates_len: int) -> list[list[int]] | None:
-    """Validate LLM group output and remove duplicate/out-of-range indices."""
+def normalize_ai_groups(raw_groups: Any, candidates_len: int, *, require_coverage: bool = False) -> list[list[int]] | None:
+    """Validate LLM group output and remove duplicate/out-of-range indices.
+
+    By default this is lenient because the model is allowed to exclude noise pages.
+    Missing non-noise candidates are handled by the caller as singleton groups.
+    """
     if isinstance(raw_groups, dict):
         raw_groups = raw_groups.get("groups")
     if not isinstance(raw_groups, list):
@@ -712,18 +716,19 @@ def normalize_ai_groups(raw_groups: Any, candidates_len: int) -> list[list[int]]
                 seen.add(idx)
                 group.append(idx)
         if group:
-            groups.append(group)
+            # Very large groups usually mean over-merging. Keep them as singles.
+            if len(group) > 18:
+                groups.extend([[idx] for idx in group])
+            else:
+                groups.append(group)
 
-    # If the model dropped almost everything, treat it as unreliable and fall back.
-    if candidates_len >= 20 and len(seen) < max(5, int(candidates_len * 0.18)):
+    if not groups:
         return None
 
-    # Very large groups are often over-merged. Keep the pipeline safe by falling back.
-    if any(len(group) > 18 for group in groups):
+    if require_coverage and candidates_len >= 20 and len(seen) < max(5, int(candidates_len * 0.18)):
         return None
 
     return groups
-
 
 def extract_json_from_model_text(text: str) -> Any:
     text = clean_text(text)
@@ -772,6 +777,53 @@ def write_grouping_debug(method: str, candidates: list[Candidate], groups: list[
         print(f"[WARN] grouping debug write failed: {e}")
 
 
+def request_gemini_group_indices(brief: list[dict[str, Any]], *, offset: int = 0) -> list[list[int]] | None:
+    prompt = (
+        "You are cleaning search results for NOIZ!, a CX/space planning radar in Korea.\n"
+        "Task: group search-result candidates that refer to the same real-world pop-up, exhibition, branded space, "
+        "retail activation, or cultural experience. Also exclude obvious noise pages.\n\n"
+        "Rules:\n"
+        "1. Return JSON only, no markdown.\n"
+        "2. Output shape: {\"groups\": [[0,4,12],[1],[2,7]]}.\n"
+        "3. Use the local integer indices shown in the data.\n"
+        "4. Exclude login pages, generic listing pages, category pages, unrelated news, and results that are not a real event/place.\n"
+        "5. Be conservative: do not merge different events just because they are in the same area.\n"
+        "6. If two candidates have clearly different specific venues and are not the same titled event, keep them separate.\n"
+        "7. Same event can be grouped even when blog-style titles differ, if title, venue, brand, description, or dates indicate the same place/event.\n"
+        "8. Include valid but uncertain candidates as singleton groups.\n\n"
+        f"Candidates JSON:\n{json.dumps(brief, ensure_ascii=False)}"
+    )
+
+    res = requests.post(
+        GEMINI_ENDPOINT,
+        params={"key": GEMINI_API_KEY},
+        headers={
+            "x-goog-api-key": GEMINI_API_KEY,
+            "Content-Type": "application/json",
+        },
+        json={
+            "contents": [
+                {
+                    "role": "user",
+                    "parts": [{"text": prompt}],
+                }
+            ],
+            "generationConfig": {
+                "temperature": 0.0,
+                "maxOutputTokens": 8192,
+                "responseMimeType": "application/json",
+            },
+        },
+        timeout=70,
+    )
+    res.raise_for_status()
+    payload = res.json()
+    parts = payload["candidates"][0]["content"]["parts"]
+    response_text = "\n".join(part.get("text", "") for part in parts).strip()
+    raw = extract_json_from_model_text(response_text)
+    return normalize_ai_groups(raw, len(brief), require_coverage=False)
+
+
 def gemini_group_candidates(candidates: list[Candidate]) -> list[list[Candidate]] | None:
     """Use Gemini once per daily update to group same-event candidates and remove obvious noise.
 
@@ -782,74 +834,68 @@ def gemini_group_candidates(candidates: list[Candidate]) -> list[list[Candidate]
     if not GEMINI_API_KEY or not candidates:
         return None
 
-    brief = [
-        {
-            "i": i,
-            "title": truncate_for_ai(c.title, 120),
-            "venue": truncate_for_ai(c.venue, 60),
-            "area": truncate_for_ai(c.area, 40),
-            "source": truncate_for_ai(c.brand or c.sourceLabel, 50),
-            "description": truncate_for_ai(c.description, 180),
-        }
-        for i, c in enumerate(candidates)
-    ]
-
-    prompt = (
-        "You are cleaning search results for NOIZ!, a CX/space planning radar in Korea.\n"
-        "Task: group search-result candidates that refer to the same real-world pop-up, exhibition, branded space, "
-        "retail activation, or cultural experience. Also exclude obvious noise pages.\n\n"
-        "Rules:\n"
-        "1. Return JSON only, no markdown.\n"
-        "2. Output shape: {\"groups\": [[0,4,12],[1],[2,7]]}.\n"
-        "3. Include only original integer indices.\n"
-        "4. Exclude login pages, generic listing pages, category pages, unrelated news, and results that are not a real event/place.\n"
-        "5. Be conservative: do not merge different events just because they are in the same area.\n"
-        "6. If two candidates have clearly different specific venues and are not the same titled event, keep them separate.\n"
-        "7. Same event can be grouped even when blog-style titles differ, if title, venue, brand, description, or dates indicate the same place/event.\n\n"
-        f"Candidates JSON:\n{json.dumps(brief, ensure_ascii=False)}"
-    )
-
     try:
-        res = requests.post(
-            GEMINI_ENDPOINT,
-            params={"key": GEMINI_API_KEY},
-            headers={
-                "x-goog-api-key": GEMINI_API_KEY,
-                "Content-Type": "application/json",
-            },
-            json={
-                "contents": [
-                    {
-                        "role": "user",
-                        "parts": [{"text": prompt}],
-                    }
-                ],
-                "generationConfig": {
-                    "temperature": 0.1,
-                    "maxOutputTokens": 4096,
-                    "responseMimeType": "application/json",
-                },
-            },
-            timeout=70,
-        )
-        res.raise_for_status()
-        payload = res.json()
-        parts = payload["candidates"][0]["content"]["parts"]
-        response_text = "\n".join(part.get("text", "") for part in parts).strip()
-        raw = extract_json_from_model_text(response_text)
-        index_groups = normalize_ai_groups(raw, len(candidates))
-        if index_groups is None:
-            raise ValueError("Gemini grouping output failed validation")
+        chunk_size = 80
+        all_index_groups: list[list[int]] = []
+        used_global_indices: set[int] = set()
 
-        groups = [[candidates[i] for i in group] for group in index_groups]
+        for start_idx in range(0, len(candidates), chunk_size):
+            chunk = candidates[start_idx:start_idx + chunk_size]
+            brief = [
+                {
+                    "i": local_i,
+                    "title": truncate_for_ai(c.title, 110),
+                    "venue": truncate_for_ai(c.venue, 55),
+                    "area": truncate_for_ai(c.area, 35),
+                    "source": truncate_for_ai(c.brand or c.sourceLabel, 45),
+                    "description": truncate_for_ai(c.description, 140),
+                }
+                for local_i, c in enumerate(chunk)
+            ]
+
+            try:
+                local_groups = request_gemini_group_indices(brief, offset=start_idx)
+            except Exception as chunk_error:
+                print(f"[WARN] Gemini chunk failed at {start_idx}, using local singles for this chunk: {chunk_error}")
+                local_groups = None
+
+            if local_groups:
+                for group in local_groups:
+                    global_group = []
+                    for local_i in group:
+                        global_i = start_idx + local_i
+                        if 0 <= global_i < len(candidates) and global_i not in used_global_indices:
+                            used_global_indices.add(global_i)
+                            global_group.append(global_i)
+                    if global_group:
+                        all_index_groups.append(global_group)
+
+            # Add missing non-noise candidates as singleton groups.
+            for local_i, cand in enumerate(chunk):
+                global_i = start_idx + local_i
+                if global_i in used_global_indices:
+                    continue
+                if not looks_like_noise_candidate(cand):
+                    used_global_indices.add(global_i)
+                    all_index_groups.append([global_i])
+
+        if not all_index_groups:
+            raise ValueError("Gemini returned no usable groups")
+
+        groups = [[candidates[i] for i in group] for group in all_index_groups]
         groups = [group for group in groups if group]
-        write_grouping_debug("gemini_api", candidates, groups, dropped=len(candidates) - sum(len(g) for g in groups))
+
+        write_grouping_debug(
+            "gemini_api_chunked",
+            candidates,
+            groups,
+            dropped=len(candidates) - sum(len(g) for g in groups),
+        )
         print(f"[INFO] Gemini grouping: raw={len(candidates)} groups={len(groups)}")
         return groups
     except Exception as e:
         print(f"[WARN] Gemini grouping failed, fallback to free local grouping: {e}")
         return None
-
 
 def free_group_candidates(candidates: list[Candidate]) -> list[list[Candidate]]:
     """Free local alternative to API-based semantic grouping.
@@ -924,7 +970,13 @@ def merge_candidates(candidates: list[Candidate]) -> list[dict[str, Any]]:
         evidence_count = sum(max(1, g.evidenceCount) for g in group)
         reaction_count = sum(max(0, g.reactionCount) for g in group)
         text_blob = " ".join(
-            [g.title, g.description, " ".join(g.signals), g.brand, g.area]
+            " ".join([
+                str(g.title or ""),
+                str(g.description or ""),
+                " ".join(str(s) for s in (g.signals or [])),
+                str(g.brand or ""),
+                str(g.area or ""),
+            ])
             for g in group
         )
         base = max(g.noiz for g in group) - 10
