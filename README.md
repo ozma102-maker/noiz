@@ -194,3 +194,13 @@ v99 keeps the no-AI daily update approach but fixes the main quality issue:
 - blog/search/news titles cannot become cards
 - roundup/listing pages such as "총정리", "놀거리", "추천", "모음" are excluded as primary cards
 - card owner/description are experience overview copy, not signal-count system text
+
+## v100 stable seed fallback
+
+v100 keeps the no-AI official-card pipeline from v99, but adds a static stable seed fallback.
+
+Why:
+- v99 fixed the Naver/Google card problem, but it could become too strict and leave only one card.
+- v100 uses live official/source-page crawl first.
+- If the live crawl returns too few current cards, it fills the remaining slots from the recovered pre-Gemini stable data.
+- Seed fallback cards are still filtered by dates and search/review URL rules.

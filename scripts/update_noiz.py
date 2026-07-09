@@ -33,6 +33,7 @@ from bs4 import BeautifulSoup
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "data" / "noiz-data.json"
+SEED_DATA_PATH = ROOT / "data" / "noiz-seed-stable.json"
 ARCHIVE_DIR = ROOT / "data" / "archive"
 ARCHIVE_INDEX_PATH = ROOT / "data" / "noiz-archive-index.json"
 THEME_HISTORY_PATH = ROOT / "data" / "noiz-theme-history.json"
@@ -917,6 +918,63 @@ def is_rankable_item(item: dict[str, Any]) -> bool:
     return True
 
 
+
+def load_seed_payload() -> dict[str, Any]:
+    """Static recovery seed used only when a live official crawl is too thin.
+
+    This prevents a single-item page when many source pages are temporarily unreachable
+    or filtered too aggressively. The seed is still filtered by current/open dates before use.
+    """
+    if not SEED_DATA_PATH.exists():
+        return {}
+    try:
+        return json.loads(SEED_DATA_PATH.read_text(encoding="utf-8"))
+    except Exception as e:
+        print(f"[WARN] seed load failed: {e}")
+        return {}
+
+
+def supplement_with_seed_items(items: list[dict[str, Any]], seed_items: list[dict[str, Any]], *, now_dt: datetime | None = None, min_count: int = 8) -> list[dict[str, Any]]:
+    """Fill the page with stable pre-Gemini cards if live crawl is too sparse.
+
+    Seed items are not used to override live items. They only fill gaps, and must pass
+    the same current/open and non-search-card guardrails.
+    """
+    if len(items) >= min_count:
+        return items
+
+    out = list(items)
+    seen = {candidate_key(item.get("title", "")) for item in out}
+
+    for old in seed_items:
+        copy = dict(old)
+        copy.setdefault("infoVolume", "medium")
+        copy.setdefault("reactionCount", max(1, int(copy.get("reactionCount", 1) or 1)))
+        copy.setdefault("evidenceCount", max(1, int(copy.get("evidenceCount", 1) or 1)))
+        copy.setdefault("confidence", "medium")
+        copy["title"] = clean_display_title(copy.get("title", ""))
+        if copy.get("sourceUrl") and is_review_or_search_url(str(copy.get("sourceUrl", ""))):
+            continue
+        if not is_current_or_undated_official_item(copy, now_dt=now_dt):
+            continue
+        k = candidate_key(copy.get("title", ""))
+        if not k or k in seen:
+            continue
+        copy["seedFallback"] = True
+        copy["owner"] = local_overview_sentence(copy)
+        copy["description"] = local_overview_sentence(copy)
+        out.append(copy)
+        seen.add(k)
+        if len(out) >= 10:
+            break
+
+    out.sort(key=lambda x: int(x.get("noiz", 0)), reverse=True)
+    out = out[:10]
+    for i, item in enumerate(out, 1):
+        item["rank"] = i
+    return out
+
+
 def load_existing() -> dict[str, Any]:
     if DATA_PATH.exists():
         return json.loads(DATA_PATH.read_text(encoding="utf-8"))
@@ -1176,6 +1234,7 @@ def archive_payload(payload: dict[str, Any], *, now_dt: datetime | None = None) 
     print(f"[OK] archived previous weekly NOIZ snapshot: {archive_file}")
 def main() -> None:
     existing = load_existing()
+    seed_payload = load_seed_payload()
     now_dt = datetime.now(KST)
     archive_payload(existing, now_dt=now_dt)
     sources = json.loads(SOURCES_PATH.read_text(encoding="utf-8"))
@@ -1197,8 +1256,9 @@ def main() -> None:
 
     items = merge_with_existing(merged_new, existing.get("items", []))
     items = finalize_items(items, now_dt=now_dt)
+    items = supplement_with_seed_items(items, seed_payload.get("items", []), now_dt=now_dt, min_count=8)
 
-    theme = existing.get("theme") or LEGACY_THEME
+    theme = existing.get("theme") or seed_payload.get("theme") or LEGACY_THEME
 
     payload = {
         "site": "NOIZ",
