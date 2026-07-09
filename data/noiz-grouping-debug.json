@@ -1,22 +1,8 @@
 {
-<<<<<<< HEAD
-  "method": "free_local_semantic_grouping",
-  "model": "",
-  "raw_count": 2,
-  "group_count": 1,
-  "dropped_as_noise": 0,
-  "groups": [
-    {
-      "size": 2,
-      "representative": "용산 팝업 점프샵 팝업 스토어 후기 JUMPSHOP IN SEOUL",
-      "venue": "용산",
-      "items": [
-        {
-=======
   "method": "gemini_api_chunked",
   "model": "gemini-2.5-flash-lite",
   "raw_count": 239,
-  "group_count": 151,
+  "group_count": 214,
   "dropped_as_noise": 0,
   "groups": [
     {
@@ -410,21 +396,10 @@
           "noiz": 35
         },
         {
->>>>>>> 0c5c1cbca640e4ea8097a216cf3933b3dd6359a3
           "title": "용산 팝업 점프샵 팝업 스토어 후기 JUMPSHOP IN SEOUL",
           "venue": "용산",
           "area": "용산",
           "brand": "Naver View",
-<<<<<<< HEAD
-          "noiz": 80
-        },
-        {
-          "title": "JUMPSHOP IN SEOUL",
-          "venue": "용산",
-          "area": "용산",
-          "brand": "Popga Magazine",
-          "noiz": 40
-=======
           "noiz": 47
         }
       ]
@@ -1308,7 +1283,6 @@
           "area": "서울/수도권",
           "brand": "Naver View",
           "noiz": 50
->>>>>>> 0c5c1cbca640e4ea8097a216cf3933b3dd6359a3
         }
       ]
     }
