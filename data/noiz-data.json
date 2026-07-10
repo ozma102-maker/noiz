@@ -1,6 +1,6 @@
 {
   "site": "NOIZ",
-  "updated_at": "2026-07-09T15:57:25+09:00",
+  "updated_at": "2026-07-10T20:23:16+09:00",
   "theme": {
     "id": "legacy-lime-blue",
     "name": "Legacy Lime & Blue",
@@ -121,6 +121,32 @@
     },
     {
       "rank": 5,
+      "brand": "ARTMAP",
+      "title": "ARTIST",
+      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "ARTIST 서울/수도권 서울/수도권",
+      "sourceUrl": "https://art-map.co.kr/artists/list.php",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 89,
+      "favorability": 68,
+      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 2,
+      "confidence": "high",
+      "seedFallback": false
+    },
+    {
+      "rank": 6,
       "brand": "Ddoing Exhibition Schedule",
       "title": "전시일정",
       "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
@@ -146,7 +172,7 @@
       "seedFallback": false
     },
     {
-      "rank": 6,
+      "rank": 7,
       "brand": "MMCA Exhibitions",
       "title": "어린이미술관",
       "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
@@ -173,7 +199,7 @@
       "seedFallback": false
     },
     {
-      "rank": 7,
+      "rank": 8,
       "brand": "Ddoing Exhibition Schedule",
       "title": "유영국: 산은 내 안에 있다 서울시립미술관 서소문 본관 ~26.10.25",
       "owner": "서울시립미술관에서 진행되는 전시/문화 경험 후보.",
@@ -193,13 +219,13 @@
       "category": "exhibition_culture",
       "start": "",
       "end": "",
-      "evidenceCount": 8,
+      "evidenceCount": 9,
       "reactionCount": 1,
       "confidence": "high",
       "seedFallback": false
     },
     {
-      "rank": 8,
+      "rank": 9,
       "brand": "서울시립미술관",
       "title": "유영국: 산은 내 안에 있다",
       "owner": "서울시립미술관 서소문본관에서 열리는 한국 추상미술 거장 유영국의 대형 회고전",
@@ -223,32 +249,6 @@
       "reactionCount": 0,
       "confidence": "high",
       "seedFallback": true
-    },
-    {
-      "rank": 9,
-      "brand": "ARTMAP",
-      "title": "ARTIST",
-      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
-      "venue": "서울/수도권",
-      "area": "서울/수도권",
-      "region": "서울/수도권",
-      "mapQuery": "ARTIST 서울/수도권 서울/수도권",
-      "sourceUrl": "https://art-map.co.kr/artists/list.php",
-      "sourceLabel": "공식/정보 출처",
-      "noiz": 86,
-      "favorability": 70,
-      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
-      "signals": [
-        "공식/정보 출처",
-        "후기/뉴스 반응"
-      ],
-      "category": "exhibition_culture",
-      "start": "",
-      "end": "",
-      "evidenceCount": 9,
-      "reactionCount": 1,
-      "confidence": "high",
-      "seedFallback": false
     },
     {
       "rank": 10,

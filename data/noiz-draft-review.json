@@ -1,17 +1,23 @@
 {
   "site": "NOIZ",
-  "updated_at": "2026-07-09T15:57:25+09:00",
+  "updated_at": "2026-07-10T20:23:16+09:00",
   "published": true,
-  "active_inventory_count": 94,
-  "candidate_count": 86,
-  "fresh_accepted_count": 86,
+  "active_inventory_count": 105,
+  "candidate_count": 79,
+  "fresh_accepted_count": 79,
   "final_card_count": 10,
   "seed_fallback_available": true,
   "warnings": [],
   "rejected_examples": [
     {
       "title": "🚨 팝가픽! 놓치면 후회해요",
-      "url": "https://popga.co.kr/content/magazine/list?ids=343,350,352,353&title=%F0%9F%9A%A8%20%ED%8C%9D%EA%B0%80%ED%94%BD!%20%EB%86%93%EC%B9%98%EB%A9%B4%20%ED%9B%84%ED%9A%8C%ED%95%B4%EC%9A%94",
+      "url": "https://popga.co.kr/content/magazine/list?ids=355,343,350,352&title=%F0%9F%9A%A8%20%ED%8C%9D%EA%B0%80%ED%94%BD!%20%EB%86%93%EC%B9%98%EB%A9%B4%20%ED%9B%84%ED%9A%8C%ED%95%B4%EC%9A%94",
+      "sourceName": "Popga Magazine",
+      "reason": "aggregate/listing/review-like title"
+    },
+    {
+      "title": "매거진 보러가기",
+      "url": "https://popga.co.kr/content/magazine/355",
       "sourceName": "Popga Magazine",
       "reason": "aggregate/listing/review-like title"
     },
@@ -30,12 +36,6 @@
     {
       "title": "매거진 보러가기",
       "url": "https://popga.co.kr/content/magazine/352",
-      "sourceName": "Popga Magazine",
-      "reason": "aggregate/listing/review-like title"
-    },
-    {
-      "title": "매거진 보러가기",
-      "url": "https://popga.co.kr/content/magazine/353",
       "sourceName": "Popga Magazine",
       "reason": "aggregate/listing/review-like title"
     },
@@ -114,18 +114,6 @@
     {
       "title": "Now on Hannam 26.04.30(목) ~ 26.09.27(일) #137CF4 성률 기획전 여름을 닮은 우리",
       "url": "https://groundseesaw.co.kr/product/detail.html?product_no=1327&cate_no=1&display_group=2",
-      "sourceName": "GroundSeesaw",
-      "reason": "aggregate/listing/review-like title"
-    },
-    {
-      "title": "Now on Central 26.03.27(금) ~ 26.08.30(일) #F9423A [문화가 있는 날] 맥스 시덴토프 개인전",
-      "url": "https://groundseesaw.co.kr/product/detail.html?product_no=1325&cate_no=1&display_group=2",
-      "sourceName": "GroundSeesaw",
-      "reason": "aggregate/listing/review-like title"
-    },
-    {
-      "title": "Now on Hannam 26.04.30(목) ~ 26.09.27(일) #137CF4 [문화가 있는 날] 성률 기획전 여름을 닮은 우리",
-      "url": "https://groundseesaw.co.kr/product/detail.html?product_no=1329&cate_no=1&display_group=2",
       "sourceName": "GroundSeesaw",
       "reason": "aggregate/listing/review-like title"
     },
@@ -287,6 +275,32 @@
     },
     {
       "rank": 5,
+      "brand": "ARTMAP",
+      "title": "ARTIST",
+      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "ARTIST 서울/수도권 서울/수도권",
+      "sourceUrl": "https://art-map.co.kr/artists/list.php",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 89,
+      "favorability": 68,
+      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 2,
+      "confidence": "high",
+      "seedFallback": false
+    },
+    {
+      "rank": 6,
       "brand": "Ddoing Exhibition Schedule",
       "title": "전시일정",
       "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
@@ -312,7 +326,7 @@
       "seedFallback": false
     },
     {
-      "rank": 6,
+      "rank": 7,
       "brand": "MMCA Exhibitions",
       "title": "어린이미술관",
       "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
@@ -339,7 +353,7 @@
       "seedFallback": false
     },
     {
-      "rank": 7,
+      "rank": 8,
       "brand": "Ddoing Exhibition Schedule",
       "title": "유영국: 산은 내 안에 있다 서울시립미술관 서소문 본관 ~26.10.25",
       "owner": "서울시립미술관에서 진행되는 전시/문화 경험 후보.",
@@ -359,13 +373,13 @@
       "category": "exhibition_culture",
       "start": "",
       "end": "",
-      "evidenceCount": 8,
+      "evidenceCount": 9,
       "reactionCount": 1,
       "confidence": "high",
       "seedFallback": false
     },
     {
-      "rank": 8,
+      "rank": 9,
       "brand": "서울시립미술관",
       "title": "유영국: 산은 내 안에 있다",
       "owner": "서울시립미술관 서소문본관에서 열리는 한국 추상미술 거장 유영국의 대형 회고전",
@@ -389,32 +403,6 @@
       "reactionCount": 0,
       "confidence": "high",
       "seedFallback": true
-    },
-    {
-      "rank": 9,
-      "brand": "ARTMAP",
-      "title": "ARTIST",
-      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
-      "venue": "서울/수도권",
-      "area": "서울/수도권",
-      "region": "서울/수도권",
-      "mapQuery": "ARTIST 서울/수도권 서울/수도권",
-      "sourceUrl": "https://art-map.co.kr/artists/list.php",
-      "sourceLabel": "공식/정보 출처",
-      "noiz": 86,
-      "favorability": 70,
-      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
-      "signals": [
-        "공식/정보 출처",
-        "후기/뉴스 반응"
-      ],
-      "category": "exhibition_culture",
-      "start": "",
-      "end": "",
-      "evidenceCount": 9,
-      "reactionCount": 1,
-      "confidence": "high",
-      "seedFallback": false
     },
     {
       "rank": 10,
