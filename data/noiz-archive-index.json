@@ -1,6 +1,6 @@
 {
   "site": "NOIZ Weekly Archive",
-  "updated_at": "2026-07-03T00:00:00+09:00",
+  "updated_at": "2026-07-13T08:00:00+09:00",
   "entries": [
     {
       "date": "2026-07-03",
@@ -8,6 +8,13 @@
       "file": "./data/archive/noiz-week-2026-07-03.json",
       "label": "2026 W27",
       "snapshot": "seed_week1_before_rollover"
+    },
+    {
+      "date": "2026-07-09",
+      "updated_at": "2026-07-09T13:00:00+09:00",
+      "file": "./data/archive/noiz-week-2026-07-09.json",
+      "label": "2026 W28",
+      "snapshot": "manual_week2_before_week3"
     }
   ]
 }
