@@ -1,0 +1,23 @@
+NOIZ stable 복구 절차
+
+1. GitHub Desktop에서 stable 저장소(noiz)를 선택합니다.
+2. 진행 중인 merge가 있으면 Repository > Abort Merge를 먼저 실행합니다.
+3. Repository > Show in Explorer로 로컬 noiz 폴더를 엽니다.
+4. 이 ZIP의 내용물을 noiz 폴더에 복사합니다.
+5. 아래 항목이 로컬 저장소에서 삭제되었는지 확인합니다:
+   .github/
+   scripts/
+   requirements.txt
+   data/event-inventory.json
+   data/noiz-curation-seed.json
+   data/noiz-draft-review.json
+   data/noiz-grouping-debug.json
+   data/noiz-seed-stable.json
+6. GitHub Desktop에서 변경사항 전체를 Commit:
+   Restore stable manual-only version
+7. Push origin
+8. stable 저장소의 Actions는 실행하지 않습니다.
+
+중요:
+- ZIP을 덮어쓰는 것만으로는 기존 .github/와 scripts/가 자동 삭제되지 않습니다.
+- GitHub Desktop의 Changes에서 위 항목들이 Deleted로 표시되어야 정상입니다.
