@@ -1,6 +1,10 @@
 {
   "site": "NOIZ",
+<<<<<<< HEAD
   "updated_at": "2026-07-09T13:00:00+09:00",
+=======
+  "updated_at": "2026-07-12T16:50:15+09:00",
+>>>>>>> 13444c480752fe602e8b0ac0c24cafa8625e0e40
   "theme": {
     "id": "legacy-lime-blue",
     "name": "Legacy Lime & Blue",
@@ -11,6 +15,7 @@
     "line": "rgba(63,93,127,.24)",
     "white": "#f4ffd8"
   },
+<<<<<<< HEAD
   "weekly_read": "이번 주 NOIZ는 성수의 팬덤·패션·금융 브랜드 팝업과 서울시립미술관 계열 전시가 함께 잡혀. 가장 강한 신호는 T1×SK텔레콤의 《암행천문 : 별을 헤다》이고, 마른파이브·NH드림뱅크처럼 체험과 굿즈, 협업 요소가 분명한 성수 팝업도 방문 전환력이 높아 보여. 전시 쪽은 유영국 회고전과 《알렉사에게》처럼 공신력 있는 기관 전시가 안정적인 축을 만들고 있어서, 이번 주는 ‘짧고 인증하기 좋은 팝업’과 ‘검증된 문화 관람’이 동시에 경쟁하는 흐름이야.",
   "items": [
     {
@@ -87,12 +92,19 @@
     },
     {
       "rank": 4,
+=======
+  "weekly_read": "이번 주 NOIZ는 여의도·성수·서울/수도권 중심으로 잡혔어. Top 10에는 팝업/브랜드 경험 2개, 전시/문화 경험 8개가 섞여 있고, 가장 강한 신호는 빤쮸토끼 POP UP in 더현대 서울 쪽이야. 이번 주는 짧고 인증하기 좋은 팝업과 검증된 기관 전시가 같은 주말 시간을 두고 경쟁하는 흐름이야.",
+  "items": [
+    {
+      "rank": 1,
+>>>>>>> 13444c480752fe602e8b0ac0c24cafa8625e0e40
       "brand": "빤쮸토끼",
       "title": "빤쮸토끼 POP UP in 더현대 서울",
       "owner": "더현대 서울 지하 팝업존에서 진행되는 캐릭터 IP 기반 캔디 공장 콘셉트 팝업",
       "venue": "더현대 서울",
       "area": "여의도",
       "region": "영등포구",
+<<<<<<< HEAD
       "mapQuery": "더현대 서울",
       "sourceUrl": "https://x.com/opanchu_kr/status/2071519044239507787",
       "sourceLabel": "공식/정보 출처",
@@ -111,12 +123,193 @@
     },
     {
       "rank": 5,
+=======
+      "mapQuery": "빤쮸토끼 POP UP in 더현대 서울 더현대 서울 여의도",
+      "sourceUrl": "https://x.com/opanchu_kr/status/2071519044239507787",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 99,
+      "favorability": 72,
+      "description": "더현대 서울 지하 팝업존에서 진행되는 캐릭터 IP 기반 캔디 공장 콘셉트 팝업",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응",
+        "팬덤/굿즈"
+      ],
+      "category": "popup_brand",
+      "start": "2026-07-02",
+      "end": "2026-07-15",
+      "evidenceCount": 9,
+      "reactionCount": 3,
+      "confidence": "high",
+      "seedFallback": true
+    },
+    {
+      "rank": 2,
+      "brand": "T1 × SK텔레콤",
+      "title": "암행천문 : 별을 헤다",
+      "owner": "T1의 우승 서사와 팬덤형 체험을 T Factory 성수 공간에 묶은 대형 브랜드 전시",
+      "venue": "T Factory 성수",
+      "area": "성수",
+      "region": "성동구",
+      "mapQuery": "암행천문 : 별을 헤다 T Factory 성수 성수",
+      "sourceUrl": "https://news.sktelecom.com/227286",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 94,
+      "favorability": 72,
+      "description": "T1의 우승 서사와 팬덤형 체험을 T Factory 성수 공간에 묶은 대형 브랜드 전시",
+      "signals": [
+        "공식/정보 출처",
+        "팬덤/굿즈"
+      ],
+      "category": "popup_brand",
+      "start": "2026-07-02",
+      "end": "2026-09-13",
+      "evidenceCount": 9,
+      "reactionCount": 0,
+      "confidence": "high",
+      "seedFallback": true
+    },
+    {
+      "rank": 3,
+      "brand": "MMCA Exhibitions",
+      "title": "현재전시",
+      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "현재전시 서울/수도권 서울/수도권",
+      "sourceUrl": "javascript:fn_menuChange('/exhibitions/progressList.do', '01B000201000000', '2');",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 91,
+      "favorability": 70,
+      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 2,
+      "confidence": "high",
+      "seedFallback": false
+    },
+    {
+      "rank": 4,
+      "brand": "ARTMAP",
+      "title": "GALLERY",
+      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "GALLERY 서울/수도권 서울/수도권",
+      "sourceUrl": "https://art-map.co.kr/gallery/new_list.php",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 89,
+      "favorability": 68,
+      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 2,
+      "confidence": "high",
+      "seedFallback": false
+    },
+    {
+      "rank": 5,
+      "brand": "Ddoing Exhibition Schedule",
+      "title": "전시일정",
+      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "전시일정 서울/수도권 서울/수도권",
+      "sourceUrl": "https://ddoing.co.kr/ddoing_exhibition_schedule",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 89,
+      "favorability": 68,
+      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 2,
+      "confidence": "high",
+      "seedFallback": false
+    },
+    {
+      "rank": 6,
+      "brand": "MMCA Exhibitions",
+      "title": "어린이미술관",
+      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "어린이미술관 서울/수도권 서울/수도권",
+      "sourceUrl": "javascript:fn_menuChange('/visitingInfo/childArtMuseumInfo.do', '01A000107000000', '2');",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 88,
+      "favorability": 72,
+      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응",
+        "무료/체험"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 1,
+      "confidence": "high",
+      "seedFallback": false
+    },
+    {
+      "rank": 7,
+      "brand": "Ddoing Exhibition Schedule",
+      "title": "유영국: 산은 내 안에 있다 서울시립미술관 서소문 본관 ~26.10.25",
+      "owner": "서울시립미술관에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울시립미술관",
+      "area": "중구",
+      "region": "중구",
+      "mapQuery": "유영국: 산은 내 안에 있다 서울시립미술관 서소문 본관 ~26.10.25 서울시립미술관 중구",
+      "sourceUrl": "https://naver.me/GPdQtB11",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 88,
+      "favorability": 72,
+      "description": "서울시립미술관에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 1,
+      "confidence": "high",
+      "seedFallback": false
+    },
+    {
+      "rank": 8,
+>>>>>>> 13444c480752fe602e8b0ac0c24cafa8625e0e40
       "brand": "서울시립미술관",
       "title": "유영국: 산은 내 안에 있다",
       "owner": "서울시립미술관 서소문본관에서 열리는 한국 추상미술 거장 유영국의 대형 회고전",
       "venue": "서울시립미술관 서소문본관",
       "area": "중구",
       "region": "중구",
+<<<<<<< HEAD
       "mapQuery": "서울시립미술관 서소문본관",
       "sourceUrl": "https://culture.seoul.go.kr/culture/culture/cultureEvent/view.do?cultcode=157686&menuNo=200110",
       "sourceLabel": "공식/정보 출처",
@@ -256,4 +449,80 @@
   ],
   "creator": "이원준 시니어매니저",
   "method_note": "수동 큐레이션 버전. 공식/정보 페이지를 기준으로 단일 팝업·전시·공간 경험만 선별하고, 후기/검색 신호는 화제성 판단에 보조적으로만 반영했다."
+=======
+      "mapQuery": "유영국: 산은 내 안에 있다 서울시립미술관 서소문본관 중구",
+      "sourceUrl": "https://culture.seoul.go.kr/culture/culture/cultureEvent/view.do?cultcode=157686&menuNo=200110",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 87,
+      "favorability": 72,
+      "description": "서울시립미술관 서소문본관에서 열리는 한국 추상미술 거장 유영국의 대형 회고전",
+      "signals": [
+        "공식/정보 출처",
+        "공간 경험"
+      ],
+      "category": "exhibition_culture",
+      "start": "2026-05-19",
+      "end": "2026-10-25",
+      "evidenceCount": 9,
+      "reactionCount": 0,
+      "confidence": "high",
+      "seedFallback": true
+    },
+    {
+      "rank": 9,
+      "brand": "ARTMAP",
+      "title": "ARTIST",
+      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "ARTIST 서울/수도권 서울/수도권",
+      "sourceUrl": "https://art-map.co.kr/artists/list.php",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 86,
+      "favorability": 70,
+      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 1,
+      "confidence": "high",
+      "seedFallback": false
+    },
+    {
+      "rank": 10,
+      "brand": "MMCA Exhibitions",
+      "title": "관람·참여",
+      "owner": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "venue": "서울/수도권",
+      "area": "서울/수도권",
+      "region": "서울/수도권",
+      "mapQuery": "관람·참여 서울/수도권 서울/수도권",
+      "sourceUrl": "javascript:fn_menuChange('/visitingInfo/seoulInfo.do', '01A000100000000', '1');",
+      "sourceLabel": "공식/정보 출처",
+      "noiz": 86,
+      "favorability": 70,
+      "description": "서울/수도권에서 진행되는 전시/문화 경험 후보.",
+      "signals": [
+        "공식/정보 출처",
+        "후기/뉴스 반응",
+        "무료/체험"
+      ],
+      "category": "exhibition_culture",
+      "start": "",
+      "end": "",
+      "evidenceCount": 9,
+      "reactionCount": 1,
+      "confidence": "high",
+      "seedFallback": false
+    }
+  ],
+  "creator": "이원준 시니어매니저",
+  "method_note": "Gemini 큐레이터 dev 버전. 공식/정보 후보를 Gemini가 단일 이벤트로 판정하고, 검색·뉴스 신호는 반응 근거로만 붙인 뒤 검증 통과 시 발행한다."
+>>>>>>> 13444c480752fe602e8b0ac0c24cafa8625e0e40
 }
