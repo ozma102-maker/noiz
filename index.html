@@ -1009,39 +1009,30 @@ function formatDate(iso) {
 
 function formatWeekLabel(iso) {
   const date = iso ? new Date(iso) : new Date();
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
+
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Seoul",
     year: "numeric",
     month: "numeric",
-    day: "numeric",
-    hour: "numeric",
-    hour12: false
+    day: "numeric"
   }).formatToParts(date);
 
   const year = Number(parts.find(p => p.type === "year").value);
   const month = Number(parts.find(p => p.type === "month").value);
   const day = Number(parts.find(p => p.type === "day").value);
-  const hour = Number(parts.find(p => p.type === "hour").value);
 
-  // Week labels roll over every Monday at 09:00 KST.
-  // Example: 2026-07-06 09:00 KST -> 2026 July week 2.
-  let rollovers = 0;
-  for (let d = 1; d <= day; d += 1) {
-    const weekday = new Date(Date.UTC(year, month - 1, d, 12)).getUTCDay(); // 1 = Monday
-    if (weekday !== 1) continue;
-    if (d < day || (d === day && hour >= 9)) {
-      rollovers += 1;
-    }
-  }
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
 
-  const week = 1 + rollovers;
+  // 매월 1일이 포함된 월요일~일요일 구간을 Week 1로 계산
+  const firstDay = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
+  const daysBeforeFirstMonday = (firstDay + 6) % 7;
+  const week = Math.floor((day + daysBeforeFirstMonday - 1) / 7) + 1;
+
   return `${year} ${months[month - 1]} week ${week}`;
 }
-
 
 
 function formatPeriodDatePart(iso, includeYear = false) {
@@ -1506,7 +1497,7 @@ async function loadData(targetDate = null) {
 
     // weeklyRead is generated after Top 10 ranking.
     document.getElementById("weekLabel").textContent = targetDate
-      ? formatWeekLabel(data.updated_at)
+      ? data.week_label || formatWeekLabel(data.updated_at)
       : formatWeekLabel();
     document.getElementById("creator").textContent = data.creator || "이원준 시니어매니저";
     const items = (data.items || [])
