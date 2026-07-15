@@ -809,60 +809,55 @@ noiz-radar-background.css
 
 
 /* =========================================================
-   NOIZ radar background
-   - Radar center follows the NOIZ title area
-   - Lines only: no dots, sweep, spokes, or orbit markers
-   - Sits behind all content and does not affect readability
-   Paste this block near the end of the existing <style> section.
+   NOIZ radar background — visibility fix
+   Replace the previously added radar CSS block with this one.
    ========================================================= */
+
+html {
+  background: var(--bg);
+}
 
 body {
   position: relative;
+  min-height: 100vh;
   isolation: isolate;
+  background: transparent;
 }
 
-/* Concentric radar rings */
+/* Radar rings sit above the page background, but below all content */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 0;
   pointer-events: none;
 
-  /*
-    Desktop center:
-    The content wrap is centered, so this places the ring center
-    close to the NOIZ title rather than the viewport corner.
-  */
   background-image:
     repeating-radial-gradient(
       circle at max(7vw, calc(50vw - 530px)) 56px,
       transparent 0,
       transparent 56px,
-      color-mix(in srgb, var(--ink) 11%, transparent) 57px,
-      color-mix(in srgb, var(--ink) 11%, transparent) 58px,
+      color-mix(in srgb, var(--ink) 9%, transparent) 57px,
+      color-mix(in srgb, var(--ink) 9%, transparent) 58px,
       transparent 59px,
       transparent 112px
     );
 
-  /* Keep the rings subtle behind long page content */
-  opacity: 0.72;
+  opacity: 0.7;
 }
 
-/* Keep the actual interface clearly above the background */
-.wrap {
+/* Put every visible page element above the radar */
+body > * {
   position: relative;
   z-index: 1;
 }
 
-/* Cards remain readable while allowing the radar to faintly show through */
+/* Keep cards readable */
 .panel,
 .rank-card {
-  backdrop-filter: blur(0.4px);
-  -webkit-backdrop-filter: blur(0.4px);
+  background-clip: padding-box;
 }
 
-/* On narrower screens, align the ring center with the mobile title */
 @media (max-width: 760px) {
   body::before {
     background-image:
@@ -870,19 +865,12 @@ body::before {
         circle at 28px 42px,
         transparent 0,
         transparent 42px,
-        color-mix(in srgb, var(--ink) 9%, transparent) 43px,
-        color-mix(in srgb, var(--ink) 9%, transparent) 44px,
+        color-mix(in srgb, var(--ink) 8%, transparent) 43px,
+        color-mix(in srgb, var(--ink) 8%, transparent) 44px,
         transparent 45px,
         transparent 84px
       );
     opacity: 0.62;
-  }
-}
-
-/* Respect reduced-motion preferences; no animation is used */
-@media (prefers-reduced-motion: reduce) {
-  body::before {
-    animation: none;
   }
 }
   
