@@ -805,75 +805,119 @@
     opacity:.78 !important;
   }
 
-noiz-radar-background.css
 
-
-/* =========================================================
-   NOIZ radar background — visibility fix
-   Replace the previously added radar CSS block with this one.
-   ========================================================= */
-
-html {
-  background: var(--bg);
-}
-
-body {
-  position: relative;
-  min-height: 100vh;
-  isolation: isolate;
-  background: transparent;
-}
-
-/* Radar rings sit above the page background, but below all content */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-
-  background-image:
-    repeating-radial-gradient(
-      circle at max(7vw, calc(50vw - 530px)) 56px,
-      transparent 0,
-      transparent 56px,
-      color-mix(in srgb, var(--ink) 9%, transparent) 57px,
-      color-mix(in srgb, var(--ink) 9%, transparent) 58px,
-      transparent 59px,
-      transparent 112px
-    );
-
-  opacity: 0.7;
-}
-
-/* Put every visible page element above the radar */
-body > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Keep cards readable */
-.panel,
-.rank-card {
-  background-clip: padding-box;
-}
-
-@media (max-width: 760px) {
-  body::before {
-    background-image:
-      repeating-radial-gradient(
-        circle at 28px 42px,
-        transparent 0,
-        transparent 42px,
-        color-mix(in srgb, var(--ink) 8%, transparent) 43px,
-        color-mix(in srgb, var(--ink) 8%, transparent) 44px,
-        transparent 45px,
-        transparent 84px
-      );
-    opacity: 0.62;
+  /* v84 title-centered expanding radar background */
+  :root{
+    /*
+      Desktop radar origin = visual center of the NOIZ! wordmark.
+      max() keeps the origin aligned on both wide and narrower screens.
+    */
+    --radar-x:max(119px, calc(50vw - 471px));
+    --radar-y:64px;
+    --radar-line:color-mix(in srgb, var(--ink) 8%, transparent);
   }
-}
-  
+
+  html{
+    background:var(--bg)!important;
+  }
+
+  body{
+    position:relative;
+    min-height:100vh;
+    isolation:isolate;
+    background:transparent!important;
+  }
+
+  /*
+    Separate radial gradients produce progressively wider spacing:
+    55 → 125 → 215 → 330 → 475 → 655 → 875 → 1140px.
+    No dots, spokes, orbit markers, or sweep line.
+  */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    background-image:
+      radial-gradient(circle at var(--radar-x) var(--radar-y),
+        transparent 0 54px,
+        var(--radar-line) 55px 56px,
+        transparent 57px),
+      radial-gradient(circle at var(--radar-x) var(--radar-y),
+        transparent 0 124px,
+        var(--radar-line) 125px 126px,
+        transparent 127px),
+      radial-gradient(circle at var(--radar-x) var(--radar-y),
+        transparent 0 214px,
+        var(--radar-line) 215px 216px,
+        transparent 217px),
+      radial-gradient(circle at var(--radar-x) var(--radar-y),
+        transparent 0 329px,
+        var(--radar-line) 330px 331px,
+        transparent 332px),
+      radial-gradient(circle at var(--radar-x) var(--radar-y),
+        transparent 0 474px,
+        var(--radar-line) 475px 476px,
+        transparent 477px),
+      radial-gradient(circle at var(--radar-x) var(--radar-y),
+        transparent 0 654px,
+        var(--radar-line) 655px 656px,
+        transparent 657px),
+      radial-gradient(circle at var(--radar-x) var(--radar-y),
+        transparent 0 874px,
+        var(--radar-line) 875px 876px,
+        transparent 877px),
+      radial-gradient(circle at var(--radar-x) var(--radar-y),
+        transparent 0 1139px,
+        var(--radar-line) 1140px 1141px,
+        transparent 1142px);
+    opacity:.82;
+  }
+
+  /* Keep every interface element above the radar */
+  body > *{
+    position:relative;
+    z-index:1;
+  }
+
+  /*
+    More opaque content boxes:
+    radar lines remain barely visible through the boxes,
+    without competing with copy or score information.
+  */
+  .panel{
+    background:color-mix(in srgb, var(--bg) 93%, transparent)!important;
+    -webkit-backdrop-filter:blur(1.4px);
+    backdrop-filter:blur(1.4px);
+  }
+
+  .card{
+    background:color-mix(in srgb, var(--bg) 89%, transparent)!important;
+    -webkit-backdrop-filter:blur(1.1px);
+    backdrop-filter:blur(1.1px);
+  }
+
+  @media (max-width:760px){
+    :root{
+      --radar-x:86px;
+      --radar-y:52px;
+      --radar-line:color-mix(in srgb, var(--ink) 7%, transparent);
+    }
+
+    body::before{
+      opacity:.76;
+    }
+
+    .panel{
+      background:color-mix(in srgb, var(--bg) 95%, transparent)!important;
+    }
+
+    .card{
+      background:color-mix(in srgb, var(--bg) 92%, transparent)!important;
+    }
+  }
+
 </style>
 </head>
 <body>
