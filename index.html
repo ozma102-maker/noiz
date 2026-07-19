@@ -1617,7 +1617,8 @@ async function loadData(targetDate = null) {
       .sort((a, b) => Number(b.noiz || 0) - Number(a.noiz || 0))
       .slice(0, 10)
       .map((item, i) => ({ ...item, rank: i + 1 }));
-    document.getElementById("weeklyRead").textContent = buildNoizWeeklyAnalysis(items, data);
+    document.getElementById("weeklyRead").textContent =
+  data.weekly_read || buildNoizWeeklyAnalysis(items, data);
     document.getElementById("rankList").innerHTML = items.map(renderItem).join("");
     updateArchiveNav(dataDate);
   } catch (err) {
