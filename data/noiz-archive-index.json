@@ -1,20 +1,27 @@
 {
   "site": "NOIZ Weekly Archive",
-  "updated_at": "2026-07-13T08:00:00+09:00",
+  "updated_at": "2026-07-20T09:00:00+09:00",
   "entries": [
     {
       "date": "2026-07-03",
       "updated_at": "2026-07-03T00:00:00+09:00",
       "file": "./data/archive/noiz-week-2026-07-03.json",
-      "label": "2026 W27",
-      "snapshot": "seed_week1_before_rollover"
+      "label": "2026 July week 1",
+      "snapshot": "week1"
     },
     {
       "date": "2026-07-09",
       "updated_at": "2026-07-09T13:00:00+09:00",
       "file": "./data/archive/noiz-week-2026-07-09.json",
-      "label": "2026 W28",
-      "snapshot": "manual_week2_before_week3"
+      "label": "2026 July week 2",
+      "snapshot": "week2"
+    },
+    {
+      "date": "2026-07-13",
+      "updated_at": "2026-07-13T09:00:00+09:00",
+      "file": "./data/archive/noiz-week-2026-07-13.json",
+      "label": "2026 July week 3",
+      "snapshot": "week3_before_week4"
     }
   ]
 }

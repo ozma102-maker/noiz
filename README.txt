@@ -1,9 +1,10 @@
-NOIZ stable Week 3 update
+NOIZ Week 4 update (2026-07-20)
 
-Repository paths:
-- data/noiz-data.json
-- data/noiz-archive-index.json
-- data/archive/noiz-week-2026-07-09.json
+덮어쓸 파일:
+1. data/noiz-data.json
+2. data/noiz-archive-index.json
 
-Upload all three files while preserving these paths.
-Do not delete the existing data/archive/noiz-week-2026-07-03.json file.
+새로 추가할 파일:
+3. data/archive/noiz-week-2026-07-13.json
+
+기존 Week 1, Week 2 archive 파일은 삭제하지 마세요.
